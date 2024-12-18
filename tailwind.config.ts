@@ -21,7 +21,7 @@ const config: Config = {
                 '350px': '350px',
                 '400px': '400px',
                 '500px': '500px',
-                tablet: '640px',
+                tablet: '680px',
                 '700px': '700px',
                 main: '800px',
                 '900px': '900px',
@@ -44,14 +44,16 @@ const config: Config = {
             colors: {
                 mainWhite: '#F9F9F9',
                 mainDark: '#2F313A',
-                mainOrange: '#FF7948',
+                secondaryOrange: '#FF7A1B',
                 darkStormy: '#8D90A3',
                 lightStormy: '#D0D4E5',
                 placeholderOrange: '#FF7948/60',
-                msinBlack: '#282727',
-            },
-            fontFamily: {
-                sans: ['Arial', 'sans-serif'],
+                mainBlack: '#282727',
+                mainOrange: '#FF8C3A',
+                funnyYellow: '#FFC63B',
+                funnyBlue: '#3BB0FF',
+                funnyGrey: '#5D7280',
+                funnyBrown: '#80765D'
             },
             fontSize: {
                 h1: ['2rem', '2.4rem'],
@@ -74,6 +76,9 @@ const config: Config = {
             },
             lineHeight: {
                 1.2: '1.2',
+            },
+            fontFamily: {
+                golos: ['var(--font-golos)']
             },
             spacing: {
                 5: '0.3125rem',

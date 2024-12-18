@@ -18,9 +18,12 @@
         "name": "next"
       }
     ],
-    "paths": {
-      "@/music_is/*": ["./src/*"]
-    }
+    "paths": { 
+      "@/*": ["./src/*"],
+      "@components/*": ["./components/*"],
+      "@public/*": ["./public/*"]
+    },
+    "types": ["unplugin-icons/types/react"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
