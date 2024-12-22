@@ -23,18 +23,18 @@
 
     h1,
     .h1 {
-        @apply text-left text-2xl font-bold uppercase tablet:text-h1;
+        @apply text-left text-2xl font-bold uppercase main:text-h1;
     }
     h2,
     .h2 {
-        @apply text-left text-lg font-bold uppercase tablet:text-h2;
+        @apply text-left text-lg font-bold uppercase main:text-h2;
     }
     h3,
     .h3 {
-        @apply text-left text-sm font-bold tablet:text-lg;
+        @apply text-left text-sm font-bold main:text-lg;
     }
     p {
-        @apply text-left text-sm tablet:text-lg;
+        @apply text-left text-sm main:text-lg;
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */

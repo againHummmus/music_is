@@ -35,7 +35,7 @@ export default function Search({
   return (
     <div className={`relative z-50`}>
       <div
-        className="group flex h-[40px] cursor-pointer items-center overflow-hidden rounded-full border border-mainOrange transition-all duration-300 after:absolute after:left-0 after:top-0 after:-z-[1] after:h-full after:w-full after:bg-white/20 after:backdrop-blur tablet:max-laptop:absolute tablet:max-laptop:right-0 laptop:w-[250px]"
+        className="group flex h-[40px] cursor-pointer items-center overflow-hidden rounded-full border border-mainOrange transition-all duration-300 after:absolute after:left-0 after:top-0 after:-z-[1] after:h-full after:w-full after:bg-white/20 after:backdrop-blur main:max-laptop:absolute main:max-laptop:right-0 laptop:w-[250px]"
       >
         <div className="p-[8px]" onClick={() => setIsOpen(true)}>
           <HugeiconsSearch01 className="text-mainOrange transition-all" />

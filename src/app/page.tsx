@@ -5,7 +5,7 @@ import { RecommendedUsersBlock } from "@components/mainScreen/RecommendedUsersBl
 
 export default function Home() {
   return (
-    <div className="w-full flex flex-col justify-center gap-[15px] tablet:gap-[50px]">
+    <div className="w-full flex flex-col justify-center gap-[15px] main:gap-[50px]">
       <RecommendationsBlock/>
       <FriendsBlock/>
       <RecommendedUsersBlock/>

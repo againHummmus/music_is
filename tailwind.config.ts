@@ -22,7 +22,6 @@ const config: Config = {
                 '400px': '400px',
                 '500px': '500px',
                 tablet: '680px',
-                '700px': '700px',
                 main: '800px',
                 '900px': '900px',
                 '980px': '980px',

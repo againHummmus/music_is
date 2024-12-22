@@ -10,6 +10,7 @@ import HugeiconsSettings02 from '~icons/hugeicons/settings-02?width=24px&height=
 import HugeiconsNotification01 from '~icons/hugeicons/notification-01?width=24px&height=24px';
 import HugeiconsFolderLibrary from '~icons/hugeicons/folder-library?width=24px&height=24px';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01?width=24px&height=24px';
+import { MobileNav } from "@components/mobile-nav/MobileNav";
 
 
 export const metadata: Metadata = {
@@ -33,8 +34,8 @@ export default function RootLayout({
                 showSpinner={false}
                 speed={500}
             />
-            <main className="container flex flex-row">
-              <div className="sticky h-fit top-[40px] tablet:top-[65px] w-[20%] min-w-[200px] border-r border-lightStormy pt-[20px] hidden main:flex flex-col pl-10">
+            <main className="container flex flex-row max-main:pb-[50px]">
+              <div className="sticky h-fit top-[40px] main:top-[65px] w-[20%] min-w-[200px] border-r border-lightStormy pt-[20px] hidden main:flex flex-col pl-10">
                 <div className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10">
                   <MingcuteHome5Fill/>
                   <div className="text-sm font-medium">
@@ -78,10 +79,11 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-              <div className="w-full p-[15px] tablet:p-[30px]">
+              <div className="min-w-0 w-full p-[15px] main:p-[30px]">
                 {children}
               </div>
             </main>
+            <MobileNav/>
     </body>
 </html>
   );
