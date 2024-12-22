@@ -12,13 +12,13 @@ export function User() {
     };
 
     return (
-        <div className="w-[300px] main:w-[240px] p-15 flex flex-col justify-end h-[250px] bg-no-repeat bg-cover bg-center relative bg-[url('/images/Dave.png')] rounded-[7px] border border-mainOrange after:absolute after:w-full after:h-full after:rounded-[7px] after:content-'' after:bg-gradient-to-t after:from-mainBlack after:to-mainBlack/0 after:top-0 after:left-0">
+        <div className="w-[240px] p-15 flex flex-col justify-end h-[250px] bg-no-repeat bg-cover bg-center relative bg-[url('/images/Dave.png')] rounded-[7px] border border-mainOrange after:absolute after:w-full after:h-full after:rounded-[7px] after:content-'' after:bg-gradient-to-t after:from-mainBlack after:to-mainBlack/0 after:top-0 after:left-0">
             <div className="relative z-[200] w-full flex flex-col gap-5 ">
                 <div className="text-base font-semibold text-white">
                     Dave Grohl
                 </div>
                 <div className="flex flex-row gap-5 justify-between">
-                    <div onClick={() => toggleSubscription()} className={`h-[30px] px-[10px] flex items-center font-semibold justify-center transition-all cursor-pointer ${isSubscribed ? 'bg-lightStormy' : 'bg-mainOrange'} rounded-[7px] text-mainBlack`}>
+                    <div onClick={() => toggleSubscription()} className={`min-w-[120px] h-[30px] px-[10px] flex items-center font-semibold justify-center transition-all cursor-pointer ${isSubscribed ? 'bg-lightStormy' : 'bg-mainOrange'} rounded-[7px] text-mainBlack`}>
                         {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
                     </div>
                     <div className="flex flex-row items-center text-lightStormy">
