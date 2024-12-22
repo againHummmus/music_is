@@ -11,7 +11,7 @@ export async function FriendsBlock() {
                     Your friends <br/> like this
                 </div>
                 <div className="w-full relative z-[2] flex flex-col tablet:justify-end items-center tablet:items-end">
-                    <button className="w-full backdrop-blur-lg font-bold h-[30px] tablet:h-[50px] max-w-[400px] rounded-[7px] border-2 border-mainOrange hover:border-white hover:text-white transition-all flex items-center justify-center text-mainOrange transition-all">
+                    <button className="w-full backdrop-blur-lg font-bold h-[30px] tablet:h-[50px] max-w-[400px] rounded-[7px] border-2 border-mainOrange hover:border-white hover:text-white flex items-center justify-center text-mainOrange transition-all">
                         See more
                     </button>
                 </div>

@@ -47,6 +47,28 @@
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
     }
+
+    /* Custom scrollbar styles */
+
+   .custom-scrollbar-x::-webkit-scrollbar {
+        height: 5px;
+    }
+
+   .custom-scrollbar-x::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+   .custom-scrollbar-x::-webkit-scrollbar-thumb {
+        background: #FF8C3A;
+        border-radius: 10px;
+    }
+
+    .scrollbar-container-x {
+        position: relative;
+        padding: 5px;
+        overflow: auto;
+    }
+
     @media (min-width: 800px) {
       main {
         padding-top: 65px;
