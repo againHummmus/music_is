@@ -1,6 +1,7 @@
-import { AddedByMeBlock } from "@components/library/AddedByMeBlock";
-import { FavouriteBlock } from "@components/library/FavouriteBlock";
-import { PlaylistsBlock } from "@components/library/PlaylistsBlock";
+import { AddedByMeBlock } from "@/components/library/AddedByMeBlock";
+import { FavouriteBlock } from "@/components/library/FavouriteBlock";
+import { PlaylistsBlock } from "@/components/library/PlaylistsBlock";
+
 
 export default function Home() {
   return (
