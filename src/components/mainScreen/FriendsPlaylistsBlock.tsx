@@ -1,3 +1,4 @@
+import { BaseButtonLight } from "../shared/buttons/BaseButtonLight";
 import { PlaylistItem } from "../shared/playlist/PlaylistItem";
 
 export function FriendsPlaylistsBlock() {
@@ -9,9 +10,7 @@ export function FriendsPlaylistsBlock() {
           <div className="w-full text-lg main:text-4xl text-mainBlack max-main:text-mainWhite font-semibold">
             Your friends' <br /> playlists
           </div>
-          <button className="w-full font-bold h-[30px] main:h-[50px] rounded-[7px] border-2 border-mainOrange hover:bg-mainOrange hover:text-mainDark transition-all flex items-center justify-center text-mainOrange">
-            See more
-          </button>
+          <BaseButtonLight title={"See more"} href={"/user1313/friends"}/>
         </div>
       </div>
       <div className="grid grid-cols-1 main:grid-cols-2 gap-10">

@@ -41,6 +41,7 @@ const config: Config = {
                 320: '320px',
             },
             colors: {
+                //main
                 mainWhite: '#F9F9F9',
                 mainDark: '#2F313A',
                 secondaryOrange: '#FF7A1B',
@@ -49,6 +50,8 @@ const config: Config = {
                 placeholderOrange: '#FF7948/60',
                 mainBlack: '#282727',
                 mainOrange: '#FF8C3A',
+
+                //funny
                 funnyYellow: '#FFC63B',
                 funnyBlue: '#3BB0FF',
                 funnyGrey: '#5D7280',

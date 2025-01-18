@@ -1,3 +1,4 @@
+import { BaseButtonOutline } from "../shared/buttons/BaseButtonOutline";
 import { FriendsTrackBlock } from "../shared/FriendTracksItem";
 
 export function FriendsBlock() {
@@ -11,9 +12,7 @@ export function FriendsBlock() {
                     Your friends <br/> like this
                 </div>
                 <div className="w-full relative z-[2] flex flex-col main:justify-end items-center main:items-end">
-                    <button className="w-full backdrop-blur-lg font-bold h-[30px] main:h-[50px] max-w-[400px] rounded-[7px] border-2 border-mainOrange hover:border-white hover:text-white flex items-center justify-center text-mainOrange transition-all">
-                        See more
-                    </button>
+                    <BaseButtonOutline title={"See more"} href={"/user13131/friends"}/>
                 </div>
             </div>
             <div className="grid grid-cols-1 main:grid-cols-2 gap-10">

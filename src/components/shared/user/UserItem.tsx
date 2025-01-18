@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link';
 import { useState } from 'react';
 import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24px&height=24px';
 

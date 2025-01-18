@@ -69,6 +69,10 @@
         overflow: auto;
     }
 
+    .react-parallax-content {
+        height: 100%;
+    }
+
     @media (min-width: 800px) {
       main {
         padding-top: 65px;
