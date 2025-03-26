@@ -24,6 +24,8 @@ export default function RootLayout({
   useEffect(() => {
     if (localStorage.getItem('token')) {
       checkAuth()
+    } else {
+      store.setIsLoading(false)
     }
   }, [])
 
