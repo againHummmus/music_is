@@ -1,7 +1,7 @@
-import { BaseButtonLight } from "../shared/buttons/BaseButtonLight";
+import { BaseButtonDark } from "../shared/buttons/BaseButtonDark";
 import { PlaylistItem } from "../shared/playlist/PlaylistItem";
 
-export function FriendsPlaylistsBlock() {
+export async function FriendsPlaylistsBlock() {
   return (
     <div>
       <div className="flex flex-col main:flex-row justify-between main:h-[150px] max-main:bg-[url('/images/friendsBannerBackground.png')] max-main:rounded-[7px] max-main:p-20 main:min-h-[170px] gap-[10px] mb-[10px] main:mb-[15px]">
@@ -10,7 +10,7 @@ export function FriendsPlaylistsBlock() {
           <div className="w-full text-lg main:text-4xl text-mainBlack max-main:text-mainWhite font-semibold">
             Your friends' <br /> playlists
           </div>
-          <BaseButtonLight title={"See more"} href={"/user1313/friends"}/>
+          <BaseButtonDark title={"See more"} href={"/user1313/friends"}/>
         </div>
       </div>
       <div className="grid grid-cols-1 main:grid-cols-2 gap-10">

@@ -1,6 +1,6 @@
 import { Track } from "../shared/track/TrackItem";
 
-export function RecommendationsBlock({amount}: {amount: number}) {
+export async function RecommendationsBlock({amount}: {amount: number}) {
   return (
     <div>
       <div className="font-bold text-[32px] text-mainDark mb-[10px] main:mb-[15px]">

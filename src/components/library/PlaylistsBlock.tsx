@@ -1,5 +1,6 @@
 import HugeiconsArrowRight02 from "~icons/hugeicons/arrow-right-02?width=24px&height=24px";
 import { PlaylistItem } from "../shared/playlist/PlaylistItem";
+import { ArrowButton } from "../shared/buttons/ArrowButton";
 
 
 export function PlaylistsBlock() {
@@ -17,12 +18,7 @@ export function PlaylistsBlock() {
         <PlaylistItem />
       </div>
       <div className="w-full flex flex-row justify-end">
-        <div
-          className={`cursor-pointer group hover:bg-opacity-80 transition-all w-full  max-w-[100px] px-10 py-5 text-mainWhite rounded-[7px] flex flex-row justify-between bg-mainOrange`}
-        >
-          <div>More</div>
-          <HugeiconsArrowRight02 className="-translate-x-1 group-hover:translate-x-0 transition-all" />
-        </div>
+        <ArrowButton title={"More"} href={"/mytracks"} color={"mainOrange"} maxWidth="100px"/>
       </div>
     </div>
   );

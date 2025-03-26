@@ -1,7 +1,7 @@
 import { BaseButtonOutline } from "../shared/buttons/BaseButtonOutline";
 import { FriendsTrackBlock } from "../shared/FriendTracksItem";
 
-export function FriendsBlock() {
+export async function FriendsBlock() {
 
     return (
         <div>
