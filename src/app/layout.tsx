@@ -11,6 +11,8 @@ import { useStore } from "./store";
 import ActivationScreen from "@/components/activate/Activate";
 import AuthScreen from "@/components/auth/Auth";
 
+export const dynamic = 'force-dynamic'
+
 export default function RootLayout({
   children,
 }: Readonly<{
