@@ -16,6 +16,7 @@
     "nextjs-toploader": "^3.7.15",
     "react": "^18",
     "react-dom": "^18",
+    "react-drag-drop-files": "^3.0.0",
     "react-parallax": "^3.5.1",
     "react-scroll-parallax": "^3.4.5",
     "zustand": "^5.0.3"

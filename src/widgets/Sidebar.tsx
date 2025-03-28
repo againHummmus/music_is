@@ -54,7 +54,7 @@ export function Sidebar() {
       </Link>
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={""}
+        href={"/create"}
       >
         <HugeiconsUploadCircle01 />
         <div className="text-sm font-medium">Upload</div>

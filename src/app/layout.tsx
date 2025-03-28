@@ -39,10 +39,10 @@ export default function RootLayout({
           showSpinner={false}
           speed={500}
         />
-        <main className="w-full h-full container flex flex-row max-main:pb-[50px]">
+        <main className="w-full container flex flex-row max-main:pb-[50px]">
 
           {store.isLoading
-            ? <div className="w-full h-full flex items-center justify-center">
+            ? <div className="w-full h-screen flex items-center justify-center">
               <div
                 className="inline-block w-8 h-8 border-4 border-current border-t-transparent text-mainOrange rounded-full animate-spin"
                 role="status"
