@@ -42,7 +42,7 @@ const config: Config = {
             },
             colors: {
                 //main
-                mainWhite: '#F9F9F9',
+                mainWhite: '#f5f4f2',
                 mainDark: '#2F313A',
                 secondaryOrange: '#FF7A1B',
                 darkStormy: '#8D90A3',
@@ -104,94 +104,9 @@ const config: Config = {
                 '15px': '0.9375rem',
                 '20px': '1.25rem',
             },
-            backgroundImage: {
-                mainBgMobile:
-                    'url("/images/backgrounds/noise.png"),url("/images/backgrounds/orangeBgMobile.webp")',
-                mainBgDesktop:
-                    'url("/images/backgrounds/noise.png"),url("/images/backgrounds/orangeBgDesktop.png")',
-                noise: 'url("/images/backgrounds/noise.png")',
-                exclusiveBonusBg: 'url("/images/backgrounds/exclusiveBonusBg.png")',
-                imageBg: 'url("/images/backgrounds/imageBg.png")',
-            },
-            boxShadow: {
-                card: '0 0 10px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1)',
-                headerMenuCard: '0px 5px 6px 0px rgba(0, 0, 0, 0.25);',
-                ball: '12.4px 12.4px 12.4px rgba(0, 0, 0, 0.25)',
-                postsAndGuides: '',
-            },
             zIndex: {
                 '-1': '-1',
                 1: '1',
-            },
-            keyframes: {
-                rightPhone: {
-                    '0%, 100%': { transform: 'translateY(55%)' },
-                    '50%': { transform: 'translateY(35%)' },
-                },
-                leftPhone: {
-                    '0%, 100%': { transform: 'translateY(45%) translateX(-25%)' },
-                    '50%': { transform: 'translateY(65%) translateX(-25%)' },
-                },
-                smallBanner: {
-                    '0%, 100%': { transform: 'translateY(-32%) translateX(25%) rotate(-13deg)' },
-                    '50%': { transform: 'translateY(-32%) translateX(100%) rotate(0deg)' },
-                },
-                bigBanner: {
-                    '0%, 100%': { transform: 'translateY(53%) translateX(179%) rotate(17deg)' },
-                    '50%': { transform: 'translateY(55%) translateX(260%) rotate(0deg)' },
-                },
-                wiggleToRight: {
-                    '0%, 100%': { transform: 'rotate(0deg)' },
-                    '50%': { transform: 'rotate(-10deg)' },
-                },
-                wiggleToLeft: {
-                    '0%, 100%': { transform: 'rotate(0deg)' },
-                    '50%': { transform: 'rotate(10deg)' },
-                },
-                giftOnRedirect: {
-                    '0%, 100%': {
-                        transform: 'translateX(15%) rotate(0deg) scale(0.55)',
-                    },
-                    '50%': {
-                        transform: 'translateX(15%) rotate(-40deg) scale(0.8)',
-                    },
-                },
-                ball: {
-                    '0%, 100%': {
-                        transform: 'translateY(-25%) translateX(-50%) rotate(0deg) scale(0.3)',
-                    },
-                    '50%': {
-                        transform: 'translateY(-50%) translateX(-50%) rotate(70deg) scale(0.4)',
-                    },
-                },
-                rightS: {
-                    '0%, 100%': {
-                        transform: 'translateX(40%)',
-                    },
-                    '50%': {
-                        transform: 'translateX(50%)',
-                    },
-                },
-                leftS: {
-                    '0%, 100%': {
-                        transform: 'translateX(-40%)',
-                    },
-                    '50%': {
-                        transform: 'translateX(-50%)',
-                    },
-                },
-            },
-            animation: {
-                rightPhone: 'rightPhone 6s ease-in-out infinite',
-                leftPhone: 'leftPhone 6s ease-in-out infinite',
-                smallBanner: 'smallBanner 6s ease-in-out infinite',
-                bigBanner: 'bigBanner 6s ease-in-out infinite',
-                wiggleToRight: 'wiggleToRight 5s ease-in-out infinite',
-                wiggleToLeft: 'wiggleToLeft 5s ease-in-out infinite',
-                giftOnRedirect: 'giftOnRedirect 3.5s cubic-bezier(0.10, 0.4, 0.3, 0.7) infinite',
-                ball: 'ball 3.5s cubic-bezier(0.10, 0.4, 0.3, 0.7) infinite',
-                rightS: 'rightS 3.5s cubic-bezier(0.10, 0.4, 0.3, 0.7) infinite',
-                leftS: 'leftS 3.5s cubic-bezier(0.10, 0.4, 0.3, 0.7) infinite',
             },
         },
     },

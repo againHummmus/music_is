@@ -20,6 +20,9 @@ const nextConfig = {
         );
         return config;
     },
+    images: {
+        domains: ['yhqndbnnfvdaouwsmqan.supabase.co'],
+    },
 };
 
 export default nextConfig;

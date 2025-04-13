@@ -1,9 +1,28 @@
+'use client'
+
 import Link from "next/link";
 import IcRoundAlbum from '~icons/ic/round-album';
 import BiSoundwave from '~icons/bi/soundwave';
+import { useEffect } from "react";
+import userApi from "@/actions/userApi";
+import { useStore } from "../store";
+import { useRouter } from "next/navigation";
+
 
 export default function Create() {
+    const store = useStore((state) => state);
+    const router = useRouter();
 
+    useEffect(() => {
+        (async () => {
+            const user = await userApi.getUser(store.user.id);
+            if (user?.role !== 'artist') {
+                router.push("/");
+                store.setModal({isOpen: true, type: 'warning', message: 'You must be an artist to visit this page!'});
+            }
+        })()
+    }, [])
+    
     return (
         <div className="w-full h-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-[20px] justify-center">

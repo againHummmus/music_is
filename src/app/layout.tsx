@@ -10,6 +10,8 @@ import React, { useEffect } from "react";
 import { useStore } from "./store";
 import ActivationScreen from "@/components/activate/Activate";
 import AuthScreen from "@/components/auth/Auth";
+import Modal from "@/components/modal/SuccessModal";
+import Player from "@/components/player/Player";
 
 export const dynamic = 'force-dynamic'
 
@@ -18,20 +20,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const checkAuth = useStore((state) => state.checkAuth);
+  const update = useStore((state) => state.update);
   const store = useStore((state) => state);
-
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      checkAuth()
-    } else {
-      store.setIsLoading(false)
-    }
+      update()
   }, [])
 
   return (
     <html lang="ru">
-      <body className={`${golos.variable} min-w-[320px]`}>
+      <body className={`${golos.variable} min-w-[300px]`}>
         <Header />
         <NextTopLoader
           color="#FF8C3A"
@@ -39,7 +36,8 @@ export default function RootLayout({
           showSpinner={false}
           speed={500}
         />
-        <main className="w-full container flex flex-row max-main:pb-[50px]">
+        {store.modal.isOpen ? <Modal/> : null}
+        <main className={`w-full container flex flex-row max-main:pb-[50px] ${store.currentTrack ? 'pb-[100px]' : 'pb-0'} `}>
 
           {store.isLoading
             ? <div className="w-full h-screen flex items-center justify-center">
@@ -63,6 +61,7 @@ export default function RootLayout({
             </>
           }
         </main>
+        <Player/>
         <MobileNav />
       </body>
     </html>

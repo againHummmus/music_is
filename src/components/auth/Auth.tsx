@@ -130,7 +130,7 @@ export default function AuthScreen() {
               </button>{" "}
               if you're new
             </p>
-            <div className="flex flex-col items-center bg-mainOrange w-full max-w-[400px] mx-3 p-[30px] gap-10">
+            <div className="flex flex-col items-center rounded-[7px] bg-mainOrange w-full max-w-[400px] mx-3 p-[30px] gap-10">
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -166,7 +166,7 @@ export default function AuthScreen() {
               </button>{" "}
               to pick up where you left off
             </p>
-            <div className="flex flex-col items-center bg-mainOrange w-full max-w-[400px] mx-3 p-[30px] gap-10">
+            <div className="flex flex-col items-center bg-mainOrange rounded-[7px] w-full max-w-[400px] mx-3 p-[30px] gap-10">
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

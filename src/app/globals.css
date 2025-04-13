@@ -5,7 +5,7 @@
 @layer base {
     html {
         height: 100%;
-        background-color: #F9F9F9;
+        background-color: #f5f4f2;
         color: #2F313A;
         overflow-x: hidden;
     }
@@ -25,14 +25,17 @@
     .h1 {
         @apply text-left text-2xl font-bold uppercase main:text-h1;
     }
+
     h2,
     .h2 {
         @apply text-left text-lg font-bold uppercase main:text-h2;
     }
+
     h3,
     .h3 {
         @apply text-left text-sm font-bold main:text-lg;
     }
+
     p {
         @apply text-left text-sm main:text-lg;
     }
@@ -44,21 +47,23 @@
 
     /* Hide scrollbar for IE, Edge and Firefox */
     .no-scrollbar {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
     }
 
     /* Custom scrollbar styles */
 
-   .custom-scrollbar-x::-webkit-scrollbar {
+    .custom-scrollbar-x::-webkit-scrollbar {
         height: 5px;
     }
 
-   .custom-scrollbar-x::-webkit-scrollbar-track {
+    .custom-scrollbar-x::-webkit-scrollbar-track {
         background: transparent;
     }
 
-   .custom-scrollbar-x::-webkit-scrollbar-thumb {
+    .custom-scrollbar-x::-webkit-scrollbar-thumb {
         background: #FF8C3A;
         border-radius: 10px;
     }
@@ -69,17 +74,17 @@
         overflow: auto;
     }
 
-    .react-parallax-content {
-        height: 100%;
-    }
 
     @media (min-width: 800px) {
-      main {
-        padding-top: 65px;
-      }
+        main {
+            padding-top: 65px;
+        }
     }
 
     .eFBGoa {
         width: 100%;
+    }
+    #track-input {
+        width: 0px;
     }
 }

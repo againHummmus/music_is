@@ -1,29 +1,35 @@
 "use client";
 import AuthApi from "@/actions/authApi";
 import { useStore } from "@/app/store";
-import React, { useState } from "react";
-import { redirect } from 'next/navigation'
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ActivationScreen() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false);
   const [linkSent, setLinkSent] = useState(false)
+  const router = useRouter();
+  const store = useStore((state) => state);
+  
+  useEffect(() => {
+    store.setIsLoading(true)
+    if (!store.user) {
+      router.push("/sign-up");
+      return;
+    }
+    if (store.user.is_activated === true && window.location.pathname !== '/create') {
+      router.push("/");
+      return;
+    }
+    store.setIsLoading(false)
+  }, [store.user, router]);
 
-  const user = useStore((state) => state.user);
-  if (!user) {
-    redirect('/sign-up')
-  }
-
-  if (user.is_activated === true) {
-    redirect('/')
-  }
 
   const handleSendEmail = async () => {
     setLoading(true);
     setError("");
-
     try {
-      await AuthApi.sendActivationEmail(user?.email)
+      await AuthApi.sendActivationEmail(store.user?.email)
     } catch (err: any) {
       console.error("error", err.message);
       setError(err.message);
