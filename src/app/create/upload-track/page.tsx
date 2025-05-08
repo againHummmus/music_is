@@ -30,8 +30,8 @@ export default function UploadTrack() {
   
     useEffect(() => {
         (async () => {
-            const user = await userApi.getUser(store.user.id);
-            if (user?.role !== 'artist') {
+            const user = await userApi.getMe();
+            if (user?.app_role !== 'artist') {
                 router.push("/");
                 store.setModal({isOpen: true, type: 'warning', message: 'You must be an artist to visit this page!'});
             }
@@ -54,11 +54,11 @@ export default function UploadTrack() {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file");
+      console.error("Please select a file");
       return;
     }
     if (!trackName || !trackGenre || !selectedAlbum || !artistId) {
-      alert("Please fill in all required fields");
+      console.error("Please fill in all required fields");
       return;
     }
     try {
@@ -69,7 +69,8 @@ export default function UploadTrack() {
         name: trackName,
         lyrics: trackLyrics,
         file: file,
-      });
+        isAddedByUser: true
+      })
       store.setModal({
         isOpen: true,
         type: "success",

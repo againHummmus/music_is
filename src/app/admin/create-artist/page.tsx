@@ -18,8 +18,8 @@ export default function CreateArtistAdmin() {
 
     useEffect(() => {
         (async () => {
-            const user = await userApi.getUser(store.user.id);
-            if (user?.role !== 'admin') {
+            const user = await userApi.getMe();
+            if (user?.app_role !== 'admin') {
                 router.push("/");
                 store.setModal({ isOpen: true, type: 'warning', message: 'You must be an admin to visit this page!' });
             }
@@ -42,11 +42,11 @@ export default function CreateArtistAdmin() {
 
     const handleUpload = async () => {
         if (!artistName) {
-            alert("Please enter artist name");
+            console.error("Please enter artist name");
             return;
         }
         if (!file) {
-            alert("Please select an image file");
+            console.error("Please select an image file");
             return;
         }
         try {

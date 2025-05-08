@@ -28,8 +28,8 @@ export default function AdminUploadTrack() {
 
   useEffect(() => {
       (async () => {
-          const user = await userApi.getUser(store.user.id);
-          if (user?.role !== 'admin') {
+          const user = await userApi.getMe();
+          if (user?.app_role !== 'admin') {
               router.push("/");
               store.setModal({ isOpen: true, type: 'warning', message: 'You must be an admin to visit this page!' });
           }
@@ -48,11 +48,11 @@ export default function AdminUploadTrack() {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select an image file");
+      console.error("Please select an image file");
       return;
     }
     if (!trackName || !selectedGenre || !selectedArtist || !selectedAlbum) {
-      alert("Please fill in all required fields");
+      console.error("Please fill in all required fields");
       return;
     }
     try {
@@ -63,6 +63,7 @@ export default function AdminUploadTrack() {
         name: trackName,
         lyrics: trackLyrics,
         file: file,
+        isAddedByUser: false
       });
       store.setModal({
         isOpen: true,

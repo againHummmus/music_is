@@ -82,7 +82,7 @@ export default function AuthScreen() {
     try {
       await signInAction(email, password);
     } catch (err: any) {
-      console.error(err);
+      console.error(err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -101,7 +101,7 @@ export default function AuthScreen() {
     try {
       await signUpAction(email, password, username, avatar);
     } catch (err: any) {
-      console.error("error", err.message);
+      console.error("error " + err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -143,7 +143,7 @@ export default function AuthScreen() {
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
               />
               {error && <p className="text-red-500">{error}</p>}
-              <RoundButton title={loading ? "..." : "OK"} onClick={handleSignIn} disabled={loading} />
+              <RoundButton title={"OK"} loading={loading} onClick={handleSignIn} disabled={loading} />
             </div>
           </>
         ) : (
@@ -192,7 +192,7 @@ export default function AuthScreen() {
               </button>
               <input type="file" onChange={handleFileChange} ref={hiddenFileInput} className="hidden" />
               {error && <p className="text-red-500">{error}</p>}
-              <RoundButton title={loading ? "..." : "OK"} onClick={handleSignUp} disabled={loading} />
+              <RoundButton title={"OK"} loading={loading} onClick={handleSignUp} disabled={loading} />
             </div>
           </>
         )}

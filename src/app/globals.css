@@ -74,6 +74,9 @@
         overflow: auto;
     }
 
+    .search-input ::placeholder  {
+        color: #ff8c3aa6
+    }
 
     @media (min-width: 800px) {
         main {

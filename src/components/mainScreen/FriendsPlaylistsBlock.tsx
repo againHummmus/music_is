@@ -14,12 +14,12 @@ export async function FriendsPlaylistsBlock() {
         </div>
       </div>
       <div className="grid grid-cols-1 main:grid-cols-2 gap-10">
+        {/* <PlaylistItem />
         <PlaylistItem />
         <PlaylistItem />
         <PlaylistItem />
         <PlaylistItem />
-        <PlaylistItem />
-        <PlaylistItem />
+        <PlaylistItem /> */}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ export default class TrackLikeApi {
 
   static async createTrackLike({ userId, trackId }: { userId: string, trackId: string }) {
     const response = await api.post(
-      "/trackLike",
+      "/track-like",
       { userId, trackId },
       { withCredentials: true }
     );
@@ -19,12 +19,12 @@ export default class TrackLikeApi {
       offset,
     };
 
-    const response = await api.get("/trackLike", { params });
+    const response = await api.get("/track-like", { params });
     return response;
   }
 
   static async deleteTrackLike({ userId, trackId }: { userId: string, trackId: string }) {
-    const response = await api.delete(`/trackLike/${userId}/${trackId}`, { withCredentials: true });
+    const response = await api.delete(`/track-like/${userId}/${trackId}`, { withCredentials: true });
     return response;
   }
 }

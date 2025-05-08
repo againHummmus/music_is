@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export function MobileNav() {
   return (
-    <div className="max-w-[100%] fixed z-[1000] bottom-[0px] left-[0px] right-[0px] py-10 px-[15%] flex-row text-mainWhite bg-mainDark rounded-t-[9px] justify-between items-center max-main:flex hidden">
+    <div className="max-w-[100%] sticky z-[1000] bottom-[0px] left-[0px] right-[0px] py-10 px-[15%] flex-row text-mainWhite bg-mainDark justify-between items-center max-main:flex hidden">
       <Link href="/" className="flex flex-col items-center gap-5 text-mainOrange">
         <MingcuteHome5Fill />
       </Link>

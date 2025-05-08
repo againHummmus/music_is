@@ -13,8 +13,8 @@ export default function CreateGenreAdmin() {
 
     useEffect(() => {
         (async () => {
-            const user = await userApi.getUser(store.user.id);
-            if (user?.role !== 'admin') {
+            const user = await userApi.getMe();
+            if (user?.app_role !== 'admin') {
                 router.push("/");
                 store.setModal({ isOpen: true, type: 'warning', message: 'You must be an admin to visit this page!' });
             }
@@ -23,7 +23,7 @@ export default function CreateGenreAdmin() {
 
     const handleUpload = async () => {
         if (!genreName.trim()) {
-            alert("Please provide a genre name");
+            console.error("Please provide a genre name");
             return;
         }
         try {

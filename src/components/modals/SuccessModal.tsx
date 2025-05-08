@@ -19,15 +19,19 @@ export function Modal () {
 
   let bgStyle = '';
   let icon;
+  let approveMessage;
   if (modal.type === 'error') {
-    bgStyle = 'bg-red-500';
+    bgStyle = 'bg-badRed';
     icon = <MingcuteSadLine className="text-white" width={48} height={48} />;
+    approveMessage = 'OK:('
   } else if (modal.type === 'success') {
-    bgStyle = 'bg-[#a2e08f] ';
+    bgStyle = 'bg-goodGreen ';
     icon = <MingcuteCelebrateLine className="text-white" width={48} height={48} />;
+    approveMessage = 'Cool!'
   } else if (modal.type === 'warning') {
-    bgStyle = 'bg-yellow-500';
+    bgStyle = 'bg-middleYellow';
     icon = <BiExclamation className="text-white" width={48} height={48} />;
+    approveMessage = 'OK!'
   }
 
   return (
@@ -40,7 +44,7 @@ export function Modal () {
         </div>
         <div className="m-6 flex justify-center">
             <button onClick={handleOk} className={`px-2 py-1 rounded-[7px] border-2 border-mainBlack text-mainBlack hover:text-mainOrange text-xl hover:border-mainOrange transition-all`}>
-                Cool!
+                {approveMessage}
             </button>
         </div>
       </div>

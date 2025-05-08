@@ -7,6 +7,7 @@ export default class TrackApi {
     albumId,
     name,
     lyrics,
+    isAddedByUser,
     file,
   }: {
     genreId: string;
@@ -14,6 +15,7 @@ export default class TrackApi {
     albumId: string;
     name: string;
     lyrics?: string;
+    isAddedByUser: boolean;
     file: File;
   }) {
     const formData = new FormData();
@@ -21,9 +23,9 @@ export default class TrackApi {
     formData.append("artistId", artistId);
     formData.append("albumId", albumId);
     formData.append("name", name);
+    formData.append("isAddedByUser", isAddedByUser.toString());
     if (lyrics) formData.append("lyrics", lyrics);
     formData.append("file", file);
-
     const response = await api.post("/track", formData, {
       headers: {
         "Content-Type": "multipart/form-data",

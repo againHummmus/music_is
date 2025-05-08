@@ -1,8 +1,10 @@
 import api from "./axios";
 
 export default class UserApi {
-  static async getUser(id: string) {
-    const response = await api.get(`/user/${id}`, { withCredentials: true });
+  static async getMe() {
+    const response = await api.post("/user/me", {}, {
+      withCredentials: true,
+    });
     return response.data.data;
   }
 

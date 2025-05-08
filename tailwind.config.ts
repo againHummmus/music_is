@@ -50,7 +50,9 @@ const config: Config = {
                 placeholderOrange: '#FF7948/60',
                 mainBlack: '#282727',
                 mainOrange: '#FF8C3A',
-
+                badRed: '#f56e62',
+                middleYellow: '#f7c44d',
+                goodGreen: '#9ec470',
                 //funny
                 funnyYellow: '#FFC63B',
                 funnyBlue: '#3BB0FF',

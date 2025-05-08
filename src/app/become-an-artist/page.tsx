@@ -33,11 +33,11 @@ export default function CreateArtist() {
 
     const handleSubmit = async () => {
         if (!artistName) {
-            alert("Введите имя артиста");
+            console.error("Введите имя артиста");
             return;
         }
         if (!file) {
-            alert("Выберите файл изображения");
+            console.error("Выберите файл изображения");
             return;
         }
         try {
@@ -50,7 +50,7 @@ export default function CreateArtist() {
             router.push('/create')
         } catch (error: any) {
             console.error("Error creating artist:", error);
-            alert(error?.response?.data?.message);
+            console.error(error?.response?.data?.message);
         }
     };
 

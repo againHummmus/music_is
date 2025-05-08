@@ -16,8 +16,8 @@ export default function Admin() {
 
     useEffect(() => {
         (async () => {
-            const user = await userApi.getUser(store.user.id);
-            if (user?.role !== 'admin') {
+            const user = await userApi.getMe();
+            if (user?.app_role !== 'admin') {
                 router.push("/");
                 store.setModal({ isOpen: true, type: 'warning', message: 'You must be an admin to visit this page!' });
             }

@@ -60,6 +60,7 @@ interface Playlist {
   id: string;
   is_public: boolean | null;
   name: string | null;
+  Playlist_track: Playlist_track[];
 }
 
 interface Playlist_editor {
@@ -75,6 +76,7 @@ interface Playlist_track {
   id: string;
   playlistId: string | null;
   trackId: string | null;
+  Track: Track
 }
 
 interface Token {
@@ -111,7 +113,7 @@ interface User {
   reset_code: string | null;
   reset_code_expires: string | null;
   username: string;
-  role: 'user' | 'admin' | 'artist';
+  app_role: 'user' | 'admin' | 'artist';
   Artist: Artist;
   User_profile: User_profile
 }

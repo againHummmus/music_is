@@ -15,28 +15,28 @@ import { useEffect, useState } from "react";
 import userApi from "@/actions/userApi";
 
 export function Sidebar() {
-  const [role, setRole] = useState<'artist' | 'admin' | 'user'>('user')
+  const [app_role, setRole] = useState<'artist' | 'admin' | 'user'>('user')
   const [loading, setLoading] = useState(true)
   const store = useStore((state) => state);
 
   useEffect(() => {
     (async () => {
       setLoading(true)
-      const user = await userApi.getUser(store.user.id);
-      setRole(user?.role);
+      const user = await userApi.getMe();
+      setRole(user?.app_role);
       setLoading(false)
     })()
-  }, [store.user.role])
+  }, [store.user.app_role])
 
   
-  function RoleBasedLink({ loading, role }: {loading: boolean, role: 'artist' | 'admin' | 'user'}) {
+  function RoleBasedLink({ loading, app_role }: {loading: boolean, app_role: 'artist' | 'admin' | 'user'}) {
     if (loading) {
       return (
         <div className='animate-pulse m-10 w-[100px] h-[20px] bg-mainDark/10 rounded-full' />
       );
     }
   
-    if (role === 'admin') {
+    if (app_role === 'admin') {
       return (
         <Link
           className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
@@ -48,7 +48,7 @@ export function Sidebar() {
       );
     }
   
-    if (role === 'artist') {
+    if (app_role === 'artist') {
       return (
         <Link
           className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
@@ -115,7 +115,7 @@ export function Sidebar() {
         <HugeiconsSettings02 />
         <div className="text-sm font-medium">Settings</div>
       </Link>
-      <RoleBasedLink loading={loading} role={role}/>
+      <RoleBasedLink loading={loading} app_role={app_role}/>
     </div>
   );
 }

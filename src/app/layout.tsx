@@ -3,15 +3,15 @@
 import "./globals.css";
 import { golos } from "./fonts";
 import NextTopLoader from "nextjs-toploader";
-import { Header } from "@/widgets/header/Header";
 import { MobileNav } from "@/widgets/mobile-nav/MobileNav";
 import { Sidebar } from "@/widgets/Sidebar";
 import React, { useEffect } from "react";
 import { useStore } from "./store";
 import ActivationScreen from "@/components/activate/Activate";
 import AuthScreen from "@/components/auth/Auth";
-import Modal from "@/components/modal/SuccessModal";
+import Modal from "@/components/modals/SuccessModal";
 import Player from "@/components/player/Player";
+import Header from "@/widgets/header/Header";
 
 export const dynamic = 'force-dynamic'
 
@@ -27,8 +27,8 @@ export default function RootLayout({
   }, [])
 
   return (
-    <html lang="ru">
-      <body className={`${golos.variable} min-w-[300px]`}>
+    <html lang="ru" className='overflow-x-visible'>
+      <body className={`${golos.variable} min-w-[300px] w-full overflow-y-scroll`}>
         <Header />
         <NextTopLoader
           color="#FF8C3A"
@@ -37,7 +37,7 @@ export default function RootLayout({
           speed={500}
         />
         {store.modal.isOpen ? <Modal/> : null}
-        <main className={`w-full container flex flex-row max-main:pb-[50px] ${store.currentTrack ? 'pb-[100px]' : 'pb-0'} `}>
+        <main className={`w-full container flex flex-row`}>
 
           {store.isLoading
             ? <div className="w-full h-screen flex items-center justify-center">
@@ -62,7 +62,7 @@ export default function RootLayout({
           }
         </main>
         <Player/>
-        <MobileNav />
+        {store.isAuth && store.user?.is_activated ?  <MobileNav /> : null}
       </body>
     </html>
   );

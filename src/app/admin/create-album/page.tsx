@@ -23,8 +23,8 @@ export default function CreateAlbumAdmin() {
 
   useEffect(() => {
     (async () => {
-      const user = await userApi.getUser(store.user.id);
-      if (user?.role !== 'admin') {
+      const user = await userApi.getMe();
+      if (user?.app_role !== 'admin') {
         router.push("/");
         store.setModal({ isOpen: true, type: 'warning', message: 'You must be an admin to visit this page!' });
       }
@@ -47,16 +47,16 @@ export default function CreateAlbumAdmin() {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select an image file");
+      console.error("Please select an image file");
       return;
     }
     if (!albumName || !albumYear || !selectedArtist) {
-      alert("Please fill in all required fields");
+      console.error("Please fill in all required fields");
       return;
     }
     const yearNum = parseInt(albumYear);
     if (isNaN(yearNum)) {
-      alert("Please enter a valid year");
+      console.error("Please enter a valid year");
       return;
     }
     try {

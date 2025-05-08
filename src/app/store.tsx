@@ -1,4 +1,3 @@
-// store/authStore.ts
 import AuthApi from "@/actions/authApi";
 import axios from "axios";
 import { create } from "zustand";
@@ -19,10 +18,12 @@ interface AuthState {
   currentTrack: Track | null;
   isPlaying: boolean;
   currentTime: number;
+  chosenTrack: Track;
   setModal: (value: Modal) => void;
   setIsAuth: (value: boolean) => void;
   setIsLoading: (value: boolean) => void;
   setUser: (value: User) => void;
+  setChosenTrack: (track: Track | undefined) => void;
   playTrack: (track: Track) => void;
   togglePlay: () => void;
   setCurrentTime: (time: number) => void;
@@ -30,28 +31,34 @@ interface AuthState {
   signUp: (email: string, password: string, username: string, avatar: string) => Promise<void>;
   signOut: () => Promise<void>;
   update: () => Promise<void>;
+  currentPlaylist: Playlist;
+  setCurrentPlaylist: (tracks: Track[]) => void;
 }
 
 export const useStore = create<AuthState>()(
   devtools((set, get) => ({
-    // Базовое состояние
     isAuth: false,
     isLoading: true,
-    user: null,
+    user: undefined,
     modal: {
       isOpen: false,
       type: undefined,
       message: undefined,
       redirectUrl: undefined,
     },
-    currentTrack: null,
+    currentTrack: undefined,
+    currentPlaylist: [],
     isPlaying: false,
     currentTime: 0,
+    chosenTrack: undefined,
 
     setModal: (value: Modal) => set({ modal: value }),
     setIsAuth: (value: boolean) => set({ isAuth: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
     setUser: (value: User) => set({ user: value }),
+    setChosenTrack: (track: Track) =>  set({ chosenTrack: track }),
+    setCurrentPlaylist: (currentPlaylist: Playlist) =>
+      set({ currentPlaylist: currentPlaylist }),
 
     playTrack: (track: Track) =>
       set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
@@ -65,7 +72,7 @@ export const useStore = create<AuthState>()(
         const response = await AuthApi.signIn({ email, password });
         set({ isAuth: true, user: response.data.user });
       } catch (e: any) {
-        console.error(e.response?.data?.message);
+        console.error('error in action ' + e.message);
       }
     },
 
@@ -95,12 +102,10 @@ export const useStore = create<AuthState>()(
           {},
           { withCredentials: true }
         );
-        set({ isAuth: true, user: response.data });
+        set({ isAuth: true, user: response.data, isLoading: false });
       } catch (e: any) {
         console.error(e.response?.data?.message);
-        set({ isAuth: false, user: undefined });
-      } finally {
-        set({ isLoading: false });
+        set({ isAuth: false, user: undefined, isLoading: false });
       }
     },
   }))

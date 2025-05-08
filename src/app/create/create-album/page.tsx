@@ -22,8 +22,8 @@ export default function CreateAlbum() {
 
   useEffect(() => {
     (async () => {
-      const user = await userApi.getUser(store.user.id);
-      if (user?.role !== 'artist') {
+      const user = await userApi.getMe();
+      if (user?.app_role !== 'artist') {
         router.push("/");
         store.setModal({ isOpen: true, type: 'warning', message: 'You must be an artist to visit this page!' });
       }
@@ -48,11 +48,11 @@ export default function CreateAlbum() {
   const handleSubmit = async () => {
     try {
       if (!albumName) {
-        alert("Введите название альбома");
+        console.error("Введите название альбома");
         return;
       }
       if (!file) {
-        alert("Выберите изображение для альбома");
+        console.error("Выберите изображение для альбома");
         return;
       }
       const year = new Date().getFullYear();

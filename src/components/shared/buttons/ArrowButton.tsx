@@ -14,7 +14,7 @@ export function ArrowButton({
 }) {
   return (
     <Link
-      className={`cursor-pointer group hover:bg-opacity-80 transition-all w-full px-10 py-5 text-mainWhite rounded-[7px] flex flex-row justify-between bg-${color}`}
+      className={`cursor-pointer group hover:bg-opacity-80 transition-all w-full px-10 py-5 text-white rounded-[7px] flex flex-row justify-between bg-${color}`}
       style={{ maxWidth }}
       href={href}
     >
