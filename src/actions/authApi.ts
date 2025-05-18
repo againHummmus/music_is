@@ -5,18 +5,15 @@ export default class AuthApi {
     email,
     password,
     username,
-    avatar
   }: {
     email: string;
     password: string;
     username: string;
-    avatar: string;
   }) {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
     formData.append("username", username);
-    formData.append("avatar", avatar);
     const response = await api.post("/user/signup", formData);
     return response;
   }

@@ -28,7 +28,7 @@ interface AuthState {
   togglePlay: () => void;
   setCurrentTime: (time: number) => void;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, username: string, avatar: string) => Promise<void>;
+  signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
   update: () => Promise<void>;
   currentPlaylist: Playlist;
@@ -76,9 +76,9 @@ export const useStore = create<AuthState>()(
       }
     },
 
-    signUp: async (email: string, password: string, username: string, avatar: string) => {
+    signUp: async (email: string, password: string, username: string) => {
       try {
-        const response = await AuthApi.signUp({ email, password, username, avatar });
+        const response = await AuthApi.signUp({ email, password, username });
         set({ isAuth: true, user: response.data.user });
       } catch (e: any) {
         console.error(e.response?.data?.message);

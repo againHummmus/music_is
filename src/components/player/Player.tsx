@@ -105,7 +105,7 @@ export default function Player() {
   if (!currentTrack) return null;
 
   return (
-    <div className="sticky bottom-[44px] main:bottom-0 left-0 right-0 bg-gray-900 text-white p-2 main:p-4 flex flex-col items-center z-[1000]">
+    <div className="sticky bottom-[44px] main:bottom-0 left-0 right-0 bg-gray-900 text-white p-2 main:p-4 flex flex-col items-center z-[6000]">
       <div className="w-full flex justify-between">
         <div className='flex flex-row gap-[10px]'>
           <div className="w-12 h-12 mr-4">
@@ -152,7 +152,7 @@ export default function Player() {
           step={0.1}
           value={localTime}
           onChange={handleSliderChange}
-          className="w-full h-2 accent-mainOrange rounded outline-none"
+          className="w-full h-[5px] accent-mainOrange rounded outline-none"
         />
         <div className="text-xs text-gray-400 mt-1 flex justify-between">
           <span>{formatTime(localTime)}</span>

@@ -94,7 +94,6 @@ export default function UploadTrack() {
       </h1>
 
       <div className="w-full max-w-[550px] flex flex-col gap-6 mb-6">
-        {/* Зона загрузки файла */}
         <div className="p-6 bg-white rounded-lg flex flex-col items-center justify-center text-darkStormy/80">
           <h2 className="text-xl font-semibold mb-4 text-mainBlack w-full text-center">
             Add files

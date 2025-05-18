@@ -42,9 +42,7 @@ export function PlaylistsBlock() {
         <StreamlineSleep className='w-[40px] h-[40px]' />
         <p>Nothing here yet!</p>
       </div>}
-      <div className="w-full flex flex-row justify-end">
-        <ArrowButton title={"Go"} href={"/library/playlists"} color={"mainOrange"} maxWidth="100px" />
-      </div>
+      <ArrowButton title={"Go"} href={"/discover/playlists"} color={"mainOrange"} maxWidth="100px" />
     </div>
   );
 }

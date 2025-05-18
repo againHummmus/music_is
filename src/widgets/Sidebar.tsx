@@ -75,7 +75,7 @@ export function Sidebar() {
     <div className="sticky h-fit top-[40px] main:top-[65px] w-[20%] min-w-[200px] border-r border-lightStormy pt-[20px] hidden main:flex flex-col pl-10">
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={"/"}
+        href={"/home"}
       >
         <MingcuteHome5Fill />
         <div className="text-sm font-medium">Home</div>
@@ -94,7 +94,7 @@ export function Sidebar() {
         <HugeiconsMessage01 />
         <div className="text-sm font-medium">Messages</div>
       </Link>
-      <Link
+      {/* <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
         href={""}
       >
@@ -107,10 +107,10 @@ export function Sidebar() {
       >
         <HugeiconsUserGroup />
         <div className="text-sm font-medium">Groups</div>
-      </Link>
+      </Link> */}
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={""}
+        href={"/settings"}
       >
         <HugeiconsSettings02 />
         <div className="text-sm font-medium">Settings</div>

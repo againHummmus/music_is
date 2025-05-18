@@ -46,9 +46,7 @@ export function FavouriteBlock() {
             <p>Nothing here yet!</p>
           </div>
       }
-      <div className="w-full flex flex-row justify-end">
-        {playlist?.Playlist_track.length > 0 && <ArrowButton title={"Go"} href={"/library/playlists/" + playlist?.id} color={"mainOrange"} maxWidth="100px" />}
-      </div>
+        {playlist?.Playlist_track.length > 0 && <ArrowButton title={"Go"} href={"/discover/playlists/" + playlist?.id} color={"mainOrange"} maxWidth="100px" />}
     </div>
   );
 }

@@ -45,32 +45,20 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   );
 };
 
-export default function AuthScreen() {
+export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "signUp"}) {
   const router = useRouter();
 
-  const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
+  const [mode, setMode] = useState<"signIn" | "signUp">(initialMode || "signIn");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [avatar, setAvatar] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const signInAction = useStore((state) => state.signIn);
   const signUpAction = useStore((state) => state.signUp);
-
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
-
-  const handleFileClick = () => {
-    hiddenFileInput.current?.click();
-  };
-
-  const handleFileChange = (event: any) => {
-    const fileUploaded = event.target.files[0];
-    setAvatar(fileUploaded);
-  };
-
+  
   const handleSignIn = async () => {
     if (!email || !password) {
       setError("All fields are required");
@@ -86,12 +74,12 @@ export default function AuthScreen() {
       setError(err.message);
     } finally {
       setLoading(false);
-      router.push("/");
+      router.push("/home");
     }
   };
 
   const handleSignUp = async () => {
-    if (!email || !password || !username || !avatar) {
+    if (!email || !password || !username) {
       setError("All fields are required");
       return;
     }
@@ -99,7 +87,7 @@ export default function AuthScreen() {
     setError("");
 
     try {
-      await signUpAction(email, password, username, avatar);
+      await signUpAction(email, password, username);
     } catch (err: any) {
       console.error("error " + err.message);
       setError(err.message);
@@ -110,7 +98,7 @@ export default function AuthScreen() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col justify-center items-center">
       <div className="w-full flex flex-col justify-center items-center gap-3">
         {mode === "signIn" ? (
           <>
@@ -157,7 +145,6 @@ export default function AuthScreen() {
                   setEmail("");
                   setPassword("");
                   setUsername("");
-                  setAvatar(null);
                   setMode("signIn");
                 }}
                 className="inline-block underline"
@@ -184,13 +171,6 @@ export default function AuthScreen() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
               />
-              <button
-                onClick={handleFileClick}
-                className="bg-white text-mainOrange hover:text-mainBlack transition-all flex items-center justify-center p-10 rounded-[7px]"
-              >
-                {avatar ? "File uploaded!" : "Upload a file"}
-              </button>
-              <input type="file" onChange={handleFileChange} ref={hiddenFileInput} className="hidden" />
               {error && <p className="text-red-500">{error}</p>}
               <RoundButton title={"OK"} loading={loading} onClick={handleSignUp} disabled={loading} />
             </div>

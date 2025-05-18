@@ -115,7 +115,9 @@ interface User {
   username: string;
   app_role: 'user' | 'admin' | 'artist';
   Artist: Artist;
-  User_profile: User_profile
+  avatar_url: string | null;
+  preferences_vector: string | null;
+  userId: string;
 }
 
 interface User_group {
@@ -126,9 +128,3 @@ interface User_group {
   userId: string | null;
 }
 
-interface User_profile {
-  avatar_url: string | null;
-  id: string;
-  preferences_vector: string | null;
-  userId: string;
-}

@@ -13,15 +13,13 @@ export function RoundButton({
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`p-[8px] cursor-pointer bg-mainDark hover:bg-mainBlack text-white  hover:text-mainOrange rounded-full aspect-square w-fit transition-all`}
+      className={`w-[50px] flex items-center justify-center cursor-pointer bg-mainDark hover:bg-mainBlack text-white  hover:text-mainOrange rounded-full aspect-square transition-all`}
     >
-      <div className="text-xl">
         {loading ? (
-          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          <div className="animate-spin rounded-full h-[50%] w-[50%] border-[3px] border-white border-b-transparent"></div>
         ) : (
           title
         )}
-      </div>
     </button>
   );
 }
