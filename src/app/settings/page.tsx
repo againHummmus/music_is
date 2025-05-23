@@ -10,8 +10,8 @@ const fileTypes = ["JPG", "PNG", "GIF"];
 export default function SettingsPage() {
   const state = useStore();
   const user = state.user;
-  const [username, setUsername] = useState(user.username);
-  const [email] = useState(user.email);
+  const [username, setUsername] = useState(user?.username);
+  const [email] = useState(user?.email);
   const [file, setFile] = useState<File | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -54,7 +54,7 @@ export default function SettingsPage() {
       {/* Аватар */}
       <section className="p-6 bg-white rounded-lg flex flex-col items-center text-darkStormy/80">
         <h2 className="text-xl font-semibold mb-4 text-mainBlack w-full text-center">
-          {user.avatar_url ? "Change avatar" : "Add avatar"}
+          {user?.avatar_url ? "Change avatar" : "Add avatar"}
         </h2>
         <FileUploader
           handleChange={handleFileChange}

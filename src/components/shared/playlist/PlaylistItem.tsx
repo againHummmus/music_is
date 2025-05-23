@@ -55,7 +55,7 @@ export function PlaylistItem({ info }: { info: any }) {
           </div>
           {!info.is_default && (
             <div className="text-xs main:text-sm text-lightStormy">
-              by {info.Creator.username}
+              by {info.Creator?.username}
             </div>
           )}
         </div>

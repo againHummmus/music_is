@@ -5,9 +5,11 @@ import GenreApi from "@/actions/genreApi";
 import { useStore } from "@/app/store";
 import userApi from "@/actions/userApi";
 import { useRouter } from "next/navigation";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function CreateGenreAdmin() {
     const [genreName, setGenreName] = useState("");
+    const [loading, setLoading] = useState(false);
     const store = useStore((state) => state);
     const router = useRouter();
 
@@ -27,6 +29,7 @@ export default function CreateGenreAdmin() {
             return;
         }
         try {
+            setLoading(true)
             await GenreApi.createGenre({ name: genreName });
             store.setModal({
                 isOpen: true,
@@ -34,6 +37,7 @@ export default function CreateGenreAdmin() {
                 message: "Genre created!",
                 redirectUrl: "/admin",
             });
+            setLoading(false)
         } catch (error: any) {
             console.error("Error creating genre:", error);
             store.setModal({
@@ -42,6 +46,7 @@ export default function CreateGenreAdmin() {
                 message: "Error in creating Genre",
                 redirectUrl: "/admin",
             });
+            setLoading(false)
         }
     };
 
@@ -66,16 +71,7 @@ export default function CreateGenreAdmin() {
                 </div>
             </div>
 
-            <button
-                onClick={handleUpload}
-                disabled={!genreName.trim()}
-                className={`p-4 rounded-full aspect-square ${genreName.trim()
-                        ? "bg-mainBlack hover:bg-mainOrange"
-                        : "bg-gray-400 cursor-not-allowed"
-                    } text-white transition-all`}
-            >
-                OK
-            </button>
+            <RoundButton title={"OK"} loading={loading} onClick={handleUpload} disabled={!genreName.trim()} />
         </div>
     );
 }

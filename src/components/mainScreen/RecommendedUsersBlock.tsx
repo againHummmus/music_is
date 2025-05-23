@@ -1,21 +1,23 @@
 'use client';
-import UserApi from "@/actions/userApi";
 import { useState, useEffect } from "react";
 import { User } from "../shared/user/UserItem";
 import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
+import { useStore } from "@/app/store";
+import RecommendationApi from "@/actions/recsApi";
 
 export function RecommendedUsersBlock() {
   const [loading, setLoading] = useState(true)
-  const [users, setUsers] = useState<any>();
+  const store = useStore();
+  const currentUser = store.user;
+  const [userRecs, setUserRecs] = useState<any>();
 
   useEffect(() => {
     async function fetchUsers() {
-      await UserApi.searchUsers()
-        .then(setUsers);
+      await RecommendationApi.getUserRecommendations({userId: currentUser.id})
+        .then(setUserRecs);
     }
     fetchUsers().then(() => setLoading(false));
   }, []);
-
   return (
     <div className="w-full flex flex-col min-w-0 p-15 rounded-[12px] border-2 border-mainOrange bg-gradient-to-b from-white to-white/0">
       <div className="font-bold text-[32px] text-mainDark mb-[10px] main:mb-[15px]">
@@ -32,12 +34,12 @@ export function RecommendedUsersBlock() {
                   className="w-[25%] min-h-[250px] bg-gray-300 animate-pulse rounded"
                 />
               ))
-            : users?.length > 0 ? users?.map((user: User) => 
-              <User user={user} key={user.id} />
+            : userRecs?.length > 0 ? userRecs?.map((rec: any) => 
+              <User user={rec.RecommendedUser} key={rec.RecommendedUser.id} />
             )
               : <div className='flex flex-col h-[230px] w-full rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
                 <StreamlineSleep className='w-[40px] h-[40px]' />
-                <p>Nothing here yet!</p>
+                <p>Looks like you're already friends with everyone!</p>
               </div>}
         </div>
       </div>

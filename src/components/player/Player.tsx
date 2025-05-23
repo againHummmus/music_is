@@ -104,47 +104,44 @@ export default function Player() {
 
   if (!currentTrack) return null;
 
+
+
   return (
-    <div className="sticky bottom-[44px] main:bottom-0 left-0 right-0 bg-gray-900 text-white p-2 main:p-4 flex flex-col items-center z-[6000]">
-      <div className="w-full flex justify-between">
+    <div className="sticky bottom-[50px] main:bottom-0 left-0 right-0 bg-gray-900 text-white p-2 main:p-4 bg-cover bg-center flex flex-col items-center z-[10000] after:absolute after:content-'' after:w-full after:h-full after:top-0 after:left-0 after:bg-gradient-to-r from-mainBlack to-mainBlack/50"
+      style={{
+        backgroundImage: `url(${currentTrack.Album?.image_hash
+            ? createImgUrl(currentTrack.Album.image_hash)
+            : '/default_album.jpg'
+          })`,
+      }}>
+      <div className="relative z-[7000] w-full flex justify-between">
         <div className='flex flex-row gap-[10px]'>
-          <div className="w-12 h-12 mr-4">
-            <Image
-              src={
-                currentTrack.Album?.image_hash
-                  ? createImgUrl(currentTrack.Album.image_hash)
-                  : '/default_album.jpg'
-              }
-              width={100}
-              height={100}
-              alt={currentTrack.name || 'album image'}
-              className="w-full h-full object-cover rounded-[7px]"
-            />
-          </div>
           <div>
-            <div className="font-medium">{currentTrack.name}</div>
+            <div className='flex flex-row gap-10 items-center'>
+              <div className="font-medium">{currentTrack.name}</div>
+              <button onClick={() => setIsRepeat(!isRepeat)} aria-label="Repeat">
+                {isRepeat ? <HugeiconsRepeat className='w-[17px]' /> : <SolarArrowRightBold className='w-[20px]' />}
+              </button>
+            </div>
             <div className="text-sm text-gray-400">{currentTrack.Artist?.name}</div>
           </div>
-          <button className="ml-4 h-fit" onClick={() => setIsRepeat(!isRepeat)} aria-label="Repeat">
-          {isRepeat ? <HugeiconsRepeat className='w-[25px]'/> : <SolarArrowRightBold className='w-[30px]'/>}
-        </button>
         </div>
 
         <div className='flex flex-row gap-[10px]'>
           <button className="p-2" onClick={playPrevTrack} aria-label="Previous">
-            <HugeiconsPrevious className='w-[30px] h-[30px] text-mainOrange'/>
+            <HugeiconsPrevious className='w-[20px] h-[20px] text-mainOrange' />
           </button>
           <button className="mx-2 p-2" onClick={togglePlay} aria-label="Play/Pause">
-            {isPlaying ? <MagePauseFill className="text-mainOrange w-[30px] main:w-[35px]" /> : <MagePlayFill className="text-mainOrange w-[30px] main:w-[35px]" />}
+            {isPlaying ? <MagePauseFill className="text-mainOrange w-[20px] main:w-[25px]" /> : <MagePlayFill className="text-mainOrange w-[20px] main:w-[25px]" />}
           </button>
           <button className="p-2" onClick={playNextTrack} aria-label="Next">
-            <HugeiconsNext className='w-[30px] h-[30px] text-mainOrange'/>
+            <HugeiconsNext className='w-[20px] h-[20px] text-mainOrange' />
           </button>
         </div>
 
       </div>
 
-      <div className="w-full mt-2">
+      <div className="relative z-[7000] w-full mt-2">
         <input
           type="range"
           min={0}

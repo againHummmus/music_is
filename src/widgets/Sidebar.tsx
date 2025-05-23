@@ -9,10 +9,54 @@ import HugeiconsFolderLibrary from "~icons/hugeicons/folder-library?width=24px&h
 import HugeiconsUploadCircle01 from "~icons/hugeicons/upload-circle-01?width=24px&height=24px";
 import MingcuteMicrophoneLine from '~icons/mingcute/microphone-line?width=24px&height=24px';
 import HugeiconsPencilEdit02 from '~icons/hugeicons/pencil-edit-02?width=24px&height=24px';
+import HugeiconsSearch01 from '~icons/hugeicons/search-01?width=24px&height=24px';
+
 import Link from "next/link";
 import { useStore } from "@/app/store";
 import { useEffect, useState } from "react";
 import userApi from "@/actions/userApi";
+
+function RoleBasedLink({ loading, app_role }: { loading: boolean, app_role: 'artist' | 'admin' | 'user' }) {
+  if (loading) {
+    return (
+      <div className='animate-pulse m-10 w-[100px] h-[20px] bg-mainDark/10 rounded-full' />
+    );
+  }
+
+  if (app_role === 'admin') {
+    return (
+      <Link
+        className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
+        href={"/admin"}
+      >
+        <HugeiconsPencilEdit02 />
+        <div className="text-sm font-medium">Admin Panel</div>
+      </Link>
+    );
+  }
+
+  if (app_role === 'artist') {
+    return (
+      <Link
+        className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
+        href={"/create"}
+      >
+        <HugeiconsUploadCircle01 />
+        <div className="text-sm font-medium">Upload</div>
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
+      href={"/become-an-artist"}
+    >
+      <MingcuteMicrophoneLine />
+      <div className="text-sm font-medium">Become an artist</div>
+    </Link>
+  );
+}
 
 export function Sidebar() {
   const [app_role, setRole] = useState<'artist' | 'admin' | 'user'>('user')
@@ -28,48 +72,6 @@ export function Sidebar() {
     })()
   }, [store.user.app_role])
 
-  
-  function RoleBasedLink({ loading, app_role }: {loading: boolean, app_role: 'artist' | 'admin' | 'user'}) {
-    if (loading) {
-      return (
-        <div className='animate-pulse m-10 w-[100px] h-[20px] bg-mainDark/10 rounded-full' />
-      );
-    }
-  
-    if (app_role === 'admin') {
-      return (
-        <Link
-          className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-          href={"/admin"}
-        >
-          <HugeiconsPencilEdit02 />
-          <div className="text-sm font-medium">Admin Panel</div>
-        </Link>
-      );
-    }
-  
-    if (app_role === 'artist') {
-      return (
-        <Link
-          className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-          href={"/create"}
-        >
-          <HugeiconsUploadCircle01 />
-          <div className="text-sm font-medium">Upload</div>
-        </Link>
-      );
-    }
-  
-    return (
-      <Link
-        className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={"/become-an-artist"}
-      >
-        <MingcuteMicrophoneLine />
-        <div className="text-sm font-medium">Become an artist</div>
-      </Link>
-    );
-  }
 
   return (
     <div className="sticky h-fit top-[40px] main:top-[65px] w-[20%] min-w-[200px] border-r border-lightStormy pt-[20px] hidden main:flex flex-col pl-10">
@@ -101,13 +103,22 @@ export function Sidebar() {
         <HugeiconsNotification01 />
         <div className="text-sm font-medium">Notifications</div>
       </Link>
+       */}
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={""}
+        href={"/friends"}
       >
         <HugeiconsUserGroup />
-        <div className="text-sm font-medium">Groups</div>
-      </Link> */}
+        <div className="text-sm font-medium">Friends</div>
+      </Link>
+      <Link
+        className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
+        href={"/search"}
+        >
+          <HugeiconsSearch01/>
+          <div className="text-sm font-medium">Search</div>
+      </Link>
+
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
         href={"/settings"}
@@ -115,7 +126,7 @@ export function Sidebar() {
         <HugeiconsSettings02 />
         <div className="text-sm font-medium">Settings</div>
       </Link>
-      <RoleBasedLink loading={loading} app_role={app_role}/>
+      <RoleBasedLink loading={loading} app_role={app_role} />
     </div>
   );
 }

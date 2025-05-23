@@ -8,13 +8,14 @@ import { useStore } from "@/app/store";
 import AlbumApi from "@/actions/albumApi";
 import userApi from "@/actions/userApi";
 import { useRouter } from "next/navigation";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function CreateAlbum() {
   const fileTypes = ["PNG", "JPG", "JPEG", "WEBP"];
   const [file, setFile] = useState<any>(null);
   const [preview, setPreview] = useState<any>(null);
   const [albumName, setAlbumName] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const store = useStore((state) => state);
   const user = store.user;
   const artistId = user?.Artist?.id;
@@ -47,6 +48,7 @@ export default function CreateAlbum() {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       if (!albumName) {
         console.error("Введите название альбома");
         return;
@@ -63,10 +65,11 @@ export default function CreateAlbum() {
         image_hash: file,
       });
       store.setModal({isOpen: true, type: 'success', message: 'Album created!', redirectUrl: '/create'})
-
+      setLoading(false)
     } catch (error: any) {
       console.error("Error creating album:", error);
       store.setModal({isOpen: true, type: 'error', message: 'Error in creating Album', redirectUrl: '/create'})
+      setLoading(false)
     }
   };
 
@@ -114,9 +117,7 @@ export default function CreateAlbum() {
         </div>
       </div>
 
-      <button onClick={handleSubmit} className="p-4 rounded-full aspect-square bg-mainBlack text-white hover:bg-mainOrange transition-all">
-        OK
-      </button>
+      <RoundButton title={"OK"} loading={loading} onClick={handleSubmit} />
     </div>
   );
 }

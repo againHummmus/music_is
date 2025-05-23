@@ -7,12 +7,14 @@ import { FileUploader } from "react-drag-drop-files";
 import AkarIconsArrowBack from '~icons/akar-icons/arrow-back';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01';
 import { useRouter } from "next/navigation";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function CreateArtist() {
     const store = useStore((state) => state);
     const user = store.user;
     const [artistName, setArtistName] = useState("");
     const [file, setFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false)
     const fileTypes = ["PNG", "JPG", "JPEG", "WEBP"];
     const [preview, setPreview] = useState<any>(null);
     const router = useRouter();
@@ -41,14 +43,17 @@ export default function CreateArtist() {
             return;
         }
         try {
+            setLoading(true)
             const response = await ArtistApi.createArtist({
                 name: artistName,
                 userId: user?.id,
                 image: file,
             });
             store.update()
+            setLoading(false)
             router.push('/create')
         } catch (error: any) {
+            setLoading(false)
             console.error("Error creating artist:", error);
             console.error(error?.response?.data?.message);
         }
@@ -101,9 +106,7 @@ export default function CreateArtist() {
                 </div>
             </div>
 
-            <button onClick={handleSubmit} className="p-4 rounded-full aspect-square bg-mainBlack text-white hover:bg-mainOrange transition-all">
-                OK
-            </button>
+            <RoundButton title={"OK"} loading={loading} onClick={handleSubmit} />
         </div>
     );
 }

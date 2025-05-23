@@ -49,11 +49,11 @@ export default function Header() {
                         width={20}
                         height={20}
                     />
-                    <Link href={`/discover/user/${store.user.id}`}>
+                    <Link href={`/discover/user/${store.user?.id}`}>
                         <Image
                             src={store.user?.avatar_url && createImgUrl(store.user?.avatar_url) || placeholderAvatar}
-                            width={40}
-                            height={40}
+                            width={200}
+                            height={200}
                             alt="avatar"
                             className="rounded-full object-cover outline outline-1 outline-offset-[3px] outline-mainOrange/0 hover:outline-mainOrange transition-all my-auto aspect-square h-[30px] w-[30px] main:h-[40px] main:w-[40px] cursor-pointer"
                         />

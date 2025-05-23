@@ -11,6 +11,7 @@ import genreApi from "@/actions/genreApi";
 import SuggestionInput from "@/components/shared/utils/ui/SuggestionsInput";
 import userApi from "@/actions/userApi";
 import { useRouter } from "next/navigation";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function AdminUploadTrack() {
   const fileTypes = ["MP3"];
@@ -22,6 +23,7 @@ export default function AdminUploadTrack() {
   const [selectedGenre, setSelectedGenre] = useState<any>(null);
   const [selectedArtist, setSelectedArtist] = useState<any>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const store = useStore((state) => state);
   const router = useRouter();
@@ -56,6 +58,7 @@ export default function AdminUploadTrack() {
       return;
     }
     try {
+      setLoading(true);
       await TrackApi.createTrack({
         genreId: selectedGenre.id,
         artistId: selectedArtist.id,
@@ -71,6 +74,7 @@ export default function AdminUploadTrack() {
         message: "Track uploaded successfully!",
         redirectUrl: "/admin",
       });
+      setLoading(false)
     } catch (error: any) {
       console.error("Error creating track:", error);
       store.setModal({
@@ -79,6 +83,7 @@ export default function AdminUploadTrack() {
         message: "Error uploading track",
         redirectUrl: "/admin",
       });
+      setLoading(false)
     }
   };
 
@@ -146,16 +151,7 @@ export default function AdminUploadTrack() {
         </div>
       </div>
 
-      <button
-        onClick={handleUpload}
-        disabled={!(file && selectedArtist && selectedGenre && selectedAlbum && trackName)}
-        className={`p-4 rounded-full aspect-square ${file && selectedArtist && selectedGenre && selectedAlbum && trackName
-            ? "bg-mainBlack hover:bg-mainOrange"
-            : "bg-gray-400 cursor-not-allowed"
-          } text-white transition-all`}
-      >
-        OK
-      </button>
+      <RoundButton title={"OK"} loading={loading} onClick={handleUpload} disabled={!(file && selectedArtist && selectedGenre && selectedAlbum && trackName)} />
     </div>
   );
 }

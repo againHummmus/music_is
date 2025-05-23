@@ -54,18 +54,8 @@ export default function RootLayout({
         />
         {modal.isOpen && <Modal />}
         <main className="w-full flex flex-row">
-          {isLoading ? (
-            <div className="w-full h-screen flex items-center justify-center">
-              <div
-                className="inline-block w-8 h-8 border-4 border-current border-t-transparent text-mainOrange rounded-full animate-spin"
-                role="status"
-                aria-label="loading"
-              >
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          ) : (
-            isAuth && user?.is_activated && pathname != '/' ?
+          {
+            !isLoading && isAuth && user?.is_activated && pathname != '/' && pathname != '/auth' && pathname != '/activate' ?
               <div className='container flex flex-row '>
                 <Sidebar />
                 <div className="min-w-0 w-full p-[15px] main:p-[30px]">
@@ -73,10 +63,19 @@ export default function RootLayout({
                 </div>
               </div>
               :
-              <div className="min-w-0 w-full">
+              !isLoading && (pathname === '/' || pathname === '/auth' || pathname === '/activate') ? <div className="min-w-0 w-full">
                 {children}
               </div>
-          )}
+                : <div className="w-full h-screen flex items-center justify-center">
+                  <div
+                    className="inline-block w-8 h-8 border-4 border-current border-t-transparent text-mainOrange rounded-full animate-spin"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+          }
         </main>
         <Player />
         {isAuth && user?.is_activated && <MobileNav />}

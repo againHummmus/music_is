@@ -6,14 +6,14 @@ import { useState, useEffect } from "react";
 import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
 import PlaylistApi from "@/actions/playlistApi";
 
-export function RecommendationsBlock() {
+export function Charts() {
   const [loading, setLoading] = useState(true)
   const [playlist, setPlaylist] = useState<any>();
   const { user } = useStore();
 
       useEffect(() => {
           async function fetchPlaylist() {
-              const pl = await PlaylistApi.searchPlaylists({ name: 'Your friends like this', isDefault: true, creatorId: user?.id})
+              const pl = await PlaylistApi.searchPlaylists({ name: 'Recommendations', isDefault: true, creatorId: user?.id})
                   .then(res => res[0]);
               setPlaylist(pl)
           }
@@ -23,7 +23,7 @@ export function RecommendationsBlock() {
   return (
     <div>
       <div className="font-bold text-[24px] text-mainBlack mb-[10px] main:mb-[15px]">
-        Your friends like:
+        CHARTS:
       </div>
       {loading ? <div className="grid grid-cols-1 main:grid-cols-2 w-full gap-10 mb-[10px] main:mb-[15px]">
         {Array.from({ length: 6 }).map((_, index) => (

@@ -28,7 +28,6 @@ export default class UserApi {
 
 
   static async updateUser({file, newUsername, userId}: {file?: File, newUsername?: string, userId: string}) {
-    console.log(file)
     const form = new FormData();
     form.append("userId", userId);
     file && form.append("avatar", file);

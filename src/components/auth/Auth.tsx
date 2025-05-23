@@ -47,7 +47,6 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
 export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "signUp"}) {
   const router = useRouter();
-
   const [mode, setMode] = useState<"signIn" | "signUp">(initialMode || "signIn");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,7 +57,7 @@ export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "sig
 
   const signInAction = useStore((state) => state.signIn);
   const signUpAction = useStore((state) => state.signUp);
-  
+
   const handleSignIn = async () => {
     if (!email || !password) {
       setError("All fields are required");

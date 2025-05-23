@@ -10,6 +10,7 @@ import { useStore } from "@/app/store";
 import SuggestionInput from "@/components/shared/utils/ui/SuggestionsInput";
 import userApi from "@/actions/userApi";
 import { useRouter } from "next/navigation";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function UploadTrack() {
   const fileTypes = ["MP3"];
@@ -17,7 +18,8 @@ export default function UploadTrack() {
   const [file, setFile] = useState<any>(null);
   const [trackName, setTrackName] = useState("");
   const [trackLyrics, setTrackLyrics] = useState("");
-  
+  const [loading, setLoading] = useState(false);
+
   const [trackGenre, setTrackGenre] = useState<any>();
   const [selectedAlbum, setSelectedAlbum] = useState<any>();
 
@@ -53,6 +55,7 @@ export default function UploadTrack() {
   }, [file]);
 
   const handleUpload = async () => {
+    setLoading(true)
     if (!file) {
       console.error("Please select a file");
       return;
@@ -77,6 +80,7 @@ export default function UploadTrack() {
         message: "Track uploaded!",
         redirectUrl: "/create",
       });
+      setLoading(false)
     } catch (error) {
       store.setModal({
         isOpen: true,
@@ -84,6 +88,7 @@ export default function UploadTrack() {
         message: "Error in uploading track :(",
         redirectUrl: "/create",
       });
+      setLoading(false)
     }
   };
 
@@ -160,15 +165,7 @@ export default function UploadTrack() {
         </div>
       </div>
 
-      <button
-        onClick={handleUpload}
-        disabled={!rightsConfirmed}
-        className={`p-4 rounded-full aspect-square ${
-          rightsConfirmed ? "bg-mainBlack hover:bg-mainOrange" : "bg-gray-400 cursor-not-allowed"
-        } text-white transition-all`}
-      >
-        OK
-      </button>
+      <RoundButton title={"OK"} loading={loading} onClick={handleUpload} disabled={!rightsConfirmed} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import ArtistApi from "@/actions/artistApi";
 import { useStore } from "@/app/store";
 import SuggestionInput from "@/components/shared/utils/ui/SuggestionsInput";
 import userApi from "@/actions/userApi";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function CreateAlbumAdmin() {
   const fileTypes = ["PNG", "JPG", "JPEG", "WEBP"];
@@ -17,6 +18,7 @@ export default function CreateAlbumAdmin() {
   const [preview, setPreview] = useState<string | null>(null);
   const [albumName, setAlbumName] = useState("");
   const [albumYear, setAlbumYear] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selectedArtist, setSelectedArtist] = useState<any>(null);
   const store = useStore((state) => state);
   const router = useRouter();
@@ -60,6 +62,7 @@ export default function CreateAlbumAdmin() {
       return;
     }
     try {
+      setLoading(true);
       await AlbumApi.createAlbum({
         name: albumName,
         year: yearNum,
@@ -72,6 +75,7 @@ export default function CreateAlbumAdmin() {
         message: "Album created!",
         redirectUrl: "/admin",
       });
+      setLoading(false)
     } catch (error: any) {
       console.error("Error creating album:", error);
       store.setModal({
@@ -80,6 +84,7 @@ export default function CreateAlbumAdmin() {
         message: "Error in creating Album",
         redirectUrl: "/admin",
       });
+      setLoading(false)
     }
   };
 
@@ -147,17 +152,7 @@ export default function CreateAlbumAdmin() {
           />
         </div>
       </div>
-
-      <button
-        onClick={handleUpload}
-        disabled={!(file && albumName && albumYear && selectedArtist)}
-        className={`p-4 rounded-full aspect-square ${file && albumName && albumYear && selectedArtist
-          ? "bg-mainBlack hover:bg-mainOrange"
-          : "bg-gray-400 cursor-not-allowed"
-          } text-white transition-all`}
-      >
-        OK
-      </button>
+      <RoundButton title={"OK"} loading={loading} onClick={handleUpload} disabled={!(file && albumName && albumYear && selectedArtist)} />
     </div>
   );
 }

@@ -7,12 +7,14 @@ import ArtistApi from "@/actions/artistApi";
 import { useStore } from "@/app/store";
 import { useRouter } from "next/navigation";
 import userApi from "@/actions/userApi";
+import { RoundButton } from "@/components/shared/buttons/RoundButton";
 
 export default function CreateArtistAdmin() {
     const fileTypes = ["PNG", "JPG", "JPEG", "WEBP"];
     const [file, setFile] = useState<any>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [artistName, setArtistName] = useState("");
+    const [loading, setLoading] = useState(false);
     const store = useStore((state) => state);
     const router = useRouter();
 
@@ -50,6 +52,7 @@ export default function CreateArtistAdmin() {
             return;
         }
         try {
+            setLoading(true)
             await ArtistApi.createArtist({
                 name: artistName,
                 image: file,
@@ -60,6 +63,7 @@ export default function CreateArtistAdmin() {
                 message: "Artist created!",
                 redirectUrl: "/admin",
             });
+            setLoading(false)
         } catch (error: any) {
             console.error("Error creating artist:", error);
             store.setModal({
@@ -68,6 +72,7 @@ export default function CreateArtistAdmin() {
                 message: "Error in creating Artist",
                 redirectUrl: "/admin",
             });
+            setLoading(false)
         }
     };
 
@@ -121,15 +126,7 @@ export default function CreateArtistAdmin() {
                     />
                 </div>
             </div>
-
-            <button
-                onClick={handleUpload}
-                disabled={!(file && artistName)}
-                className={`p-4 rounded-full aspect-square ${file && artistName ? "bg-mainBlack hover:bg-mainOrange" : "bg-gray-400 cursor-not-allowed"
-                    } text-white transition-all`}
-            >
-                OK
-            </button>
+            <RoundButton title={"OK"} loading={loading} onClick={handleUpload} disabled={!(file && artistName)} />
         </div>
     );
 }
