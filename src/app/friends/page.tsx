@@ -58,7 +58,7 @@ export default function FriendsPage() {
     <>
       <h1 className="text-3xl font-bold mb-6">Your Friends</h1>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-10">
-        {friends.map((sub, i) => {
+        {friends.length > 0 ? friends.map((sub, i) => {
           if (i === friends.length - 1) {
             return (
               <div ref={lastFriendRef} key={sub.id}>
@@ -67,7 +67,7 @@ export default function FriendsPage() {
             )
           }
           return <User key={sub.id} user={sub} />
-        })}
+        }) : !loading && <p>You have no friends:( Search for some!</p>}
 
         {loading && (
           <div className="flex justify-center col-span-full py-4 text-mainOrange">

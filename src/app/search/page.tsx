@@ -34,11 +34,11 @@ export default function SearchPage() {
     setLoading(true)
 
     const offset = (page - 1) * PAGE_SIZE
-    const params = { 
-      name: query, 
+    const params = {
+      name: query,
       username: query,
-      limit: PAGE_SIZE, 
-      offset 
+      limit: PAGE_SIZE,
+      offset
     }
 
     const loader = {
@@ -66,13 +66,12 @@ export default function SearchPage() {
       <h1 className="text-[30px] font-bold mb-[22px]">Search</h1>
 
       <div className="flex space-x-4">
-        {(['tracks','playlists','users'] as Tab[]).map(t => (
+        {(['tracks', 'playlists', 'users'] as Tab[]).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded ${
-              tab === t ? 'bg-mainOrange text-white' : 'bg-gray-200'
-            }`}
+            className={`px-4 py-2 rounded ${tab === t ? 'bg-mainOrange text-white' : 'bg-gray-200'
+              }`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
@@ -99,15 +98,27 @@ export default function SearchPage() {
         </div>
       )}
 
-      <div className="space-y-10">
+      <div
+        className={
+          tab === 'users'
+            ? 'grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-10'
+            : 'space-y-10'
+        }
+      >
         {results.map((item, i) => {
           switch (tab) {
             case 'tracks':
-              return <Track key={item.id} info={item} className="" />
+              return <Track key={item.id} info={item} className="" />;
             case 'playlists':
-              return <div className='flex justify-center'><PlaylistItem key={item.id} info={item} /></div>
+              return (
+                <div className="flex justify-center">
+                  <PlaylistItem key={item.id} info={item} />
+                </div>
+              );
             case 'users':
-              return <User key={item.id} user={item} />
+              return <User key={item.id} user={item} />;
+            default:
+              return null;
           }
         })}
       </div>

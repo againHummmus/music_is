@@ -73,7 +73,7 @@ export function User({ user }: { user: User }) {
       style={{
         backgroundImage: user.avatar_url
           ? `url(${createImgUrl(user.avatar_url)})`
-          : 'url("/images/placeholderAvatar.jpg")',
+          : 'url("/images/placeholderAvatar.png")',
       }}
     >
       <Link

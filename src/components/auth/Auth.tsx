@@ -78,7 +78,7 @@ export default function AuthScreen({ initialMode }: { initialMode?: "signIn" | "
       console.error(res.data.error.message);
       setError(res.data.error.message);
     } else {
-      router.push("/home");
+      router.push("/library");
     }
     setLoading(false);
   };

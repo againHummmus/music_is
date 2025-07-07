@@ -70,9 +70,9 @@ export default function Home() {
                 className="h-[70px] bg-gray-300 animate-pulse rounded"
               ></div>
             ))}
-          </div> : allPosts.length > 0 && allPosts.map((p) =>
+          </div> : allPosts.length > 0 ? allPosts.map((p) =>
             <PostItem user={p.User} isCurrentUser={false} post={p} key={p.id} />
-          )}
+          ) : <p>Looks like your friends are silent</p>}
         </div>
       </div>
     </>
