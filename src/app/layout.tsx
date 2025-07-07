@@ -30,8 +30,6 @@ export default function RootLayout({
   }, [update]);
 
   useEffect(() => {
-    if (isLoading) return;
-
     if (isAuth && user && !user.is_activated) {
       router.replace("/activate");
       return;

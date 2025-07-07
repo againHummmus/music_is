@@ -13,11 +13,13 @@ export default function ActivationScreen() {
   useEffect(() => {
     store.setIsLoading(true)
     if (!store.user) {
+      store.setIsLoading(false)
       router.push("/sign-up");
       return;
     }
     if (store.user.is_activated === true && window.location.pathname === '/activate') {
-      router.push("/");
+      store.setIsLoading(false)
+      router.push("/library");
       return;
     }
     store.setIsLoading(false)

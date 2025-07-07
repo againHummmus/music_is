@@ -18,6 +18,9 @@ export function RecommendedUsersBlock() {
     }
     fetchUsers().then(() => setLoading(false));
   }, []);
+
+  if (userRecs?.length <= 0) return null;
+  
   return (
     <div className="w-full flex flex-col min-w-0 p-15 rounded-[12px] border-2 border-mainOrange bg-gradient-to-b from-white to-white/0">
       <div className="font-bold text-[32px] text-mainDark mb-[10px] main:mb-[15px]">

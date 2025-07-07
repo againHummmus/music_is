@@ -88,7 +88,7 @@ export default function AuthScreen({ initialMode }: { initialMode?: "signIn" | "
       setError("All fields are required");
       return;
     }
-    if (!agreeToTerms) { // Check if terms are agreed
+    if (!agreeToTerms) {
       setError("You must agree to the processing of personal data.");
       return;
     }

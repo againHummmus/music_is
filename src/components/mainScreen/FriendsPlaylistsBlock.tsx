@@ -31,6 +31,8 @@ export function FriendsPlaylistsBlock() {
     return () => { canceled = true }
   }, [currentUser])
 
+  if (friends.length <= 0) return null
+
   return (
     <div className='group/pblock space-y-10 '>
       <div className="flex flex-col main:flex-row justify-between main:h-[150px] max-main:bg-[url('/images/friendsBannerBackground.png')] max-main:rounded-[7px] max-main:p-20 main:min-h-[170px] gap-[10px] mb-[10px] main:mb-[15px]">
@@ -41,14 +43,14 @@ export function FriendsPlaylistsBlock() {
           </div>
         </div>
       </div>
-      {friends.map((friend: any, index: number) => { // Добавляем index
+      {friends.map((friend: any, index: number) => {
         const borderColors = [
           'border-funnyGreen',
           'border-funnyRed',
           'border-funnyBlue',
           'border-funnyYellow',
         ];
-        const borderColorClass = borderColors[index % borderColors.length]; // Вычисляем класс границы
+        const borderColorClass = borderColors[index % borderColors.length];
         return (
           <div className='flex flex-col gap-10' key={friend.username}>
             <p className={`font-bold text-base border-[2px] ${borderColorClass} rounded-xl px-10 `}>
