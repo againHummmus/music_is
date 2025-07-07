@@ -6,6 +6,7 @@ import HugeiconsFolderLibrary from "~icons/hugeicons/folder-library?width=24px&h
 import MingcuteMicrophoneLine from '~icons/mingcute/microphone-line?width=24px&height=24px';
 import HugeiconsPencilEdit02 from '~icons/hugeicons/pencil-edit-02?width=24px&height=24px';
 import HugeiconsUploadCircle01 from "~icons/hugeicons/upload-circle-01?width=24px&height=24px";
+import HugeiconsUserGroup from "~icons/hugeicons/user-group?width=24px&height=24px";
 
 import Link from "next/link";
 import userApi from "@/actions/userApi";
@@ -66,7 +67,7 @@ export function MobileNav() {
   }, [store.user.app_role])
   return (
     <div className="max-w-[100%] sticky z-[6000] bottom-[0px] left-[0px] right-[0px] py-10 px-[15%] flex-row text-mainWhite bg-mainDark justify-between items-center max-main:flex hidden">
-      <Link href="/" className="flex flex-col items-center gap-5 text-mainOrange">
+      <Link href="/home" className="flex flex-col items-center gap-5 text-mainOrange">
         <MingcuteHome5Fill className='w-[28px] h-[28px]'/>
       </Link>
 
@@ -76,13 +77,14 @@ export function MobileNav() {
 
       <RoleBasedLink loading={loading} app_role={app_role} />
 
-      <button className="flex flex-col items-center gap-5 hover:text-mainOrange transition-colors">
+      <Link href="/dialogues" className="flex flex-col items-center gap-5 hover:text-mainOrange transition-colors">
         <HugeiconsMessage01 />
-      </button>
+      </Link>
 
-      <button className="flex flex-col items-center gap-5 hover:text-mainOrange transition-colors">
-        <HugeiconsSettings02 className='w-[25px] h-[25px]'/>
-      </button>
+      <Link href="/friends" className="flex flex-col items-center gap-5 hover:text-mainOrange transition-colors">
+        <HugeiconsUserGroup />
+      </Link>
+
     </div>
   );
 }

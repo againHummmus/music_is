@@ -17,7 +17,7 @@ interface Artist {
   id: string;
   image: any;
   name: string;
-  userId: string | null;
+  User: User[];
 }
 
 interface Dialogue {
@@ -118,6 +118,7 @@ interface User {
   avatar_url: string | null;
   preferences_vector: string | null;
   userId: string;
+  artistId: any
 }
 
 interface User_group {

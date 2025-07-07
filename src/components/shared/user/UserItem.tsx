@@ -80,7 +80,7 @@ export function User({ user }: { user: User }) {
         href={`/discover/user/${user.id}`}
         className="absolute inset-0 z-[1000] cursor-pointer"
       />
-      <div className="relative z-[7000] w-full flex flex-col gap-5 ">
+      <div className="relative z-[6000] w-full flex flex-col gap-5 ">
         <div className="text-base font-semibold text-white">
           {user.username}
         </div>

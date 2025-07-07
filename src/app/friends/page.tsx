@@ -32,8 +32,8 @@ export default function FriendsPage() {
     let canceled = false
     setLoading(true)
 
-    SubscriptionApi.searchSubscriptions({
-      follower: currentUser.id,
+    SubscriptionApi.searchMutualFriends({
+      userId: currentUser.id,
       limit: LIMIT,
       offset,
     })
@@ -59,15 +59,14 @@ export default function FriendsPage() {
       <h1 className="text-3xl font-bold mb-6">Your Friends</h1>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-10">
         {friends.map((sub, i) => {
-          const friendUser = sub.Followee 
           if (i === friends.length - 1) {
             return (
               <div ref={lastFriendRef} key={sub.id}>
-                <User user={friendUser} />
+                <User user={sub} />
               </div>
             )
           }
-          return <User key={sub.id} user={friendUser} />
+          return <User key={sub.id} user={sub} />
         })}
 
         {loading && (

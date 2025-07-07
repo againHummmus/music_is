@@ -13,6 +13,8 @@ import HugeiconsLocationUser01 from "~icons/hugeicons/location-user-01?width=24p
 import { PostItem } from "@/components/shared/post/PostItem";
 import { Track } from "@/components/shared/track/TrackItem";
 import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
+import HugeiconsBubbleChat from '~icons/hugeicons/bubble-chat?width=48px&height=48px';
+import DialogueApi from "@/actions/dialogueApi";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +34,15 @@ export default function UserPage({ params }: { params: any }) {
 
     const currentUser = store.user;
     const isCurrentUser = currentUser?.id === user?.id;
+
+    const onWrite = async () => {
+        try {
+            const { dialogueId } = await DialogueApi.createDialogue({userId: currentUser.id, otherUserId: user.id});
+            window.location.href = `/dialogues/${dialogueId}`;
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
         setIsLoading(true);
@@ -157,7 +168,7 @@ export default function UserPage({ params }: { params: any }) {
                         className="w-[80px] h-[80px] main:w-[150px] main:h-[150px] object-cover rounded-[7px]"
                     />
                     <div className="flex flex-col text-white gap-10">
-                        <h2 className="text-[24px] laptop:text-[40px] font-bold leading-none">
+                        <h2 className="text-base laptop:text-[40px] font-bold leading-none">
                             {user?.username}
                         </h2>
                         <div className='py-5 px-10 bg-lightStormy text-mainBlack w-fit font-medium text-sm rounded-full'>{user?.app_role}</div>
@@ -169,17 +180,20 @@ export default function UserPage({ params }: { params: any }) {
                         <div className="font-semibold ml-2">{subscriberCount}</div>
                     </div>
                     {!isCurrentUser && (
-                        <button
-                            onClick={toggleSubscription}
-                            disabled={subLoading}
-                            className={`
-                px-4 py-2 rounded-[7px] font-semibold transition-all
-                ${isSubscribed ? "bg-lightStormy text-mainBlack" : "bg-mainOrange text-mainBlack"}
-                ${subLoading ? "opacity-50 cursor-wait" : "hover:brightness-110"}
-              `}
-                        >
-                            {isSubscribed ? "Unsubscribe" : "Subscribe"}
-                        </button>
+                        <div className='flex flex-row items-center gap-10' >
+                            <HugeiconsBubbleChat onClick={() => onWrite()} className="cursor-pointer w-[40px] h-[30px] text-white hover:text-mainOrange"/>
+                            <button
+                                onClick={toggleSubscription}
+                                disabled={subLoading}
+                                className={`
+                    px-4 py-2 rounded-[7px] font-semibold transition-all
+                    ${isSubscribed ? "bg-lightStormy text-mainBlack" : "bg-mainOrange text-mainBlack"}
+                    ${subLoading ? "opacity-50 cursor-wait" : "hover:brightness-110"}
+                  `}
+                            >
+                                {isSubscribed ? "Unsubscribe" : "Subscribe"}
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

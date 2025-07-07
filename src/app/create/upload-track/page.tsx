@@ -93,7 +93,7 @@ export default function UploadTrack() {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-start p-4 bg-mainWhite">
+    <div className="h-full flex flex-col items-center justify-start p-4">
       <h1 className="text-2xl sm:text-3xl font-bold text-orange-500 mb-8 text-center">
         Uploading your track
       </h1>

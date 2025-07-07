@@ -27,10 +27,10 @@ interface AuthState {
   playTrack: (track: Track) => void;
   togglePlay: () => void;
   setCurrentTime: (time: number) => void;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, username: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  update: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<any>;
+  signUp: (email: string, password: string, username: string) => Promise<any>;
+  signOut: () => Promise<any>;
+  update: () => Promise<any>;
   currentPlaylist: Playlist;
   setCurrentPlaylist: (tracks: Track[]) => void;
 }
@@ -56,33 +56,28 @@ export const useStore = create<AuthState>()(
     setIsAuth: (value: boolean) => set({ isAuth: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
     setUser: (value: User) => set({ user: value }),
-    setChosenTrack: (track: Track) =>  set({ chosenTrack: track }),
+    setChosenTrack: (track: Track) => set({ chosenTrack: track }),
     setCurrentPlaylist: (currentPlaylist: Playlist) =>
       set({ currentPlaylist: currentPlaylist }),
 
     playTrack: (track: Track) =>
       set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
-    togglePlay: () => set((state) => ({ 
-      isPlaying: !state.isPlaying 
+    
+    togglePlay: () => set((state) => ({
+      isPlaying: !state.isPlaying
     })),
     setCurrentTime: (time: number) => set({ currentTime: time }),
 
     signIn: async (email: string, password: string) => {
-      try {
         const response = await AuthApi.signIn({ email, password });
         set({ isAuth: true, user: response.data.user });
-      } catch (e: any) {
-        console.error('error in action ' + e.message);
-      }
+        return response
     },
 
     signUp: async (email: string, password: string, username: string) => {
-      try {
         const response = await AuthApi.signUp({ email, password, username });
         set({ isAuth: true, user: response.data.user });
-      } catch (e: any) {
-        console.error(e.response?.data?.message);
-      }
+        return response;
     },
 
     signOut: async () => {

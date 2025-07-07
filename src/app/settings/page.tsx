@@ -48,7 +48,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col gap-8 bg-mainWhite text-mainDark">
+    <div className="w-full min-h-screen flex flex-col gap-8 text-mainDark">
       <h1 className="text-3xl font-bold">Settings</h1>
 
       {/* Аватар */}

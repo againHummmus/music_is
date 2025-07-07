@@ -11,6 +11,7 @@ import Modal from "@/components/modals/SuccessModal";
 import Player from "@/components/player/Player";
 import Header from "@/widgets/header/Header";
 import { useRouter, usePathname } from "next/navigation";
+import Footer from "@/widgets/footer/Footer";
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,7 @@ export default function RootLayout({
     if (isLoading) return;
 
     if (isAuth && user && !user.is_activated) {
-      router.replace("/activation");
+      router.replace("/activate");
       return;
     }
 
@@ -49,7 +50,7 @@ export default function RootLayout({
           color="#FF8C3A"
           initialPosition={0.5}
           showSpinner={false}
-          zIndex={6000}
+          zIndex={10000}
           speed={500}
         />
         {modal.isOpen && <Modal />}
@@ -58,12 +59,12 @@ export default function RootLayout({
             !isLoading && isAuth && user?.is_activated && pathname != '/' && pathname != '/auth' && pathname != '/activate' ?
               <div className='container flex flex-row '>
                 <Sidebar />
-                <div className="min-w-0 w-full p-[15px] main:p-[30px]">
+                <div className="min-w-0 w-full pt-[15px] main:pt-[30px] px-[15px] main:px-[30px] pb-20 main:pb-30">
                   {children}
                 </div>
               </div>
               :
-              !isLoading && (pathname === '/' || pathname === '/auth' || pathname === '/activate') ? <div className="min-w-0 w-full">
+              !isLoading && (pathname === '/' || pathname === '/auth' || pathname === '/activate' || pathname === '/privacy') ? <div className="min-w-0 w-full">
                 {children}
               </div>
                 : <div className="w-full h-screen flex items-center justify-center">
@@ -77,8 +78,10 @@ export default function RootLayout({
                 </div>
           }
         </main>
+        <Footer/>
         <Player />
         {isAuth && user?.is_activated && <MobileNav />}
+        
       </body>
     </html>
   );

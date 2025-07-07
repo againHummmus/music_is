@@ -68,4 +68,15 @@ export default class TrackApi {
     const response = await api.get("/track", { params });
     return response;
   }
+
+  static async deleteTrack(trackId: string) {
+    if (!trackId) {
+      throw new Error("Track ID is required for deletion.");
+    }
+
+    const response = await api.delete(`/track/${trackId}`, {
+      withCredentials: true,
+    });
+    return response;
+  }
 }

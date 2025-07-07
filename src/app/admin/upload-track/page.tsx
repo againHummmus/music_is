@@ -88,9 +88,9 @@ export default function AdminUploadTrack() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-start p-4 bg-mainWhite text-darkStormy/80">
+    <div className="w-full h-full flex flex-col items-center justify-start p-4 text-darkStormy/80">
       <h1 className="text-2xl sm:text-3xl font-bold text-orange-500 mb-8 text-center">
-        Uploading your track (Admin Panel)
+        Uploading track
       </h1>
 
       <div className="w-full max-w-[550px] flex flex-col gap-6 mb-6">

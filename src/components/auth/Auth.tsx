@@ -1,8 +1,10 @@
-"use client";
+'use client'
+
 import HumbleiconsEye from "~icons/humbleicons/eye?width=24px&height=24px";
 import HumbleiconsEyeClose from "~icons/humbleicons/eye-close?width=24px&height=24px";
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { RoundButton } from "@/components/shared/buttons/RoundButton";
 import { useStore } from "@/app/store";
 
@@ -45,7 +47,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   );
 };
 
-export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "signUp"}) {
+export default function AuthScreen({ initialMode }: { initialMode?: "signIn" | "signUp" }) {
   const router = useRouter();
   const [mode, setMode] = useState<"signIn" | "signUp">(initialMode || "signIn");
   const [email, setEmail] = useState("");
@@ -54,6 +56,7 @@ export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "sig
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const signInAction = useStore((state) => state.signIn);
   const signUpAction = useStore((state) => state.signUp);
@@ -63,18 +66,21 @@ export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "sig
       setError("All fields are required");
       return;
     }
+    if (mode === "signUp" && !agreeToTerms) {
+      setError("You must agree to the processing of personal data.");
+      return;
+    }
     setLoading(true);
     setError("");
 
-    try {
-      await signInAction(email, password);
-    } catch (err: any) {
-      console.error(err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    const res = await signInAction(email, password);
+    if (res.data?.error) {
+      console.error(res.data.error.message);
+      setError(res.data.error.message);
+    } else {
       router.push("/home");
     }
+    setLoading(false);
   };
 
   const handleSignUp = async () => {
@@ -82,61 +88,73 @@ export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "sig
       setError("All fields are required");
       return;
     }
+    if (!agreeToTerms) { // Check if terms are agreed
+      setError("You must agree to the processing of personal data.");
+      return;
+    }
     setLoading(true);
     setError("");
 
-    try {
-      await signUpAction(email, password, username);
-    } catch (err: any) {
-      console.error("error " + err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      router.push("activate");
+    const res = await signUpAction(email, password, username);
+    if (res.data?.error) {
+      console.error(res.data.error.message);
+      setError('Something went wrong:(');
+    } else {
+      router.push("/activate");
     }
+    setLoading(false);
   };
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col justify-center items-center font-inter"> {/* Added font-inter for consistency */}
       <div className="w-full flex flex-col justify-center items-center gap-3">
         {mode === "signIn" ? (
           <>
-            <h3 className="text-5xl">Sign in</h3>
-            <p className="text-sm">
+            <h3 className="text-5xl font-bold text-gray-800">Sign in</h3>
+            <p className="text-sm text-gray-600">
               or{" "}
               <button
                 onClick={() => {
                   setError("");
                   setEmail("");
                   setPassword("");
+                  setAgreeToTerms(false); // Reset checkbox on mode change
                   setMode("signUp");
                 }}
-                className="inline-block underline"
+                className="inline-block underline text-mainOrange hover:text-orange-700 transition-colors duration-200"
               >
                 sign up
               </button>{" "}
               if you're new
             </p>
-            <div className="flex flex-col items-center rounded-[7px] bg-mainOrange w-full max-w-[400px] mx-3 p-[30px] gap-10">
+            <div className="flex flex-col items-center rounded-[7px] bg-mainOrange w-full max-w-[400px] mx-3 p-[30px] gap-6 shadow-lg"> {/* Adjusted gap and added shadow */}
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
-                className="w-full pr-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
               />
               <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
               />
-              {error && <p className="text-red-500">{error}</p>}
-              <RoundButton title={"OK"} loading={loading} onClick={handleSignIn} disabled={loading} />
+              <RoundButton
+                title={"OK"}
+                loading={loading}
+                onClick={handleSignIn}
+              />
             </div>
+            {error && (
+              <div className="rounded-sm border border-badRed flex items-center justify-center py-1 px-3 mt-4">
+                <p className="text-badRed font-medium">{error}</p>
+              </div>
+            )}
           </>
         ) : (
           <>
-            <h3 className="text-5xl">Sign up</h3>
-            <p className="text-sm">
+            <h3 className="text-5xl font-bold text-gray-800">Sign up</h3>
+            <p className="text-sm text-gray-600">
               or{" "}
               <button
                 onClick={() => {
@@ -144,35 +162,61 @@ export default function AuthScreen({initialMode}: {initialMode?: "signIn" | "sig
                   setEmail("");
                   setPassword("");
                   setUsername("");
+                  setAgreeToTerms(false); // Reset checkbox on mode change
                   setMode("signIn");
                 }}
-                className="inline-block underline"
+                className="inline-block underline text-mainOrange hover:text-orange-700 transition-colors duration-200"
               >
                 sign in
               </button>{" "}
               to pick up where you left off
             </p>
-            <div className="flex flex-col items-center bg-mainOrange rounded-[7px] w-full max-w-[400px] mx-3 p-[30px] gap-10">
+            <div className="flex flex-col items-center bg-mainOrange rounded-[7px] w-full max-w-[400px] mx-3 p-[30px] gap-6 shadow-lg"> {/* Adjusted gap and added shadow */}
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
-                className="w-full pr-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
               />
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter username"
-                className="w-full pr-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
               />
               <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainOrange"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
               />
-              {error && <p className="text-red-500">{error}</p>}
-              <RoundButton title={"OK"} loading={loading} onClick={handleSignUp} disabled={loading} />
+              {/* Privacy Consent Checkbox for Sign Up */}
+              <div className="w-full flex items-center mt-2">
+                <input
+                  type="checkbox"
+                  id="agreeSignUp"
+                  checked={agreeToTerms}
+                  onChange={(e) => setAgreeToTerms(e.target.checked)}
+                  className="form-checkbox h-4 w-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500 cursor-pointer"
+                />
+                <label htmlFor="agreeSignIn" className="ml-2 text-sm text-gray-700 select-none">
+                  I agree to the{" "}
+                  <Link href="/privacy" className="underline text-orange-800 hover:text-orange-900 transition-colors duration-200">
+                    processing of my personal data
+                  </Link>
+                </label>
+              </div>
+              <RoundButton
+                title={"OK"}
+                loading={loading}
+                onClick={handleSignUp}
+                disabled={loading || !agreeToTerms}
+              />
             </div>
+            {error && (
+              <div className="rounded-sm border border-badRed flex items-center justify-center py-1 px-3 mt-4">
+                <p className="text-badRed font-medium">{error}</p>
+              </div>
+            )}
           </>
         )}
       </div>

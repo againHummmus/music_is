@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import userApi from "@/actions/userApi";
 import { useStore } from "../store";
 import { useRouter } from "next/navigation";
+import { AddedByMeBlock } from "@/components/library/AddedByMeBlock";
 
 
 export default function Create() {
@@ -24,8 +25,8 @@ export default function Create() {
     }, [])
     
     return (
-        <div className="w-full h-full flex items-center justify-center">
-            <div className="flex flex-col items-center gap-[20px] justify-center">
+        <div className="w-full h-full flex flex-col justify-center items-center">
+            <div className="flex h-[30vh] w-fit flex-col items-center gap-[20px] justify-center">
                 <h2 className="w-full text-3xl font-semibold text-mainBlack text-center">
                     Pick an action:
                 </h2>
@@ -40,6 +41,7 @@ export default function Create() {
                     </Link>
                 </div>
             </div>
+            <AddedByMeBlock/>
         </div>
     );
 }

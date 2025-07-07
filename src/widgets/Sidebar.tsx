@@ -3,8 +3,6 @@
 import MingcuteHome5Fill from "~icons/mingcute/home-5-fill?width=24px&height=24px";
 import HugeiconsUserGroup from "~icons/hugeicons/user-group?width=24px&height=24px";
 import HugeiconsMessage01 from "~icons/hugeicons/message-01?width=24px&height=24px";
-import HugeiconsSettings02 from "~icons/hugeicons/settings-02?width=24px&height=24px";
-import HugeiconsNotification01 from "~icons/hugeicons/notification-01?width=24px&height=24px";
 import HugeiconsFolderLibrary from "~icons/hugeicons/folder-library?width=24px&height=24px";
 import HugeiconsUploadCircle01 from "~icons/hugeicons/upload-circle-01?width=24px&height=24px";
 import MingcuteMicrophoneLine from '~icons/mingcute/microphone-line?width=24px&height=24px';
@@ -91,7 +89,7 @@ export function Sidebar() {
       </Link>
       <Link
         className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={""}
+        href={"/dialogues"}
       >
         <HugeiconsMessage01 />
         <div className="text-sm font-medium">Messages</div>
@@ -117,14 +115,6 @@ export function Sidebar() {
         >
           <HugeiconsSearch01/>
           <div className="text-sm font-medium">Search</div>
-      </Link>
-
-      <Link
-        className="flex flex-row items-center gap-10 hover:text-mainOrange transition-all p-10"
-        href={"/settings"}
-      >
-        <HugeiconsSettings02 />
-        <div className="text-sm font-medium">Settings</div>
       </Link>
       <RoleBasedLink loading={loading} app_role={app_role} />
     </div>
