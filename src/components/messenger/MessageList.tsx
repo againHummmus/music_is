@@ -81,7 +81,7 @@ export default function MessageList({ dialogueId }: MessageListProps) {
                     </div>
                 );
             })}
-            <div ref={bottomRef} />
+            {/* <div ref={bottomRef} /> */}
         </div>
     );
 }
