@@ -10,6 +10,7 @@ import PostApi from "@/actions/postApi";
 import HugeiconsDelete02 from "~icons/hugeicons/delete-02?width=20px&height=20px";
 import WeuiLikeFilled from '~icons/weui/like-filled?width=20px&height=20px';
 import WeuiLikeOutlined from '~icons/weui/like-outlined?width=20px&height=20px'; 
+import Link from "next/link";
 
 
 export const PostItem = ({ user, isCurrentUser, post, handleDeletePost }: { user: any, isCurrentUser: boolean, post: any, handleDeletePost?: (id: any) => void }) => {
@@ -59,18 +60,20 @@ export const PostItem = ({ user, isCurrentUser, post, handleDeletePost }: { user
 
     return (
         <div key={post.id} className="flex flex-row gap-4 bg-white p-4 rounded-lg shadow-sm relative">
-            <Image
-                src={
-                    user.avatar_url
-                        ? createImgUrl(user.avatar_url)
-                        : "/images/placeholderAvatar.png"
-                }
-                alt="User avatar"
-                width={60}
-                height={60}
-                className="w-[60px] h-[60px] object-cover rounded-[7px] flex-shrink-0"
-            />
-
+            <Link href={"/discover/user/" + user.id} className="flex-shrink-0">
+                <Image
+                    src={
+                        user.avatar_url
+                            ? createImgUrl(user.avatar_url)
+                            : "/images/placeholderAvatar.png"
+                    }
+                    alt="User avatar"
+                    width={60}
+                    height={60}
+                    className="w-[60px] h-[60px] object-cover rounded-[7px] flex-shrink-0"
+                />
+    
+            </Link>
             <div className='flex flex-col gap-2 flex-grow'>
                 <div>
                     <div className="text-sm text-gray-500">
