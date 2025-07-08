@@ -35,7 +35,7 @@ export default function RootLayout({
       return;
     }
 
-    if (!isAuth) {
+    if (!isAuth && !isLoading) {
       router.replace("/");
     }
   }, [isLoading, isAuth, user, router]);

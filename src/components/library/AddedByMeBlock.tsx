@@ -35,7 +35,7 @@ export function AddedByMeBlock() {
 
   return (
     <div className='w-full '>
-      <div className="font-bold text-[24px] text-mainBlack mb-[10px] main:mb-[15px]">
+      <div className="max-main:w-full max-main:text-center font-bold text-[24px] text-mainBlack mb-[10px] main:mb-[15px]">
         Added by you:
       </div>
       {loadingTracks ? <div className="grid grid-cols-1 main:grid-cols-2 w-full gap-10 mb-[10px] main:mb-[15px]">
@@ -59,7 +59,7 @@ export function AddedByMeBlock() {
               </>
             ))}
           </div>
-          : <div className='flex flex-col h-[230px] rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
+          : <div className='flex flex-col h-[230px] rounded-[7px] border gap-20 border-mainOrange border-dashed items-center justify-center text-mainOrange'>
             <StreamlineSleep className='w-[40px] h-[40px]' />
             <p>Nothing here yet!</p>
           </div>
@@ -72,15 +72,11 @@ export function AddedByMeBlock() {
           ></div>
         ))}
       </div>
-        : albums?.length > 0 ?
+        : albums?.length > 0 &&
           <div className="grid grid-cols-1 main:grid-cols-2 w-full gap-10 mb-[10px] main:mb-[15px]">
             {albums?.map((item: any, index: any) => (
                 <AlbumCard key={index} album={item} />
             ))}
-          </div>
-          : <div className='flex flex-col h-[230px] rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
-            <StreamlineSleep className='w-[40px] h-[40px]' />
-            <p>Nothing here yet!</p>
           </div>
       }
       {playlist?.Playlist_track.length > 0 && <ArrowButton title={"Go"} href={"/discover/playlists/" + playlist?.id} color={"mainOrange"} maxWidth="100px" />}

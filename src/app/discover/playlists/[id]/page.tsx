@@ -9,6 +9,7 @@ import Image from "next/image";
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=48px&height=48px';
 import FriendsList from "@/components/shared/utils/ui/AddUserToPlaylist";
 import HugeiconsUserGroup from "~icons/hugeicons/user-group?width=24px&height=24px";
+import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
 
 export const dynamic = 'force-dynamic';
 
@@ -143,9 +144,10 @@ export default function Playlist({ params }: { params: any }) {
                     ))}
                 </div>
             ) : (
-                <div className="w-full text-center">
-                    Looks like this playlist is still empty!
-                </div>
+                <div className='flex flex-col h-[230px] gap-20 rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
+            <StreamlineSleep className='w-[40px] h-[40px]' />
+            <p>Looks like the playlist is still empty!</p>
+          </div>
             )}
         </div>
     );

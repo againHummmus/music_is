@@ -38,7 +38,7 @@ export function PlaylistsBlock() {
             <PlaylistItem key={index} info={item.Playlist} />
           ))}
         </div>
-      ) : <div className='flex flex-col h-[230px] rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
+      ) : <div className='flex flex-col h-[230px] rounded-[7px] gap-20 border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
         <StreamlineSleep className='w-[40px] h-[40px]' />
         <p>Nothing here yet!</p>
       </div>}

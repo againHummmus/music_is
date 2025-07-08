@@ -24,7 +24,7 @@ const Footer = () => {
                     <Link href="/privacy" className="max-main:w-full max-main:text-center hover:text-gray-400 transition-colors duration-200">
                         Privacy policy
                     </Link>
-                    <div className="text-center md:text-right text-xs text-gray-400 max-w-sm">
+                    <div className="max-main:w-full max-main:text-center text-center md:text-right text-xs text-gray-400 max-w-sm">
                         For all complaints, please contact: py0710@yandex.ru
                     </div>
                     <div className="text-center md:text-right text-xs text-gray-400 max-w-sm">

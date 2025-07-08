@@ -38,7 +38,7 @@ export function PlaylistItem({ info }: { info: any }) {
         })`,
       }}
     >
-      <Link href={`/discover/playlists/${info.id}`} className="absolute cursor-pointer inset-0 z-[1000]" aria-label="Go to playlist">
+      <Link href={`/discover/playlists/${info.id}`} className="absolute cursor-pointer inset-0 z-[4000]" aria-label="Go to playlist">
       </Link>
       <div className="relative z-[1100] flex items-center gap-4 text-mainWhite">
         <button

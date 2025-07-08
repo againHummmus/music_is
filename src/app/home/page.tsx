@@ -4,6 +4,7 @@ import { useStore } from "../store";
 import SubscriptionApi from "@/actions/userSubscriptionApi";
 import { useState, useEffect } from "react";
 import { PostItem } from "@/components/shared/post/PostItem";
+import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
 
 export const dynamic = 'force-dynamic'
 
@@ -72,7 +73,10 @@ export default function Home() {
             ))}
           </div> : allPosts.length > 0 ? allPosts.map((p) =>
             <PostItem user={p.User} isCurrentUser={false} post={p} key={p.id} />
-          ) : <p>Looks like your friends are silent</p>}
+          ) : <div className='flex flex-col h-[230px] rounded-[7px] gap-20 border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
+            <StreamlineSleep className='w-[40px] h-[40px]' />
+            <p>Looks like your friends are silent!</p>
+          </div>}
         </div>
       </div>
     </>

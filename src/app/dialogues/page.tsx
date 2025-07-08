@@ -51,9 +51,9 @@ export default function UserDialoguesList() {
                         className="h-[90px] bg-gray-300 animate-pulse rounded"
                     ></div>
                 )) :
-                dialogues.length === 0 ? <p>No active dialogues:(</p> :
+                dialogues.length > 0 ?
 
-                    dialogues.map((d) => {
+                    dialogues?.map((d) => {
                         const participants = d.Dialogue.User_dialogue;
                         const partner = participants.find((p: any) => p.userId !== user.id)?.User;
                         const message = lastMessages[d.dialogueId];
@@ -85,6 +85,7 @@ export default function UserDialoguesList() {
                             </Link>
                         );
                     })
+                    : <p>No active dialogues:(</p>
             }
         </div>
     );

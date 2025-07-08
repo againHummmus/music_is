@@ -5,6 +5,8 @@ import { useStore } from '@/app/store'
 import SubscriptionApi from '@/actions/userSubscriptionApi'
 import HugeiconsSpinner01 from '~icons/uil/spinner?width=32px&height=32px'
 import { User } from '@/components/shared/user/UserItem'
+import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
+import { RecommendedUsersBlock } from '@/components/mainScreen/RecommendedUsersBlock'
 
 export default function FriendsPage() {
   const LIMIT = 20
@@ -57,25 +59,20 @@ export default function FriendsPage() {
   return (
     <>
       <h1 className="text-3xl font-bold mb-6">Your Friends</h1>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-10">
-        {friends.length > 0 ? friends.map((sub, i) => {
-          if (i === friends.length - 1) {
-            return (
-              <div ref={lastFriendRef} key={sub.id}>
-                <User user={sub} />
-              </div>
-            )
-          }
-          return <User key={sub.id} user={sub} />
-        }) : !loading && <p>You have no friends:( Search for some!</p>}
+      {friends.length > 0 ?
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-10">
+          {friends.map((sub, i) =>
+            <User key={sub.id} user={sub} />
+          )}</div>
+        : !loading && <RecommendedUsersBlock showPlaceholder/>}
 
-        {loading && (
-          <div className="flex justify-center col-span-full py-4 text-mainOrange">
-            <HugeiconsSpinner01 className="animate-spin" />
-          </div>
-        )}
-      </div>
-{/* 
+      {loading && (
+        <div className="flex justify-center col-span-full py-4 text-mainOrange">
+          <HugeiconsSpinner01 className="animate-spin" />
+        </div>
+      )}
+
+      {/* 
       {!hasMore && !loading && (
         <div className="w-full text-center text-gray-500 py-6">
           You've reached the end!

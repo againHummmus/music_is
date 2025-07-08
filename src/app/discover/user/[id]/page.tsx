@@ -152,7 +152,7 @@ export default function UserPage({ params }: { params: any }) {
                 style={{
                     backgroundImage: user?.avatar_url
                         ? `url(${createImgUrl(user?.avatar_url)})`
-                        : 'url("/images/placeholderAvatar.jpg")',
+                        : 'url("/images/placeholderAvatar.png")',
                 }}
             >
                 <div className="flex my-auto items-center gap-20 z-10">
@@ -160,7 +160,7 @@ export default function UserPage({ params }: { params: any }) {
                         src={
                             user?.avatar_url
                                 ? createImgUrl(user?.avatar_url)
-                                : "/images/placeholderAvatar.jpg"
+                                : "/images/placeholderAvatar.png"
                         }
                         alt="User avatar"
                         width={150}
@@ -209,7 +209,7 @@ export default function UserPage({ params }: { params: any }) {
                                 <Track key={index} info={item?.Track} playlist={user?.User_playlist?.filter((up: any) => up.Playlist?.name === 'Added by me')[0]?.Playlist} />
                             ))}
                         </div>
-                        : <div className='flex flex-col h-[230px] rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
+                        : <div className='flex flex-col h-[230px] gap-20 rounded-[7px] border border-mainOrange border-dashed items-center justify-center text-mainOrange'>
                             <StreamlineSleep className='w-[40px] h-[40px]' />
                             <p>Nothing here yet!</p>
                         </div>

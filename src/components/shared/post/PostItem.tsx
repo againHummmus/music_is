@@ -63,7 +63,7 @@ export const PostItem = ({ user, isCurrentUser, post, handleDeletePost }: { user
                 src={
                     user.avatar_url
                         ? createImgUrl(user.avatar_url)
-                        : "/images/placeholderAvatar.jpg"
+                        : "/images/placeholderAvatar.png"
                 }
                 alt="User avatar"
                 width={60}

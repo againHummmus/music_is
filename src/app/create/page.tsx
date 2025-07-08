@@ -25,7 +25,7 @@ export default function Create() {
     }, [])
     
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="w-full h-full flex flex-col gap-20 main:gap-40 justify-center items-center">
             <div className="flex h-[30vh] w-fit flex-col items-center gap-[20px] justify-center">
                 <h2 className="w-full text-3xl font-semibold text-mainBlack text-center">
                     Pick an action:
