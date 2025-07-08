@@ -260,11 +260,9 @@ export default function UserPage({ params }: { params: any }) {
             )}
 
             <div className="space-y-6">
-                {posts.length > 0 ? posts.map((p) =>
+                {posts.length > 0 && posts.map((p) =>
                     <PostItem user={user} isCurrentUser={isCurrentUser} post={p} handleDeletePost={handleDeletePost} key={p.id} />
-                ) :
-                    <div className="text-center text-gray-500">The user has no posts yet...</div>
-                }
+                )}
             </div>
         </div>
     );
