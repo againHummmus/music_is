@@ -15,6 +15,7 @@ import { Track } from "@/components/shared/track/TrackItem";
 import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
 import HugeiconsBubbleChat from '~icons/hugeicons/bubble-chat?width=48px&height=48px';
 import DialogueApi from "@/actions/dialogueApi";
+import UserAlbumsBlock from "@/components/album/AlbumsBlock";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default function UserPage({ params }: { params: any }) {
 
     const onWrite = async () => {
         try {
-            const { dialogueId } = await DialogueApi.createDialogue({userId: currentUser.id, otherUserId: user.id});
+            const { dialogueId } = await DialogueApi.createDialogue({ userId: currentUser.id, otherUserId: user.id });
             window.location.href = `/dialogues/${dialogueId}`;
         } catch (err) {
             console.error(err);
@@ -181,7 +182,7 @@ export default function UserPage({ params }: { params: any }) {
                     </div>
                     {!isCurrentUser && (
                         <div className='flex flex-row items-center gap-10' >
-                            <HugeiconsBubbleChat onClick={() => onWrite()} className="cursor-pointer w-[40px] h-[30px] text-white hover:text-mainOrange"/>
+                            <HugeiconsBubbleChat onClick={() => onWrite()} className="cursor-pointer w-[40px] h-[30px] text-white hover:text-mainOrange" />
                             <button
                                 onClick={toggleSubscription}
                                 disabled={subLoading}
@@ -216,6 +217,8 @@ export default function UserPage({ params }: { params: any }) {
                     }
                     {user?.User_playlist?.filter((up: any) => up.Playlist?.name === 'Added by me')[0]?.Playlist?.Playlist_track.length > 0 && <ArrowButton title={"Go"} href={"/discover/playlists/" + user?.User_playlist?.filter((up: any) => up.Playlist?.name === 'Added by me')[0]?.Playlist?.id} color={"mainOrange"} maxWidth="100px" />}
                 </div>}
+            {user.app_role === 'artist' &&
+                <UserAlbumsBlock userId={user?.id} limit={4} />}
 
             {user?.User_playlist?.filter((up: any) => up.Playlist?.is_public).length > 0 && (
                 <div className='flex flex-col gap-10 mb-15'>

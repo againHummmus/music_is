@@ -73,7 +73,7 @@ export function AddedByMeBlock() {
         ))}
       </div>
         : albums?.length > 0 &&
-          <div className="grid grid-cols-1 main:grid-cols-2 w-full gap-10 mb-[10px] main:mb-[15px]">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] w-full gap-10 mb-[10px] main:mb-[15px]">
             {albums?.map((item: any, index: any) => (
                 <AlbumCard key={index} album={item} />
             ))}

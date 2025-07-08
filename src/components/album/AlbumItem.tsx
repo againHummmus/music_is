@@ -1,10 +1,11 @@
 import React from 'react';
 import { createImgUrl } from '../shared/utils/createUrlFromHash';
+import Link from 'next/link';
 
 export default function AlbumCard ({ album }: {album: any}) {
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+    <Link className="bg-white rounded-lg overflow-hidden transform transition-transform duration-300 hover:-translate-y-[3px] border border-mainOrange" href={`/album/${album.id}`}>
       <img 
         src={createImgUrl(album.image_hash)} 
         alt={album.name} 
@@ -17,7 +18,7 @@ export default function AlbumCard ({ album }: {album: any}) {
         )} */}
         <p className="text-sm text-gray-500">{album.year}</p>
       </div>
-    </div>
+    </Link>
   );
 };
 

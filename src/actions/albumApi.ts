@@ -22,17 +22,20 @@ export default class AlbumApi {
   }
 
   static async searchAlbums({
+    id,
     name,
     artistId,
     limit = 10,
     offset = 0,
   }: {
+    id?: any,
     name?: string;
     artistId?: string;
     limit?: number;
     offset?: number;
   }) {
     const params = {
+      id: id,
       name: name || "",
       artistId: artistId || "",
       limit,
