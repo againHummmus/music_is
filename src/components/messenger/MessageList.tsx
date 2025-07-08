@@ -14,7 +14,7 @@ export default function MessageList({ dialogueId }: MessageListProps) {
     const [messages, setMessages] = useState<any[]>([]);
     const { user } = useStore();
     const listRef = useRef<HTMLDivElement>(null);
-    const bottomRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null); // Этот реф теперь будет привязан к последнему сообщению
 
     useEffect(() => {
         if (!dialogueId || !user) return;
@@ -26,7 +26,7 @@ export default function MessageList({ dialogueId }: MessageListProps) {
     useEffect(() => {
         if (!dialogueId) return;
         const channel = supabase
-            .channel('…')
+            .channel('message_changes') // Изменил имя канала для уникальности
             .on('postgres_changes', {
                 event: 'INSERT',
                 schema: 'public',
@@ -49,11 +49,11 @@ export default function MessageList({ dialogueId }: MessageListProps) {
         return () => {
             channel.unsubscribe()
         };
-    }, [dialogueId]);
+    }, [dialogueId, user]); 
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    }, [messages]); 
 
     if (!user) return null;
 
@@ -62,10 +62,16 @@ export default function MessageList({ dialogueId }: MessageListProps) {
             ref={listRef}
             className="flex-1 overflow-y-auto p-4 space-y-2 min-h-full"
         >
-            {messages?.map((msg) => {
+            {messages?.map((msg, index) => {
                 const isOwn = msg.userId.toString() === user.id.toString();
+                const isLastMessage = index === messages.length - 1;
+
                 return (
-                    <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                    <div
+                        key={msg.id}
+                        ref={isLastMessage ? bottomRef : null}
+                        className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
+                    >
                         <div
                             className={`py-2 px-4 space-y-5 rounded-lg ${isOwn ? 'bg-white border border-mainOrange/50' : ' bg-lightStormy/40'}`}
                         >
@@ -81,7 +87,6 @@ export default function MessageList({ dialogueId }: MessageListProps) {
                     </div>
                 );
             })}
-            <div ref={bottomRef} />
         </div>
     );
 }

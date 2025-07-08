@@ -52,22 +52,20 @@ export default function UserDialoguesList() {
                     ></div>
                 )) :
                 dialogues.length > 0 ?
-
                     dialogues?.map((d) => {
                         const participants = d.Dialogue.User_dialogue;
                         const partner = participants.find((p: any) => p.userId !== user.id)?.User;
                         const message = lastMessages[d.dialogueId];
                         return (
                             <Link key={d.dialogueId} className="border p-2 main:p-4 rounded flex items-start gap-4 border-lightStormy hover:border-mainOrange/80 hover:shadow-md hover:shadow-mainOrange/10 transition-all" href={`/dialogues/${d.dialogueId}`}>
-                                {partner?.avatar_url && (
+                                
                                     <Image
-                                        src={createImgUrl(partner.avatar_url)}
+                                        src={partner.avatar_url ? createImgUrl(partner.avatar_url) : '/images/placeholderAvatar.png'}
                                         alt={partner.username}
                                         width={60}
                                         height={60}
                                         className="rounded-[7px] aspect-square object-cover"
                                     />
-                                )}
                                 <div className="flex flex-col">
                                     <div className="font-semibold">{partner?.username ?? 'Unknown user'}</div>
                                     <div className="text-sm text-gray-600">
