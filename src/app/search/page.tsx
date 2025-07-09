@@ -109,12 +109,14 @@ export default function SearchPage() {
           switch (tab) {
             case 'tracks':
               return <Track key={item.id} info={item} className="" />;
-            case 'playlists':
+            case 'playlists': {
               return (
-                <div className="flex justify-center">
-                  <PlaylistItem key={item.id} info={item} />
-                </div>
-              );
+                <>
+                  {item.is_public === true && <div className="flex justify-center">
+                    <PlaylistItem key={item.id} info={item} />
+                  </div>}
+                </>
+              )}
             case 'users':
               return <User key={item.id} user={item} />;
             default:
