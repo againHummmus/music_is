@@ -14,7 +14,7 @@ export default function ActivationScreen() {
     store.setIsLoading(true)
     if (!store.user) {
       store.setIsLoading(false)
-      router.push("/sign-up");
+      router.push("/auth?mode=signUp");
       return;
     }
     if (store.user.is_activated === true && window.location.pathname === '/activate') {
@@ -29,7 +29,9 @@ export default function ActivationScreen() {
   const handleSendEmail = async () => {
     setLoading(true);
     try {
-      await AuthApi.sendActivationEmail(store.user?.email)
+      if (store.user?.email) {
+        await AuthApi.resendConfirmation(store.user.email);
+      }
     } catch (err: any) {
       console.error("error", err.message);
     } finally {

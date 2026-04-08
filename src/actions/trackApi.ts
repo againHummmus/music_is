@@ -1,4 +1,17 @@
-import api from "./axios";
+import { supabase } from "@/lib/supabaseClient";
+import { makeObjectKey, uploadPublicFile } from "@/lib/supabaseUtils";
+
+const TRACK_TABLE = "Track";
+const TRACK_LIKE_TABLE = "Track_like";
+
+const TRACK_SELECT = `
+  *,
+  Album(*),
+  Artist(*),
+  Genre(*),
+  Track_like(*),
+  Playlist_track(*)
+`;
 
 export default class TrackApi {
   static async createTrack({
@@ -18,21 +31,27 @@ export default class TrackApi {
     isAddedByUser: boolean;
     file: File;
   }) {
-    const formData = new FormData();
-    formData.append("genreId", genreId);
-    formData.append("artistId", artistId);
-    formData.append("albumId", albumId);
-    formData.append("name", name);
-    formData.append("isAddedByUser", isAddedByUser.toString());
-    if (lyrics) formData.append("lyrics", lyrics);
-    formData.append("file", file);
-    const response = await api.post("/track", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    });
-    return response;
+    const objectKey = makeObjectKey("mp3", file?.name);
+    const { error: uploadError } = await uploadPublicFile(objectKey, file);
+    if (uploadError) throw uploadError;
+    const hash = objectKey.split("/").pop();
+
+    const { data, error } = await supabase
+      .from(TRACK_TABLE)
+      .insert({
+        genreId,
+        artistId,
+        albumId,
+        name,
+        lyrics: lyrics ?? null,
+        isAddedByUser,
+        file_hash: hash,
+      })
+      .select(TRACK_SELECT)
+      .single();
+
+    if (error) throw error;
+    return { data };
   }
 
   static async searchTracks({
@@ -54,19 +73,30 @@ export default class TrackApi {
     limit?: number;
     offset?: number;
   }) {
-    const params = {
-      id,
-      genre,
-      artist,
-      album,
-      likedByUserId,
-      name,
-      limit,
-      offset,
-    };
+    let idsFilter: number[] | null = null;
 
-    const response = await api.get("/track", { params });
-    return response;
+    if (likedByUserId) {
+      const { data: likes, error: likesError } = await supabase
+        .from(TRACK_LIKE_TABLE)
+        .select("trackId")
+        .eq("userId", likedByUserId);
+      if (likesError) throw likesError;
+      idsFilter = likes?.map((l: any) => l.trackId) ?? [];
+      if (idsFilter.length === 0) return { data: [] };
+    }
+
+    let query = supabase.from(TRACK_TABLE).select(TRACK_SELECT);
+    if (id) query = query.eq("id", id);
+    if (genre) query = query.eq("genreId", genre);
+    if (artist) query = query.eq("artistId", artist);
+    if (album) query = query.eq("albumId", album);
+    if (name) query = query.ilike("name", `%${name}%`);
+    if (idsFilter) query = query.in("id", idsFilter);
+    if (limit) query = query.range(offset, offset + limit - 1);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return { data };
   }
 
   static async deleteTrack(trackId: string) {
@@ -74,9 +104,12 @@ export default class TrackApi {
       throw new Error("Track ID is required for deletion.");
     }
 
-    const response = await api.delete(`/track/${trackId}`, {
-      withCredentials: true,
-    });
-    return response;
+    const { data, error } = await supabase
+      .from(TRACK_TABLE)
+      .delete()
+      .eq("id", trackId)
+      .select("*");
+    if (error) throw error;
+    return { data };
   }
 }

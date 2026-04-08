@@ -1,5 +1,4 @@
 import AuthApi from "@/actions/authApi";
-import axios from "axios";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -33,6 +32,15 @@ interface AuthState {
   update: () => Promise<any>;
   currentPlaylist: Playlist;
   setCurrentPlaylist: (tracks: Track[]) => void;
+}
+
+function normalizeUser({ user }: { user: any | null }): any | undefined {
+  if (!user) return undefined;
+  return {
+    ...user,
+    is_activated:
+      typeof user.is_activated === "boolean" ? user.is_activated : false,
+  };
 }
 
 export const useStore = create<AuthState>()(
@@ -69,39 +77,45 @@ export const useStore = create<AuthState>()(
     setCurrentTime: (time: number) => set({ currentTime: time }),
 
     signIn: async (email: string, password: string) => {
-        const response = await AuthApi.signIn({ email, password });
-        set({ isAuth: true, user: response.data.user });
-        return response
+      const response = await AuthApi.signIn({ email, password });
+      if (!response.error) {
+        const user = normalizeUser({ user: response.data?.user ?? null });
+        set({ isAuth: Boolean(user), user });
+      }
+      return response;
     },
 
     signUp: async (email: string, password: string, username: string) => {
-        const response = await AuthApi.signUp({ email, password, username });
-        set({ isAuth: true, user: response.data.user });
-        return response;
+      const response = await AuthApi.signUp({ email, password, username });
+      if (!response.error) {
+        const user = normalizeUser({ user: response.data?.user ?? null });
+        set({ isAuth: Boolean(user), user });
+      }
+      return response;
     },
 
     signOut: async () => {
-      try {
-        await AuthApi.signOut();
-        set({ isAuth: false, user: undefined });
-      } catch (e: any) {
-        console.error(e.response?.data?.message);
+      const response = await AuthApi.signOut();
+      if (response.error) {
+        console.error(response.error?.message ?? response.error);
       }
+      set({ isAuth: false, user: undefined });
     },
 
     update: async () => {
       set({ isLoading: true });
-      try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/refresh`,
-          {},
-          { withCredentials: true }
-        );
-        set({ isAuth: true, user: response.data, isLoading: false });
-      } catch (e: any) {
-        console.error(e.response?.data?.message);
+      const response = await AuthApi.getSession();
+      if (response.error || !response.data?.user) {
+        if (response.error) {
+          console.error(response.error?.message ?? response.error);
+        }
         set({ isAuth: false, user: undefined, isLoading: false });
+        return;
       }
+
+      const user = normalizeUser({ user: response.data.user });
+
+      set({ isAuth: true, user, isLoading: false });
     },
   }))
 );

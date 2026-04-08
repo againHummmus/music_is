@@ -21,7 +21,7 @@ const nextConfig = {
         return config;
     },
     images: {
-        domains: ['yhqndbnnfvdaouwsmqan.supabase.co'],
+        domains: ['ibdzyayxgmuikjdhagsh.supabase.co'],
     },
 };
 

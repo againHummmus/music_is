@@ -1,7 +1,27 @@
-import api from "./axios";
+import { supabase } from "@/lib/supabaseClient";
+
+const USER_PLAYLIST_TABLE = "User_playlist";
+
+const USER_PLAYLIST_SELECT = `
+  *,
+  Playlist (
+    *,
+    Creator:Creator ( id, username, avatar_url ),
+    Playlist_track (
+      *,
+      Track (
+        *,
+        Album(*),
+        Artist(*),
+        Genre(*),
+        Track_like(*),
+        Playlist_track(*)
+      )
+    )
+  )
+`;
 
 export default class UserPlaylistApi {
-
   static async createUserPlaylist({
     userId,
     playlistId,
@@ -11,19 +31,23 @@ export default class UserPlaylistApi {
     playlistId: string;
     isCreator: boolean;
   }) {
-    const response = await api.post(
-      "/user-playlist",
-      { userId, playlistId, isCreator },
-      { withCredentials: true }
-    );
-    return response;
+    const { data, error } = await supabase
+      .from(USER_PLAYLIST_TABLE)
+      .insert({ User: userId, Playlist: playlistId, is_creator: isCreator })
+      .select(USER_PLAYLIST_SELECT)
+      .single();
+    if (error) throw error;
+    return { data };
   }
 
   static async deleteUserPlaylist({ id }: { id: string }) {
-    const response = await api.delete(`/user-playlist/${id}`, {
-      withCredentials: true,
-    });
-    return response;
+    const { data, error } = await supabase
+      .from(USER_PLAYLIST_TABLE)
+      .delete()
+      .eq("id", id)
+      .select("*");
+    if (error) throw error;
+    return { data };
   }
 
   static async searchUserPlaylists({
@@ -32,20 +56,26 @@ export default class UserPlaylistApi {
     isCreator,
     limit = 10,
     offset = 0,
-    includeDefaultPlaylists
+    includeDefaultPlaylists,
   }: {
     userId?: string;
     playlistId?: string;
     isCreator?: boolean;
     limit?: number;
     offset?: number;
-    includeDefaultPlaylists?: boolean
+    includeDefaultPlaylists?: boolean;
   }) {
-    const params = { userId, playlistId, isCreator, limit, offset, includeDefaultPlaylists };
-    const response = await api.get("/user-playlist", {
-      params,
-      withCredentials: true,
-    });
-    return response;
+    let query = supabase.from(USER_PLAYLIST_TABLE).select(USER_PLAYLIST_SELECT);
+    if (userId) query = query.eq("User", userId);
+    if (playlistId) query = query.eq("Playlist", playlistId);
+    if (typeof isCreator === "boolean") query = query.eq("is_creator", isCreator);
+    if (includeDefaultPlaylists === false) {
+      query = query.eq("Playlist.is_default", false);
+    }
+    if (limit) query = query.range(offset, offset + limit - 1);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return { data };
   }
 }

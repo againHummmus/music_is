@@ -74,9 +74,9 @@ export default function AuthScreen({ initialMode }: { initialMode?: "signIn" | "
     setError("");
 
     const res = await signInAction(email, password);
-    if (res.data?.error) {
-      console.error(res.data.error.message);
-      setError(res.data.error.message);
+    if (res.error) {
+      console.error(res.error?.message ?? res.error);
+      setError(res.error?.message ?? "Something went wrong");
     } else {
       router.push("/library");
     }
@@ -96,9 +96,9 @@ export default function AuthScreen({ initialMode }: { initialMode?: "signIn" | "
     setError("");
 
     const res = await signUpAction(email, password, username);
-    if (res.data?.error) {
-      console.error(res.data.error.message);
-      setError('Something went wrong:(');
+    if (res.error) {
+      console.error(res.error?.message ?? res.error);
+      setError("Something went wrong:(");
     } else {
       router.push("/activate");
     }

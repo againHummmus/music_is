@@ -1,45 +1,109 @@
-import api from "./axios";
+import { supabase } from "@/lib/supabaseClient";
+import { makeObjectKey, uploadPublicFile } from "@/lib/supabaseUtils";
+
+const USER_TABLE = "User";
+
+const USER_SELECT = `
+  *,
+  Artist(*),
+  User_playlist (
+    id,
+    is_creator,
+    Playlist (
+      *,
+      Creator:Creator ( id, username, avatar_url ),
+      Playlist_track (
+        *,
+        Track (
+          *,
+          Album(*),
+          Artist(*),
+          Genre(*),
+          Track_like(*),
+          Playlist_track(*)
+        )
+      )
+    )
+  )
+`;
 
 export default class UserApi {
   static async getMe() {
-    const response = await api.post("/user/me", {}, {
-      withCredentials: true,
-    });
-    return response.data.data;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const sbUserId = sessionData?.session?.user?.id;
+    if (!sbUserId) return null;
+
+    const { data, error } = await supabase
+      .from(USER_TABLE)
+      .select("*, Artist(*)")
+      .eq("sbUserId", sbUserId)
+      .single();
+
+    if (error) return null;
+    return data;
   }
 
-  static async getUser({id}: {id: string}) {
-    const response = await api.get(`/user/${id}`);
-    return response.data.data;
+  static async getUser({ id }: { id: string }) {
+    const { data, error } = await supabase
+      .from(USER_TABLE)
+      .select(USER_SELECT)
+      .eq("id", id)
+      .single();
+
+    if (error) return null;
+    return data;
   }
 
   static async searchUsers(params?: any) {
-    const response = await api.get("/user", {
-      params,
-      withCredentials: true,
-    });
-    return response.data;
+    let query = supabase.from(USER_TABLE).select("*");
+
+    if (params?.id) query = query.eq("id", params.id);
+    const usernameQuery = params?.username ?? params?.name;
+    if (usernameQuery) query = query.ilike("username", `%${usernameQuery}%`);
+    if (params?.limit) {
+      const offset = params?.offset ?? 0;
+      query = query.range(offset, offset + params.limit - 1);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data ?? [];
   }
 
   static async signOut() {
-    const response = await api.post(`/user/signout`, {}, { withCredentials: true });
-    return response.data.data;
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return { data: true };
   }
 
+  static async updateUser({
+    file,
+    newUsername,
+    userId,
+  }: {
+    file?: File;
+    newUsername?: string;
+    userId: string;
+  }) {
+    const updates: any = {};
+    if (newUsername) updates.username = newUsername;
 
-  static async updateUser({file, newUsername, userId}: {file?: File, newUsername?: string, userId: string}) {
-    const form = new FormData();
-    form.append("userId", userId);
-    file && form.append("avatar", file);
-    newUsername && form.append("newUsername", newUsername);
+    if (file) {
+      const objectKey = makeObjectKey("img", file.name);
+      const { error: uploadError } = await uploadPublicFile(objectKey, file);
+      if (uploadError) throw uploadError;
+      const hash = objectKey.split("/").pop();
+      updates.avatar_url = hash;
+    }
 
+    const { data, error } = await supabase
+      .from(USER_TABLE)
+      .update(updates)
+      .eq("id", userId)
+      .select("*, Artist(*)")
+      .single();
 
-    const response = await api.patch("/user/", form, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data.data;
+    if (error) throw error;
+    return data;
   }
 }

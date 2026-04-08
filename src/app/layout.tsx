@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className="overflow-x-visible">
       <body className={`${golos.variable} min-w-[300px] w-full overflow-y-scroll`}>
-        <Header />
+        {isAuth && <Header />}
         <NextTopLoader
           color="#FF8C3A"
           initialPosition={0.5}

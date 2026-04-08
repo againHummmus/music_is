@@ -1,7 +1,25 @@
-import api from "./axios";
+import { supabase } from "@/lib/supabaseClient";
+
+const PLAYLIST_TABLE = "Playlist";
+
+const PLAYLIST_SELECT = `
+  *,
+  Creator:Creator ( id, username, avatar_url ),
+  User_playlist ( id, User ),
+  Playlist_track (
+    *,
+    Track (
+      *,
+      Album(*),
+      Artist(*),
+      Genre(*),
+      Track_like(*),
+      Playlist_track(*)
+    )
+  )
+`;
 
 export default class PlaylistApi {
-
   static async createPlaylist({
     name,
     description,
@@ -9,25 +27,35 @@ export default class PlaylistApi {
     isPublic,
   }: {
     name: string;
-    description: string,
+    description: string;
     creatorId?: string;
     isPublic?: boolean;
   }) {
-    const payload = { name, description, creatorId, isPublic };
-    const response = await api.post("/playlist", payload, {
-      withCredentials: true,
-    });
-    return response;
-  }
+    const { data, error } = await supabase
+      .from(PLAYLIST_TABLE)
+      .insert({
+        name,
+        description,
+        Creator: creatorId ?? null,
+        is_public: Boolean(isPublic),
+        is_default: false,
+      })
+      .select(PLAYLIST_SELECT)
+      .single();
 
+    if (error) throw error;
+    return { data };
+  }
 
   static async deletePlaylist({ id }: { id: string }) {
-    const response = await api.delete(`/playlist/${id}`, {
-      withCredentials: true,
-    });
-    return response;
+    const { data, error } = await supabase
+      .from(PLAYLIST_TABLE)
+      .delete()
+      .eq("id", id)
+      .select("*");
+    if (error) throw error;
+    return { data };
   }
-
 
   static async searchPlaylists({
     id,
@@ -46,12 +74,16 @@ export default class PlaylistApi {
     limit?: number;
     offset?: number;
   }) {
-    const params = { id, name, creatorId, isPublic, isDefault, limit, offset };
+    let query = supabase.from(PLAYLIST_TABLE).select(PLAYLIST_SELECT);
+    if (id) query = query.eq("id", id);
+    if (name) query = query.ilike("name", `%${name}%`);
+    if (creatorId) query = query.eq("Creator", creatorId);
+    if (typeof isPublic === "boolean") query = query.eq("is_public", isPublic);
+    if (typeof isDefault === "boolean") query = query.eq("is_default", isDefault);
+    if (limit) query = query.range(offset, offset + limit - 1);
 
-    const response = await api.get("/playlist", {
-      params,
-    });
-
-    return response.data;
+    const { data, error } = await query;
+    if (error) throw error;
+    return data ?? [];
   }
 }
