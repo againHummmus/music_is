@@ -4,15 +4,15 @@ import BiPlayCircle from '~icons/bi/play-circle?width=16px&height=16px';
 import BiPauseCircle from '~icons/bi/pause-circle?width=16px&height=16px';
 import { createImgUrl } from '../utils/createUrlFromHash';
 import { useStore } from '@/app/store';
+import type { PlaylistRow } from '@/actions/types';
 
-export function PlaylistItem({ info }: { info: any }) {
+export function PlaylistItem({ info }: { info: PlaylistRow }) {
   const store = useStore();
 
   const firstTrack = info.Playlist_track?.[0]?.Track;
 
-  const isThisPlaying = 
-    store.currentPlaylist?.id === info.id && 
-    store.isPlaying;
+  const isThisPlaying =
+    store.currentPlaylist?.id === info.id && store.isPlaying;
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,34 +27,39 @@ export function PlaylistItem({ info }: { info: any }) {
 
   return (
     <div
-      className="relative w-full max-w-[680px] h-[70px] main:h-[90px] flex items-center justify-between bg-cover bg-center rounded-[7px] p-20
-                 after:absolute after:content-'' after:w-full after:h-full after:top-0 after:left-0
-                 after:bg-gradient-to-r from-mainBlack/95 to-mainBlack/20 after:transition-all after:opacity-90 after:hover:opacity-100 after:rounded-[7px]"
+      className="after:content-'' relative flex h-[70px] w-full max-w-[680px] items-center justify-between rounded-[7px] from-mainBlack/95 to-mainBlack/20 bg-cover bg-center p-20 after:absolute after:left-0 after:top-0 after:h-full after:w-full after:rounded-[7px] after:bg-gradient-to-r after:opacity-90 after:transition-all after:hover:opacity-100 main:h-[90px]"
       style={{
         backgroundImage: `url(${
-          info.Playlist_track?.[0]?.Track.Album.image_hash
-            ? createImgUrl(info.Playlist_track[0].Track.Album.image_hash)
+          info.Playlist_track?.[0]?.Track?.Album?.image_hash
+            ? createImgUrl(info.Playlist_track[0]!.Track!.Album!.image_hash)
             : '/images/recordersBackground.png'
         })`,
       }}
     >
-      <Link href={`/discover/playlists/${info.id}`} className="absolute cursor-pointer inset-0 z-[4000]" aria-label="Go to playlist">
-      </Link>
+      <Link
+        href={`/discover/playlists/${info.id}`}
+        className="absolute inset-0 z-[4000] cursor-pointer"
+        aria-label="Go to playlist"
+      ></Link>
       <div className="relative z-[1100] flex items-center gap-4 text-mainWhite">
         <button
           onClick={handlePlayClick}
-          className="relative h-[50px] w-[50px] hover:text-mainOrange transition-all"
+          className="relative h-[50px] w-[50px] transition-all hover:text-mainOrange"
           aria-label="Play playlist"
         >
-          {isThisPlaying ? <BiPauseCircle className="h-[50px] w-[50px] cursor-pointer transition-all" /> : <BiPlayCircle className="h-[50px] w-[50px] cursor-pointer transition-all" />}
+          {isThisPlaying ? (
+            <BiPauseCircle className="h-[50px] w-[50px] cursor-pointer transition-all" />
+          ) : (
+            <BiPlayCircle className="h-[50px] w-[50px] cursor-pointer transition-all" />
+          )}
         </button>
 
-        <div className="flex flex-col justify-center h-[40px]">
-          <div className="font-medium text-lg main:text-xl leading-none">
+        <div className="flex h-[40px] flex-col justify-center">
+          <div className="text-lg font-medium leading-none main:text-xl">
             {info.name}
           </div>
           {!info.is_default && (
-            <div className="text-xs main:text-sm text-lightStormy">
+            <div className="text-xs text-lightStormy main:text-sm">
               by {info.Creator?.username}
             </div>
           )}

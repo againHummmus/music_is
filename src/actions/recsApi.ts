@@ -1,14 +1,18 @@
-import { supabase } from "@/lib/supabaseClient";
+'use server';
 
-const RECS_TABLE = "User_recommendation";
+import { requireSession } from './session';
+import { RECOMMENDATION_SELECT } from './types';
+import type { RecommendationRow } from './types';
 
-export default class RecommendationApi {
-  static async getUserRecommendations({ userId }: { userId: string }) {
-    const { data, error } = await supabase
-      .from(RECS_TABLE)
-      .select(`*, RecommendedUser:RecommendedUser ( * )`)
-      .eq("User", userId);
-    if (error) throw error;
-    return data ?? [];
-  }
+const RECS_TABLE = 'User_recommendation';
+
+export async function getUserRecommendations(): Promise<RecommendationRow[]> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(RECS_TABLE)
+    .select(RECOMMENDATION_SELECT)
+    .eq('User', user.id);
+  if (error) throw error;
+  return data ?? [];
 }

@@ -1,6 +1,17 @@
-import AuthApi from "@/actions/authApi";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import {
+  signUp as signUpAction,
+  signIn as signInAction,
+  signOut as signOutAction,
+  getUser as getUserAction,
+} from '@/actions/authApi';
+import type {
+  AuthResult,
+  PlaylistRow,
+  TrackRow,
+  UserWithArtist,
+} from '@/actions/types';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface Modal {
   isOpen: boolean;
@@ -12,34 +23,42 @@ interface Modal {
 interface AuthState {
   isAuth: boolean;
   isLoading: boolean;
-  user: User;
+  user: UserWithArtist | undefined;
   modal: Modal;
-  currentTrack: Track | null;
+  currentTrack: TrackRow | null;
   isPlaying: boolean;
   currentTime: number;
-  chosenTrack: Track;
+  chosenTrack: TrackRow | undefined;
   setModal: (value: Modal) => void;
   setIsAuth: (value: boolean) => void;
   setIsLoading: (value: boolean) => void;
-  setUser: (value: User) => void;
-  setChosenTrack: (track: Track | undefined) => void;
-  playTrack: (track: Track) => void;
+  setUser: (value: UserWithArtist) => void;
+  setChosenTrack: (track: TrackRow | undefined) => void;
+  playTrack: (track: TrackRow) => void;
   togglePlay: () => void;
   setCurrentTime: (time: number) => void;
-  signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, username: string) => Promise<any>;
-  signOut: () => Promise<any>;
-  update: () => Promise<any>;
-  currentPlaylist: Playlist;
-  setCurrentPlaylist: (tracks: Track[]) => void;
+  signIn: (email: string, password: string) => Promise<AuthResult>;
+  signUp: (
+    email: string,
+    password: string,
+    username: string
+  ) => Promise<AuthResult>;
+  signOut: () => Promise<void>;
+  update: () => Promise<void>;
+  currentPlaylist: PlaylistRow | undefined;
+  setCurrentPlaylist: (playlist: PlaylistRow) => void;
 }
 
-function normalizeUser({ user }: { user: any | null }): any | undefined {
+function normalizeUser({
+  user,
+}: {
+  user: UserWithArtist | null;
+}): UserWithArtist | undefined {
   if (!user) return undefined;
   return {
     ...user,
     is_activated:
-      typeof user.is_activated === "boolean" ? user.is_activated : false,
+      typeof user.is_activated === 'boolean' ? user.is_activated : false,
   };
 }
 
@@ -54,8 +73,8 @@ export const useStore = create<AuthState>()(
       message: undefined,
       redirectUrl: undefined,
     },
-    currentTrack: undefined,
-    currentPlaylist: [],
+    currentTrack: null,
+    currentPlaylist: undefined,
     isPlaying: false,
     currentTime: 0,
     chosenTrack: undefined,
@@ -63,21 +82,23 @@ export const useStore = create<AuthState>()(
     setModal: (value: Modal) => set({ modal: value }),
     setIsAuth: (value: boolean) => set({ isAuth: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
-    setUser: (value: User) => set({ user: value }),
-    setChosenTrack: (track: Track) => set({ chosenTrack: track }),
-    setCurrentPlaylist: (currentPlaylist: Playlist) =>
+    setUser: (value: UserWithArtist) => set({ user: value }),
+    setChosenTrack: (track: TrackRow | undefined) =>
+      set({ chosenTrack: track }),
+    setCurrentPlaylist: (currentPlaylist: PlaylistRow) =>
       set({ currentPlaylist: currentPlaylist }),
 
-    playTrack: (track: Track) =>
+    playTrack: (track: TrackRow) =>
       set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
-    
-    togglePlay: () => set((state) => ({
-      isPlaying: !state.isPlaying
-    })),
+
+    togglePlay: () =>
+      set((state) => ({
+        isPlaying: !state.isPlaying,
+      })),
     setCurrentTime: (time: number) => set({ currentTime: time }),
 
     signIn: async (email: string, password: string) => {
-      const response = await AuthApi.signIn({ email, password });
+      const response = await signInAction({ email, password });
       if (!response.error) {
         const user = normalizeUser({ user: response.data?.user ?? null });
         set({ isAuth: Boolean(user), user });
@@ -86,7 +107,7 @@ export const useStore = create<AuthState>()(
     },
 
     signUp: async (email: string, password: string, username: string) => {
-      const response = await AuthApi.signUp({ email, password, username });
+      const response = await signUpAction({ email, password, username });
       if (!response.error) {
         const user = normalizeUser({ user: response.data?.user ?? null });
         set({ isAuth: Boolean(user), user });
@@ -95,7 +116,7 @@ export const useStore = create<AuthState>()(
     },
 
     signOut: async () => {
-      const response = await AuthApi.signOut();
+      const response = await signOutAction();
       if (response.error) {
         console.error(response.error?.message ?? response.error);
       }
@@ -104,7 +125,7 @@ export const useStore = create<AuthState>()(
 
     update: async () => {
       set({ isLoading: true });
-      const response = await AuthApi.getSession();
+      const response = await getUserAction();
       if (response.error || !response.data?.user) {
         if (response.error) {
           console.error(response.error?.message ?? response.error);
@@ -114,7 +135,6 @@ export const useStore = create<AuthState>()(
       }
 
       const user = normalizeUser({ user: response.data.user });
-
       set({ isAuth: true, user, isLoading: false });
     },
   }))

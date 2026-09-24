@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export function BaseButtonLight({
   title,
@@ -11,7 +11,7 @@ export function BaseButtonLight({
 }) {
   return (
     <Link
-      className="w-full font-bold h-[30px] main:h-[40px] rounded-[7px] hover:bg-mainWhite bg-mainOrange text-mainDark transition-all flex items-center justify-center hover:text-mainOrange"
+      className="flex h-[30px] w-full items-center justify-center rounded-[7px] bg-mainOrange font-bold text-mainDark transition-all hover:bg-mainWhite hover:text-mainOrange main:h-[40px]"
       href={href}
       style={{ maxWidth }}
     >

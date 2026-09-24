@@ -1,109 +1,86 @@
-import { supabase } from "@/lib/supabaseClient";
-import { makeObjectKey, uploadPublicFile } from "@/lib/supabaseUtils";
+'use server';
 
-const USER_TABLE = "User";
+import { getSession, publicClient, requireSession } from './session';
+import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import {
+  USER_PUBLIC_COLUMNS,
+  USER_SELECT,
+  USER_WITH_ARTIST_SELECT,
+} from './types';
+import type { TablesUpdate } from '@/types/supabase';
+import type { UserBasicRow, UserRow, UserWithArtist } from './types';
 
-const USER_SELECT = `
-  *,
-  Artist(*),
-  User_playlist (
-    id,
-    is_creator,
-    Playlist (
-      *,
-      Creator:Creator ( id, username, avatar_url ),
-      Playlist_track (
-        *,
-        Track (
-          *,
-          Album(*),
-          Artist(*),
-          Genre(*),
-          Track_like(*),
-          Playlist_track(*)
-        )
-      )
-    )
-  )
-`;
+const USER_TABLE = 'User';
 
-export default class UserApi {
-  static async getMe() {
-    const { data: sessionData } = await supabase.auth.getSession();
-    const sbUserId = sessionData?.session?.user?.id;
-    if (!sbUserId) return null;
+export async function getMe(): Promise<UserWithArtist | null> {
+  const session = await getSession();
+  return session?.user ?? null;
+}
 
-    const { data, error } = await supabase
-      .from(USER_TABLE)
-      .select("*, Artist(*)")
-      .eq("sbUserId", sbUserId)
-      .single();
+export async function getUser({
+  id,
+}: {
+  id: string | number;
+}): Promise<UserRow | null> {
+  const supabase = publicClient();
 
-    if (error) return null;
-    return data;
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .select(USER_SELECT)
+    .eq('id', Number(id))
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+export async function searchUsers(params?: {
+  id?: string | number;
+  username?: string;
+  name?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<UserBasicRow[]> {
+  const supabase = publicClient();
+
+  let query = supabase.from(USER_TABLE).select(USER_PUBLIC_COLUMNS);
+
+  if (params?.id) query = query.eq('id', Number(params.id));
+  const usernameQuery = params?.username ?? params?.name;
+  if (usernameQuery) query = query.ilike('username', `%${usernameQuery}%`);
+  if (params?.limit) {
+    const offset = params?.offset ?? 0;
+    query = query.range(offset, offset + params.limit - 1);
   }
 
-  static async getUser({ id }: { id: string }) {
-    const { data, error } = await supabase
-      .from(USER_TABLE)
-      .select(USER_SELECT)
-      .eq("id", id)
-      .single();
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
+}
 
-    if (error) return null;
-    return data;
+export async function updateUser({
+  file,
+  newUsername,
+}: {
+  file?: File;
+  newUsername?: string;
+}): Promise<UserWithArtist> {
+  const { supabase, user } = await requireSession();
+
+  const updates: TablesUpdate<'User'> = {};
+  if (newUsername) updates.username = newUsername;
+
+  if (file) {
+    updates.avatar_url = await uploadAndGetHash(supabase, 'img', file);
   }
 
-  static async searchUsers(params?: any) {
-    let query = supabase.from(USER_TABLE).select("*");
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .update(updates)
+    .eq('id', user.id)
+    .select(USER_WITH_ARTIST_SELECT)
+    .single();
 
-    if (params?.id) query = query.eq("id", params.id);
-    const usernameQuery = params?.username ?? params?.name;
-    if (usernameQuery) query = query.ilike("username", `%${usernameQuery}%`);
-    if (params?.limit) {
-      const offset = params?.offset ?? 0;
-      query = query.range(offset, offset + params.limit - 1);
-    }
-
-    const { data, error } = await query;
-    if (error) throw error;
-    return data ?? [];
-  }
-
-  static async signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    return { data: true };
-  }
-
-  static async updateUser({
-    file,
-    newUsername,
-    userId,
-  }: {
-    file?: File;
-    newUsername?: string;
-    userId: string;
-  }) {
-    const updates: any = {};
-    if (newUsername) updates.username = newUsername;
-
-    if (file) {
-      const objectKey = makeObjectKey("img", file.name);
-      const { error: uploadError } = await uploadPublicFile(objectKey, file);
-      if (uploadError) throw uploadError;
-      const hash = objectKey.split("/").pop();
-      updates.avatar_url = hash;
-    }
-
-    const { data, error } = await supabase
-      .from(USER_TABLE)
-      .update(updates)
-      .eq("id", userId)
-      .select("*, Artist(*)")
-      .single();
-
-    if (error) throw error;
-    return data;
-  }
+  if (error) throw error;
+  return data;
 }

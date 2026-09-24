@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export function BaseButtonOutline({
   title,
@@ -11,7 +11,7 @@ export function BaseButtonOutline({
 }) {
   return (
     <Link
-      className="w-full font-bold h-[30px] main:h-[40px] rounded-[7px] border-2 border-mainOrange hover:border-mainWhite hover:text-mainWhite transition-all flex items-center justify-center text-mainOrange backdrop-blur-md"
+      className="flex h-[30px] w-full items-center justify-center rounded-[7px] border-2 border-mainOrange font-bold text-mainOrange backdrop-blur-md transition-all hover:border-mainWhite hover:text-mainWhite main:h-[40px]"
       href={href}
       style={{ maxWidth }}
     >

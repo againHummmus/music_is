@@ -1,53 +1,61 @@
-import { supabase } from "@/lib/supabaseClient";
+'use server';
 
-const POST_LIKE_TABLE = "Post_like";
+import { publicClient, requireSession } from './session';
 
-export default class PostLikeApi {
-  static async createPostLike({
-    userId,
-    postId,
-  }: {
-    userId: string;
-    postId: string;
-  }) {
-    const { data, error } = await supabase
-      .from(POST_LIKE_TABLE)
-      .insert({ userId, postId })
-      .select("*")
-      .single();
-    if (error) throw error;
-    return { data };
-  }
+const POST_LIKE_TABLE = 'Post_like';
 
-  static async searchPostLikes({
-    userId,
-    postId,
-    limit = 10,
-    offset = 0,
-  }: {
-    userId: string;
-    postId: string;
-    limit: number;
-    offset: number;
-  }) {
-    let query = supabase.from(POST_LIKE_TABLE).select("*");
-    if (userId) query = query.eq("userId", userId);
-    if (postId) query = query.eq("postId", postId);
-    if (limit) query = query.range(offset, offset + limit - 1);
+export async function createPostLike({
+  postId,
+}: {
+  postId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
 
-    const { data, error } = await query;
-    if (error) throw error;
-    return { data };
-  }
+  const { data, error } = await supabase
+    .from(POST_LIKE_TABLE)
+    .insert({ userId: user.id, postId: Number(postId) })
+    .select('*')
+    .single();
+  if (error) throw error;
+  return { data };
+}
 
-  static async deletePostLike({ userId, postId }: { userId: string; postId: string }) {
-    const { data, error } = await supabase
-      .from(POST_LIKE_TABLE)
-      .delete()
-      .eq("userId", userId)
-      .eq("postId", postId)
-      .select("*");
-    if (error) throw error;
-    return { data };
-  }
+export async function searchPostLikes({
+  userId,
+  postId,
+  limit = 10,
+  offset = 0,
+}: {
+  userId?: string | number;
+  postId?: string | number;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(POST_LIKE_TABLE).select('*');
+  if (userId) query = query.eq('userId', Number(userId));
+  if (postId) query = query.eq('postId', Number(postId));
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return { data };
+}
+
+export async function deletePostLike({
+  postId,
+}: {
+  postId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(POST_LIKE_TABLE)
+    .delete()
+    .eq('userId', user.id)
+    .eq('postId', Number(postId))
+    .select('*');
+  if (error) throw error;
+  return { data };
 }

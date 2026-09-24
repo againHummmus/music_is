@@ -1,71 +1,69 @@
-import { supabase } from "@/lib/supabaseClient";
-import { makeObjectKey, uploadPublicFile } from "@/lib/supabaseUtils";
+'use server';
 
-const ALBUM_TABLE = "Album";
+import { publicClient, requireSession, FORBIDDEN } from './session';
+import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import { ALBUM_SELECT } from './types';
 
-const ALBUM_SELECT = `
-  *,
-  Artist(*),
-  Track (
-    *,
-    Artist(*),
-    Album(*),
-    Genre(*),
-    Track_like(*),
-    Playlist_track(*)
-  )
-`;
+const ALBUM_TABLE = 'Album';
 
-export default class AlbumApi {
-  static async createAlbum({
-    name,
-    year,
-    artistId,
-    image_hash,
-  }: Omit<Album, "id">) {
-    const file = image_hash as unknown as File;
-    const objectKey = makeObjectKey("img", file?.name);
-    const { error: uploadError } = await uploadPublicFile(objectKey, file);
-    if (uploadError) throw uploadError;
-    const hash = objectKey.split("/").pop();
+export async function createAlbum({
+  name,
+  year,
+  artistId,
+  image_hash,
+}: {
+  name: string | null;
+  year: number | null;
+  artistId: number | null;
+  image_hash: File;
+}) {
+  const { supabase, user } = await requireSession();
 
-    const { data, error } = await supabase
-      .from(ALBUM_TABLE)
-      .insert({
-        name,
-        year,
-        artistId,
-        image_hash: hash,
-      })
-      .select(ALBUM_SELECT)
-      .single();
+  const canPublishForArtist =
+    user.app_role === 'admin' ||
+    (user.artistId != null && user.artistId === artistId);
+  if (!canPublishForArtist) throw new Error(FORBIDDEN);
 
-    if (error) throw error;
-    return { data };
-  }
+  const hash = await uploadAndGetHash(supabase, 'img', image_hash);
 
-  static async searchAlbums({
-    id,
-    name,
-    artistId,
-    limit = 10,
-    offset = 0,
-  }: {
-    id?: any;
-    name?: string;
-    artistId?: string;
-    limit?: number;
-    offset?: number;
-  }) {
-    let query = supabase.from(ALBUM_TABLE).select(ALBUM_SELECT);
+  const { data, error } = await supabase
+    .from(ALBUM_TABLE)
+    .insert({
+      name,
+      year,
+      artistId,
+      image_hash: hash,
+    })
+    .select(ALBUM_SELECT)
+    .single();
 
-    if (id) query = query.eq("id", id);
-    if (name) query = query.ilike("name", `%${name}%`);
-    if (artistId) query = query.eq("artistId", artistId);
-    if (limit) query = query.range(offset, offset + limit - 1);
+  if (error) throw error;
+  return { data };
+}
 
-    const { data, error } = await query;
-    if (error) throw error;
-    return { data };
-  }
+export async function searchAlbums({
+  id,
+  name,
+  artistId,
+  limit = 10,
+  offset = 0,
+}: {
+  id?: string | number;
+  name?: string;
+  artistId?: string | number;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(ALBUM_TABLE).select(ALBUM_SELECT);
+
+  if (id) query = query.eq('id', Number(id));
+  if (name) query = query.ilike('name', `%${name}%`);
+  if (artistId) query = query.eq('artistId', Number(artistId));
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return { data };
 }

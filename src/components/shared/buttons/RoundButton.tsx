@@ -2,24 +2,24 @@ export function RoundButton({
   title,
   loading,
   onClick,
-  disabled
+  disabled,
 }: {
   title: string;
-  loading: boolean,
-  onClick: () => void
-  disabled?: any
+  loading: boolean;
+  onClick: () => void;
+  disabled?: any;
 }) {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`w-[50px] flex items-center justify-center cursor-pointer bg-mainDark hover:bg-mainBlack text-white disabled:bg-mainDark/80 disabled:cursor-not-allowed disabled:hover:text-white hover:text-mainOrange rounded-full aspect-square transition-all`}
+      className={`flex aspect-square w-[50px] cursor-pointer items-center justify-center rounded-full bg-mainDark text-white transition-all hover:bg-mainBlack hover:text-mainOrange disabled:cursor-not-allowed disabled:bg-mainDark/80 disabled:hover:text-white`}
     >
-        {loading ? (
-          <div className="animate-spin rounded-full h-[50%] w-[50%] border-[3px] border-white border-b-transparent"></div>
-        ) : (
-          title
-        )}
+      {loading ? (
+        <div className="h-[50%] w-[50%] animate-spin rounded-full border-[3px] border-white border-b-transparent"></div>
+      ) : (
+        title
+      )}
     </button>
   );
 }

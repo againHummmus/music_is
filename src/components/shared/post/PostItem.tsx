@@ -1,110 +1,151 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
-import { useStore } from "@/app/store"; 
-import { createImgUrl } from "../utils/createUrlFromHash";
-import PostLikeApi from "@/actions/postLikeApi"; 
-import PostApi from "@/actions/postApi";
-import HugeiconsDelete02 from "~icons/hugeicons/delete-02?width=20px&height=20px";
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useStore } from '@/app/store';
+import { createImgUrl } from '../utils/createUrlFromHash';
+import { createPostLike, deletePostLike } from '@/actions/postLikeApi';
+import { searchPosts } from '@/actions/postApi';
+import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=20px&height=20px';
 import WeuiLikeFilled from '~icons/weui/like-filled?width=20px&height=20px';
-import WeuiLikeOutlined from '~icons/weui/like-outlined?width=20px&height=20px'; 
-import Link from "next/link";
+import WeuiLikeOutlined from '~icons/weui/like-outlined?width=20px&height=20px';
+import Link from 'next/link';
+import { User, Post, PostLike } from '@/types/supabase';
+import ClientDate from '@/lib/utils/ClientDate';
 
+export const PostItem = ({
+  user,
+  isCurrentUser,
+  post,
+  handleDeletePost,
+}: {
+  user: User;
+  isCurrentUser: boolean;
+  post: Post & { Post_like: PostLike[] };
+  handleDeletePost?: (id: number) => void;
+}) => {
+  const store = useStore();
 
-export const PostItem = ({ user, isCurrentUser, post, handleDeletePost }: { user: any, isCurrentUser: boolean, post: any, handleDeletePost?: (id: any) => void }) => {
+  const isPostLiked = () =>
+    !!post?.Post_like?.some((like: PostLike) => like.userId === store.user?.id);
+  const [postInfo, setPostInfo] = useState({
+    ...post,
+    isLiked: isPostLiked(),
+    likeCount: post?.Post_like?.length || 0,
+  });
 
-    const store = useStore();
+  const toggleLike = async () => {
+    if (!store.user) return;
 
-    const isPostLiked = () => !!post?.Post_like?.some((like: any) => like.userId === store.user?.id);
-    const [postInfo, setPostInfo] = useState({
-        ...post,
-        isLiked: isPostLiked(),
-        likeCount: post?.Post_like?.length || 0
-    });
+    const wasLiked = postInfo.isLiked;
+    const originalLikeCount = postInfo.likeCount;
 
-    const toggleLike = async () => {
-        if (!store.user) return;
+    setPostInfo((prev: any) => ({
+      ...prev,
+      isLiked: !wasLiked,
+      likeCount: wasLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+    }));
 
-        const wasLiked = postInfo.isLiked;
-        const originalLikeCount = postInfo.likeCount;
+    try {
+      if (!wasLiked) {
+        await createPostLike({
+          postId: postInfo.id,
+        });
+      } else {
+        await deletePostLike({
+          postId: postInfo.id,
+        });
+      }
+      const updatedPosts = await searchPosts({
+        id: postInfo.id,
+        limit: 1,
+      });
 
-        setPostInfo((prev: any) => ({
+      if (updatedPosts && updatedPosts.length > 0) {
+        const updatedPost = updatedPosts[0];
+
+        if (updatedPost) {
+          setPostInfo((prev) => ({
             ...prev,
-            isLiked: !wasLiked,
-            likeCount: wasLiked ? prev.likeCount - 1 : prev.likeCount + 1
-        }));
-
-        try {
-            if (!wasLiked) {
-                await PostLikeApi.createPostLike({ userId: store.user.id, postId: postInfo.id });
-            } else {
-                await PostLikeApi.deletePostLike({ userId: store.user.id, postId: postInfo.id });
-            }
-            const updatedPosts = await PostApi.searchPosts({ id: postInfo.id, limit: 1 });
-            if (updatedPosts.length > 0) {
-                const updatedPost = updatedPosts[0];
-                setPostInfo({
-                    ...updatedPost,
-                    isLiked: updatedPost.Post_like.some((l: any) => l.userId === store.user.id),
-                    likeCount: updatedPost.Post_like.length
-                });
-            }
-        } catch (error) {
-            console.error("Failed to toggle like:", error);
-            setPostInfo((prev: any) => ({ ...prev, isLiked: wasLiked, likeCount: originalLikeCount }));
+            isLiked: updatedPost.Post_like.some(
+              (l: PostLike) => l.userId === store.user?.id
+            ),
+            likeCount: updatedPost.Post_like.length,
+          }));
         }
-    };
+      }
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
+      setPostInfo((prev: any) => ({
+        ...prev,
+        isLiked: wasLiked,
+        likeCount: originalLikeCount,
+      }));
+    }
+  };
 
-
-    return (
-        <div key={post.id} className="flex flex-row gap-4 bg-white p-4 rounded-lg shadow-sm relative">
-            <Link href={"/discover/user/" + user.id} className="flex-shrink-0">
-                <Image
-                    src={
-                        user.avatar_url
-                            ? createImgUrl(user.avatar_url)
-                            : "/images/placeholderAvatar.png"
-                    }
-                    alt="User avatar"
-                    width={60}
-                    height={60}
-                    className="w-[60px] h-[60px] object-cover rounded-[7px] flex-shrink-0"
-                />
-    
-            </Link>
-            <div className='flex flex-col gap-2 flex-grow'>
-                <div>
-                    <div className="text-sm text-gray-500">
-                        <span className='text-mainOrange font-medium'>{user?.username}</span>
-                        <span className='opacity-70'>{` ∘ ${new Date(post.created_at).toLocaleString()}`}</span>
-                    </div>
-                    <div className="text-base text-gray-800 mt-1">{post.content}</div>
-                </div>
-            </div>
-
-            <div className='flex flex-col justify-between items-end min-h-full '>
-                {isCurrentUser ? (
-                    <button
-                        onClick={handleDeletePost ? () => handleDeletePost(post.id) : undefined}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                        <HugeiconsDelete02 />
-                    </button>
-                ) : <div />}
-
-                <div className="flex items-center gap-3 mt-2">
-                    <button onClick={toggleLike} className="flex items-center gap-1.5 group">
-                        {postInfo.isLiked ? (
-                            <WeuiLikeFilled className="text-mainOrange" />
-                        ) : (
-                            <WeuiLikeOutlined className="text-mainDark group-hover:text-mainOrange transition-all" />
-                        )}
-                        <span className={`text-sm ${postInfo.isLiked ? 'text-mainOrange' : 'text-mainDark'}`}>{postInfo.likeCount}</span>
-                    </button>
-                </div>
-            </div>
+  return (
+    <div
+      key={post.id}
+      className="relative flex flex-row gap-4 rounded-lg bg-white p-4 shadow-sm"
+    >
+      <Link href={'/discover/user/' + user.id} className="flex-shrink-0">
+        <Image
+          src={
+            user.avatar_url
+              ? createImgUrl(user.avatar_url)
+              : '/images/placeholderAvatar.png'
+          }
+          alt="User avatar"
+          width={60}
+          height={60}
+          className="h-[60px] w-[60px] flex-shrink-0 rounded-[7px] object-cover"
+        />
+      </Link>
+      <div className="flex flex-grow flex-col gap-2">
+        <div>
+          <div className="text-sm text-gray-500">
+            <span className="font-medium text-mainOrange">
+              {user?.username}
+            </span>
+            <ClientDate iso={post.created_at} className='opacity-70'/>
+          </div>
+          <div className="mt-1 text-base text-gray-800">{post.content}</div>
         </div>
-    )
-}
+      </div>
+
+      <div className="flex min-h-full flex-col items-end justify-between">
+        {isCurrentUser ? (
+          <button
+            onClick={
+              handleDeletePost ? () => handleDeletePost(post.id) : undefined
+            }
+            className="text-gray-400 transition-colors hover:text-red-500"
+          >
+            <HugeiconsDelete02 />
+          </button>
+        ) : (
+          <div />
+        )}
+
+        <div className="mt-2 flex items-center gap-3">
+          <button
+            onClick={toggleLike}
+            className="group flex items-center gap-1.5"
+          >
+            {postInfo.isLiked ? (
+              <WeuiLikeFilled className="text-mainOrange" />
+            ) : (
+              <WeuiLikeOutlined className="text-mainDark transition-all group-hover:text-mainOrange" />
+            )}
+            <span
+              className={`text-sm ${postInfo.isLiked ? 'text-mainOrange' : 'text-mainDark'}`}
+            >
+              {postInfo.likeCount}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

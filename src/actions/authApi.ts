@@ -1,25 +1,28 @@
-import { supabase } from "@/lib/supabaseClient";
+'use server';
 
-const USER_TABLE = "User";
+import { headers } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
+import { USER_WITH_ARTIST_SELECT } from './types';
+import type { AuthResult, UserWithArtist } from './types';
+import type { SupabaseServerClient } from './session';
+import type { TablesInsert } from '@/types/supabase';
 
-type AuthResult = {
-  data: {
-    user: any | null;
-    session: any | null;
-  } | null;
-  error: any | null;
-};
+const USER_TABLE = 'User';
 
-export default class AuthApi {
-  private static async getPublicUserBySbId(sbUserId: string) {
-    return supabase
-      .from(USER_TABLE)
-      .select("*, Artist(*)")
-      .eq("sbUserId", sbUserId)
-      .single();
-  }
+function originFromHeaders(): string | undefined {
+  const headerList = headers();
+  const origin = headerList.get('origin');
+  if (origin) return origin;
 
-  private static async ensurePublicUser({
+  const host = headerList.get('host');
+  if (!host) return undefined;
+  const protocol = headerList.get('x-forwarded-proto') ?? 'https';
+  return `${protocol}://${host}`;
+}
+
+async function ensurePublicUser(
+  supabase: SupabaseServerClient,
+  {
     sbUserId,
     email,
     username,
@@ -29,124 +32,150 @@ export default class AuthApi {
     email?: string | null;
     username?: string | null;
     isActivated?: boolean;
-  }) {
-    const { data: existing } = await this.getPublicUserBySbId(sbUserId);
-    if (existing) {
-      if (typeof isActivated === "boolean" && existing.is_activated !== isActivated) {
-        const { data: updated, error } = await supabase
-          .from(USER_TABLE)
-          .update({ is_activated: isActivated })
-          .eq("id", existing.id)
-          .select("*, Artist(*)")
-          .single();
-        return { data: updated ?? existing, error };
-      }
-      return { data: existing, error: null };
+  }
+): Promise<{
+  data: UserWithArtist | null;
+  error: { message: string } | null;
+}> {
+  const { data: existing } = await supabase
+    .from(USER_TABLE)
+    .select(USER_WITH_ARTIST_SELECT)
+    .eq('sbUserId', sbUserId)
+    .single();
+
+  if (existing) {
+    if (
+      typeof isActivated === 'boolean' &&
+      existing.is_activated !== isActivated
+    ) {
+      const { data: updated, error } = await supabase
+        .from(USER_TABLE)
+        .update({ is_activated: isActivated })
+        .eq('id', existing.id)
+        .select(USER_WITH_ARTIST_SELECT)
+        .single();
+      return { data: updated ?? existing, error };
     }
-
-    const payload: any = {
-      sbUserId,
-      email: email ?? null,
-      username: username ?? (email ? email.split("@")[0] : "User"),
-      app_role: "user",
-      is_activated: Boolean(isActivated),
-      avatar_url: null,
-    };
-
-    return supabase.from(USER_TABLE).insert(payload).select("*, Artist(*)").single();
+    return { data: existing, error: null };
   }
 
-  static async signUp({
+  const payload: TablesInsert<'User'> = {
+    sbUserId,
+    email: email ?? null,
+    username: username ?? (email ? email.split('@')[0] : 'User'),
+    app_role: 'user',
+    is_activated: Boolean(isActivated),
+    avatar_url: null,
+  };
+
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .insert(payload)
+    .select(USER_WITH_ARTIST_SELECT)
+    .single();
+
+  return { data, error };
+}
+
+export async function signUp({
+  email,
+  password,
+  username,
+}: {
+  email: string;
+  password: string;
+  username: string;
+}): Promise<AuthResult> {
+  const supabase = createSupabaseServerClient();
+  const origin = originFromHeaders();
+
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    username,
-  }: {
-    email: string;
-    password: string;
-    username: string;
-  }): Promise<AuthResult> {
-    const emailRedirectTo =
-      typeof window !== "undefined" ? `${window.location.origin}/auth?mode=signIn` : undefined;
+    options: {
+      data: { username },
+      emailRedirectTo: origin ? `${origin}/auth?mode=signIn` : undefined,
+    },
+  });
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username },
-        emailRedirectTo,
-      },
-    });
+  if (error || !data?.user) {
+    return { data: { user: null }, error };
+  }
 
-    if (error || !data?.user) {
-      return { data: { user: data?.user ?? null, session: data?.session ?? null }, error };
-    }
-
-    const { data: publicUser, error: publicUserError } = await this.ensurePublicUser({
+  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
+    supabase,
+    {
       sbUserId: data.user.id,
       email,
       username,
       isActivated: Boolean(data.user.email_confirmed_at),
-    });
+    }
+  );
 
-    return {
-      data: { user: publicUser ?? null, session: data.session },
-      error: publicUserError ?? null,
-    };
-  }
+  return { data: { user: publicUser }, error: publicUserError };
+}
 
-  static async signIn({
+export async function signIn({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<AuthResult> {
+  const supabase = createSupabaseServerClient();
+
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
-  }: {
-    email: string;
-    password: string;
-  }): Promise<AuthResult> {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  });
 
-    if (error || !data?.user) {
-      return { data: { user: data?.user ?? null, session: data?.session ?? null }, error };
-    }
+  if (error || !data?.user) {
+    return { data: { user: null }, error };
+  }
 
-    const { data: publicUser, error: publicUserError } = await this.ensurePublicUser({
+  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
+    supabase,
+    {
       sbUserId: data.user.id,
       email: data.user.email,
       username: data.user.user_metadata?.username,
       isActivated: Boolean(data.user.email_confirmed_at),
-    });
-
-    return {
-      data: { user: publicUser ?? null, session: data.session },
-      error: publicUserError ?? null,
-    };
-  }
-
-  static async signOut(): Promise<AuthResult> {
-    const { error } = await supabase.auth.signOut();
-    return { data: { user: null, session: null }, error };
-  }
-
-  static async getSession(): Promise<AuthResult> {
-    const { data, error } = await supabase.auth.getSession();
-    const user = data?.session?.user ?? null;
-
-    if (!user) {
-      return { data: { user: null, session: data?.session ?? null }, error };
     }
+  );
 
-    const { data: publicUser, error: publicUserError } = await this.ensurePublicUser({
-      sbUserId: user.id,
-      email: user.email,
-      username: user.user_metadata?.username,
-      isActivated: Boolean(user.email_confirmed_at),
-    });
+  return { data: { user: publicUser }, error: publicUserError };
+}
 
-    return {
-      data: { user: publicUser ?? null, session: data.session },
-      error: error ?? publicUserError ?? null,
-    };
+export async function signOut(): Promise<AuthResult> {
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase.auth.signOut();
+  return { data: { user: null }, error };
+}
+
+export async function getUser(): Promise<AuthResult> {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+  const authUser = data?.user ?? null;
+
+  if (!authUser) {
+    return { data: { user: null }, error };
   }
 
-  static async resendConfirmation(email: string) {
-    return supabase.auth.resend({ type: "signup", email });
-  }
+  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
+    supabase,
+    {
+      sbUserId: authUser.id,
+      email: authUser.email,
+      username: authUser.user_metadata?.username,
+      isActivated: Boolean(authUser.email_confirmed_at),
+    }
+  );
+
+  return { data: { user: publicUser }, error: error ?? publicUserError };
+}
+
+export async function resendConfirmation(email: string) {
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase.auth.resend({ type: 'signup', email });
+  return { error };
 }

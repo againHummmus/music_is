@@ -6,9 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "update-types": "npx supabase gen types typescript --project-id ibdzyayxgmuikjdhagsh --schema public > database.types.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.49.10",
     "axios": "^1.7.9",
     "cookies-next": "^4.3.0",
@@ -23,6 +28,7 @@
     "react-drag-drop-files": "^3.0.0",
     "react-parallax": "^3.5.1",
     "react-scroll-parallax": "^3.4.5",
+    "server-only": "^0.0.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
@@ -33,7 +39,11 @@
     "@types/node": "^20.17.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.2",
     "postcss": "^8",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.6.3",
     "unplugin-icons": "^0.20.0",

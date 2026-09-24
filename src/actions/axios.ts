@@ -1,14 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
   withCredentials: true,
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
-
 api.interceptors.response.use(
-  response => response, // For successful responses (2xx), just pass them through
-  async error => {
+  (response) => response, // For successful responses (2xx), just pass them through
+  async (error) => {
     const originalRequest = error.config;
 
     // Check if the error has a response and if it's a 401 status

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useStore } from '@/app/store';
@@ -68,22 +68,22 @@ export default function Player() {
     else audioRef.current.pause();
   }, [isPlaying, currentTrack, localTime]);
 
+  const playlistTracks = currentPlaylist?.Playlist_track ?? [];
+
   const currentIndex = () =>
-    currentPlaylist.Playlist_track.findIndex((t) => t.Track.id === currentTrack?.id);
+    playlistTracks.findIndex((t) => t.Track?.id === currentTrack?.id);
 
-  const playNextTrack = () => {
+  const playTrackAt = (offset: number) => {
     if (!currentTrack) return;
     const idx = currentIndex();
-    const next = currentPlaylist.Playlist_track[idx + 1];
-    if (next) playTrack(next.Track);
+    if (idx === -1) return;
+    const target = playlistTracks[idx + offset];
+    if (target?.Track) playTrack(target.Track);
   };
 
-  const playPrevTrack = () => {
-    if (!currentTrack) return;
-    const idx = currentIndex();
-    const prev = currentPlaylist.Playlist_track[idx - 1];
-    if (prev) playTrack(prev.Track);
-  };
+  const playNextTrack = () => playTrackAt(1);
+
+  const playPrevTrack = () => playTrackAt(-1);
 
   const restartTrack = () => {
     if (!audioRef.current || !currentTrack) return;
@@ -104,44 +104,61 @@ export default function Player() {
 
   if (!currentTrack) return null;
 
-
-
   return (
-    <div className="sticky bottom-[50px] main:bottom-0 left-0 right-0 bg-gray-900 text-white p-2 main:p-4 bg-cover bg-center flex flex-col items-center z-[10000] after:absolute after:content-'' after:w-full after:h-full after:top-0 after:left-0 after:bg-gradient-to-r from-mainBlack to-mainBlack/50"
+    <div
+      className="after:content-'' sticky bottom-[50px] left-0 right-0 z-[10000] flex flex-col items-center bg-gray-900 from-mainBlack to-mainBlack/50 bg-cover bg-center p-2 text-white after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-gradient-to-r main:bottom-0 main:p-4"
       style={{
-        backgroundImage: `url(${currentTrack.Album?.image_hash
+        backgroundImage: `url(${
+          currentTrack.Album?.image_hash
             ? createImgUrl(currentTrack.Album.image_hash)
             : '/default_album.jpg'
-          })`,
-      }}>
-      <div className="relative z-[7000] w-full flex justify-between">
-        <div className='flex flex-row gap-[10px]'>
+        })`,
+      }}
+    >
+      <div className="relative z-[7000] flex w-full justify-between">
+        <div className="flex flex-row gap-[10px]">
           <div>
-            <div className='flex flex-row gap-10 items-center'>
+            <div className="flex flex-row items-center gap-10">
               <div className="font-medium">{currentTrack.name}</div>
-              <button onClick={() => setIsRepeat(!isRepeat)} aria-label="Repeat">
-                {isRepeat ? <HugeiconsRepeat className='w-[17px]' /> : <SolarArrowRightBold className='w-[20px]' />}
+              <button
+                onClick={() => setIsRepeat(!isRepeat)}
+                aria-label="Repeat"
+              >
+                {isRepeat ? (
+                  <HugeiconsRepeat className="w-[17px]" />
+                ) : (
+                  <SolarArrowRightBold className="w-[20px]" />
+                )}
               </button>
             </div>
-            <div className="text-sm text-gray-400">{currentTrack.Artist?.name}</div>
+            <div className="text-sm text-gray-400">
+              {currentTrack.Artist?.name}
+            </div>
           </div>
         </div>
 
-        <div className='flex flex-row gap-[10px]'>
+        <div className="flex flex-row gap-[10px]">
           <button className="p-2" onClick={playPrevTrack} aria-label="Previous">
-            <HugeiconsPrevious className='w-[20px] h-[20px] text-mainOrange' />
+            <HugeiconsPrevious className="h-[20px] w-[20px] text-mainOrange" />
           </button>
-          <button className="mx-2 p-2" onClick={togglePlay} aria-label="Play/Pause">
-            {isPlaying ? <MagePauseFill className="text-mainOrange w-[20px] main:w-[25px]" /> : <MagePlayFill className="text-mainOrange w-[20px] main:w-[25px]" />}
+          <button
+            className="mx-2 p-2"
+            onClick={togglePlay}
+            aria-label="Play/Pause"
+          >
+            {isPlaying ? (
+              <MagePauseFill className="w-[20px] text-mainOrange main:w-[25px]" />
+            ) : (
+              <MagePlayFill className="w-[20px] text-mainOrange main:w-[25px]" />
+            )}
           </button>
           <button className="p-2" onClick={playNextTrack} aria-label="Next">
-            <HugeiconsNext className='w-[20px] h-[20px] text-mainOrange' />
+            <HugeiconsNext className="h-[20px] w-[20px] text-mainOrange" />
           </button>
         </div>
-
       </div>
 
-      <div className="relative z-[7000] w-full mt-2">
+      <div className="relative z-[7000] mt-2 w-full">
         <input
           type="range"
           min={0}
@@ -149,9 +166,9 @@ export default function Player() {
           step={0.1}
           value={localTime}
           onChange={handleSliderChange}
-          className="w-full h-[5px] accent-mainOrange rounded outline-none"
+          className="h-[5px] w-full rounded accent-mainOrange outline-none"
         />
-        <div className="text-xs text-gray-400 mt-1 flex justify-between">
+        <div className="mt-1 flex justify-between text-xs text-gray-400">
           <span>{formatTime(localTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>

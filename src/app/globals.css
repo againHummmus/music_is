@@ -3,91 +3,91 @@
 @tailwind utilities;
 
 @layer base {
-    html {
-        height: 100%;
-        background-color: #f8f7f5;
-        color: #2F313A;
-        overflow-x: hidden;
-    }
+  html {
+    height: 100%;
+    background-color: #f8f7f5;
+    color: #2f313a;
+    overflow-x: hidden;
+  }
 
-    body {
-        height: 100%;
-        font-family: var(--font-golos);
-    }
+  body {
+    height: 100%;
+    font-family: var(--font-golos);
+  }
 
+  main {
+    flex: 1 1 auto;
+    min-height: 100vh;
+    padding-top: 40px;
+  }
+
+  h1,
+  .h1 {
+    @apply text-left text-2xl font-bold uppercase main:text-h1;
+  }
+
+  h2,
+  .h2 {
+    @apply text-left text-lg font-bold uppercase main:text-h2;
+  }
+
+  h3,
+  .h3 {
+    @apply text-left text-sm font-bold main:text-lg;
+  }
+
+  p {
+    @apply text-left text-sm main:text-lg;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  /* Custom scrollbar styles */
+
+  .custom-scrollbar-x::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .custom-scrollbar-x::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar-x::-webkit-scrollbar-thumb {
+    background: #ff8c3a;
+    border-radius: 10px;
+  }
+
+  .scrollbar-container-x {
+    position: relative;
+    padding: 5px;
+    overflow: auto;
+  }
+
+  .search-input ::placeholder {
+    color: #ff8c3aa6;
+  }
+
+  @media (min-width: 800px) {
     main {
-        flex: 1 1 auto;
-        min-height: 100vh;
-        padding-top: 40px;
+      padding-top: 65px;
     }
+  }
 
-    h1,
-    .h1 {
-        @apply text-left text-2xl font-bold uppercase main:text-h1;
-    }
-
-    h2,
-    .h2 {
-        @apply text-left text-lg font-bold uppercase main:text-h2;
-    }
-
-    h3,
-    .h3 {
-        @apply text-left text-sm font-bold main:text-lg;
-    }
-
-    p {
-        @apply text-left text-sm main:text-lg;
-    }
-
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        /* IE and Edge */
-        scrollbar-width: none;
-        /* Firefox */
-    }
-
-    /* Custom scrollbar styles */
-
-    .custom-scrollbar-x::-webkit-scrollbar {
-        height: 5px;
-    }
-
-    .custom-scrollbar-x::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .custom-scrollbar-x::-webkit-scrollbar-thumb {
-        background: #FF8C3A;
-        border-radius: 10px;
-    }
-
-    .scrollbar-container-x {
-        position: relative;
-        padding: 5px;
-        overflow: auto;
-    }
-
-    .search-input ::placeholder  {
-        color: #ff8c3aa6
-    }
-
-    @media (min-width: 800px) {
-        main {
-            padding-top: 65px;
-        }
-    }
-
-    .eFBGoa {
-        width: 100%;
-    }
-    #track-input {
-        width: 0px;
-    }
+  .eFBGoa {
+    width: 100%;
+  }
+  #track-input {
+    width: 0px;
+  }
 }

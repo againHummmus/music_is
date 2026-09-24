@@ -1,82 +1,80 @@
-import { supabase } from "@/lib/supabaseClient";
+'use server';
 
-export default class DialogueApi {
+import { requireSession } from './session';
+import { assertDialogueMember } from './guards';
+import { DIALOGUE_SELECT, PARTICIPANT_SELECT } from './types';
+import type { DialogueRow, ParticipantRow } from './types';
 
-  static async createDialogue({userId, otherUserId}:{userId: string, otherUserId: string}): Promise<{
-    dialogueId: number;
-    isNew: boolean;
-  }> {
-    const { data: existing, error: existingError } = await supabase
-      .from("User_dialogue")
-      .select("dialogueId,userId")
-      .in("userId", [userId, otherUserId]);
-    if (existingError) throw existingError;
+const USER_DIALOGUE_TABLE = 'User_dialogue';
+const DIALOGUE_TABLE = 'Dialogue';
 
-    const map = new Map<number, Set<string>>();
-    (existing ?? []).forEach((row: any) => {
-      const set = map.get(row.dialogueId) ?? new Set<string>();
-      set.add(row.userId?.toString());
-      map.set(row.dialogueId, set);
-    });
+export async function createDialogue({
+  otherUserId,
+}: {
+  otherUserId: string | number;
+}): Promise<{ dialogueId: number; isNew: boolean }> {
+  const { supabase, user } = await requireSession();
+  const otherId = Number(otherUserId);
 
-    for (const [dialogueId, set] of map.entries()) {
-      if (set.has(userId.toString()) && set.has(otherUserId.toString())) {
-        return { dialogueId, isNew: false };
-      }
+  const { data: existing, error: existingError } = await supabase
+    .from(USER_DIALOGUE_TABLE)
+    .select('dialogueId,userId')
+    .in('userId', [user.id, otherId]);
+  if (existingError) throw existingError;
+
+  const map = new Map<number, Set<number>>();
+  (existing ?? []).forEach((row) => {
+    if (row.dialogueId == null || row.userId == null) return;
+    const set = map.get(row.dialogueId) ?? new Set<number>();
+    set.add(row.userId);
+    map.set(row.dialogueId, set);
+  });
+
+  for (const [dialogueId, set] of map.entries()) {
+    if (set.has(user.id) && set.has(otherId)) {
+      return { dialogueId, isNew: false };
     }
+  }
 
-    const { data: dialogue, error: dialogueError } = await supabase
-      .from("Dialogue")
-      .insert({ title: null })
-      .select("id")
-      .single();
-    if (dialogueError) throw dialogueError;
+  const { data: dialogue, error: dialogueError } = await supabase
+    .from(DIALOGUE_TABLE)
+    .insert({ title: null })
+    .select('id')
+    .single();
+  if (dialogueError) throw dialogueError;
 
-    const { error: linkError } = await supabase.from("User_dialogue").insert([
-      { userId, dialogueId: dialogue.id, is_creator: true },
-      { userId: otherUserId, dialogueId: dialogue.id, is_creator: false },
+  const { error: linkError } = await supabase
+    .from(USER_DIALOGUE_TABLE)
+    .insert([
+      { userId: user.id, dialogueId: dialogue.id, is_creator: true },
+      { userId: otherId, dialogueId: dialogue.id, is_creator: false },
     ]);
-    if (linkError) throw linkError;
+  if (linkError) throw linkError;
 
-    return { dialogueId: dialogue.id, isNew: true };
-  }
+  return { dialogueId: dialogue.id, isNew: true };
+}
 
-  static async getUserDialogues({userId}:{userId: string}): Promise<
-    Array<any>
-  > {
-    const { data, error } = await supabase
-      .from("User_dialogue")
-      .select(`
-        dialogueId,
-        is_creator,
-        Dialogue (
-          id,
-          title,
-          Message(count),
-          User_dialogue (
-            userId,
-            is_creator,
-            User:User ( id, username, avatar_url )
-          )
-        )
-      `)
-      .eq("userId", userId);
-    if (error) throw error;
-    return data ?? [];
-  }
+export async function getUserDialogues(): Promise<DialogueRow[]> {
+  const { supabase, user } = await requireSession();
 
-  static async getParticipants(dialogueId: number): Promise<
-    Array<{
-      userId: number;
-      is_creator: boolean;
-      User: { id: number; username: string; avatar_url?: string };
-    }>
-  > {
-    const { data, error } = await supabase
-      .from("User_dialogue")
-      .select("userId, is_creator, User:User ( id, username, avatar_url )")
-      .eq("dialogueId", dialogueId);
-    if (error) throw error;
-    return (data ?? []) as any[];
-  }
+  const { data, error } = await supabase
+    .from(USER_DIALOGUE_TABLE)
+    .select(DIALOGUE_SELECT)
+    .eq('userId', user.id);
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getParticipants(
+  dialogueId: number
+): Promise<ParticipantRow[]> {
+  const { supabase, user } = await requireSession();
+  await assertDialogueMember(supabase, user.id, dialogueId);
+
+  const { data, error } = await supabase
+    .from(USER_DIALOGUE_TABLE)
+    .select(PARTICIPANT_SELECT)
+    .eq('dialogueId', dialogueId);
+  if (error) throw error;
+  return data ?? [];
 }
