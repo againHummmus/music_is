@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { createMessage } from '@/actions/messageApi';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import TrackSuggestionInput from '../shared/utils/ui/TrackSuggestionsInput';
 import type { TrackSuggestion } from '../shared/utils/ui/TrackSuggestionsInput';
 import { Track } from '../shared/track/TrackItem';
@@ -19,7 +19,7 @@ export default function MessageInput({ dialogueId }: MessageInputProps) {
   const [text, setText] = useState('');
   const [track, setTrack] = useState<TrackSuggestion | null>(null);
   const [addTrack, setAddTrack] = useState(false);
-  const { user } = useStore();
+  const user = useAuthStore((s) => s.user);
 
   const sendMessage = async () => {
     if ((!text.trim() && !track) || !dialogueId || !user) return;

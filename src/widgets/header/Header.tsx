@@ -7,14 +7,15 @@ import Image from 'next/image';
 import logo from '@public/images/logoDark.png';
 import placeholderAvatar from '@public/images/placeholderAvatar.png';
 import TrackSuggestionInput from '@/components/shared/utils/ui/TrackSuggestionsInput';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { createImgUrl } from '@/components/shared/utils/createUrlFromHash';
 import Link from 'next/link';
 import HugeiconsUser from '~icons/hugeicons/user?width=48px&height=48px';
 import HugeiconsSettings02 from '~icons/hugeicons/settings-02?width=24px&height=24px';
 
 export default function Header() {
-  const store = useStore();
+  const user = useAuthStore((s) => s.user);
+  const isAuth = useAuthStore((s) => s.isAuth);
   const [showSearch, setShowSearch] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -51,7 +52,7 @@ export default function Header() {
           className="h-[25px] w-[90px] object-contain"
         />
 
-        {store.isAuth && (
+        {isAuth && (
           <TrackSuggestionInput
             placeholder="Search tracks..."
             onSelect={handleSelectTrack}
@@ -60,7 +61,7 @@ export default function Header() {
           />
         )}
 
-        {store.isAuth && (
+        {isAuth && (
           <div className="relative flex flex-row items-center gap-10">
             <Link href={'/search'}>
               <HugeiconsSearch01
@@ -72,8 +73,8 @@ export default function Header() {
             <div ref={menuRef} className="relative">
               <Image
                 src={
-                  (store.user?.avatar_url &&
-                    createImgUrl(store.user?.avatar_url)) ||
+                  (user?.avatar_url &&
+                    createImgUrl(user?.avatar_url)) ||
                   placeholderAvatar
                 }
                 width={200}
@@ -86,7 +87,7 @@ export default function Header() {
                 className={`absolute right-0 z-50 mt-2 rounded border border-mainOrange bg-white transition-all ${showMenu ? 'visible opacity-100' : 'invisible opacity-0'} transition-all duration-300`}
               >
                 <Link
-                  href={`/discover/user/${store.user?.id}`}
+                  href={`/discover/user/${user?.id}`}
                   onClick={() => setShowMenu(false)}
                   className="flex flex-row items-center px-4 py-2 text-mainOrange hover:text-mainOrange/80"
                 >
@@ -107,7 +108,7 @@ export default function Header() {
         )}
       </div>
 
-      {store.isAuth && (
+      {isAuth && (
         <div className="w-full px-[10px]">
           <TrackSuggestionInput
             placeholder="Search tracks..."

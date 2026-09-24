@@ -1,11 +1,11 @@
 'use client';
 import { Track } from '../shared/track/TrackItem';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { searchPlaylists } from '@/actions/playlistApi';
 import { ContentBlock } from '../shared/ContentBlock';
 
 export function RecommendationsBlock() {
-  const currentUser = useStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
 
   if (!currentUser) return null;
 

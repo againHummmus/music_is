@@ -5,7 +5,7 @@ import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01';
 import { FileUploader } from 'react-drag-drop-files';
 
 
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import SuggestionInput from '@/components/shared/utils/ui/SuggestionsInput';
 import { RoundButton } from '@/components/shared/buttons/RoundButton';
 import { searchAlbums } from '@/actions/albumApi';
@@ -20,8 +20,7 @@ export default function UploadTrackScreen({
 }: {
   initialUser: UserWithArtist | null;
 }) {
-  const store = useStore((state) => state);
-  const storeUser = store.user;
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
   const artistId = user?.Artist?.id ?? null;
 

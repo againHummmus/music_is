@@ -5,7 +5,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import AkarIconsArrowBack from '~icons/akar-icons/arrow-back';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01';
 import { RoundButton } from '@/components/shared/buttons/RoundButton';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { useBecomeArtist } from '@hooks/UseBecomeArtist';
 import type { UserWithArtist } from '@/actions/types';
 
@@ -16,7 +16,7 @@ export default function BecomeAnArtistScreen({
 }: {
   initialUser?: UserWithArtist | null;
 }) {
-  const storeUser = useStore((state) => state.user);
+  const storeUser = useAuthStore((state) => state.user);
   const user = storeUser ?? initialUser;
 
   const {

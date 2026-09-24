@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { becomeArtist } from '@/actions/artistApi';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 
 export const useBecomeArtist = (userId?: string | number) => {
   const [artistName, setArtistName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const { update } = useStore();
+  const update = useAuthStore((s) => s.update);
   const router = useRouter();
 
   const preview = useMemo(

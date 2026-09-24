@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase/supabaseBrowser';
 import { getMessages } from '@/actions/messageApi';
 import type { MessageRow } from '@/actions/types';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { Track } from '../shared/track/TrackItem';
 
 interface MessageListProps {
@@ -13,7 +13,7 @@ interface MessageListProps {
 
 export default function MessageList({ dialogueId }: MessageListProps) {
   const [messages, setMessages] = useState<MessageRow[]>([]);
-  const { user } = useStore();
+  const user = useAuthStore((s) => s.user);
   const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 

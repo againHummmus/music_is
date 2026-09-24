@@ -1,11 +1,11 @@
 'use client';
 import { PlaylistItem } from '../shared/playlist/PlaylistItem';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { searchUserPlaylists } from '@/actions/userPlaylistApi';
 import { ContentBlock } from '../shared/ContentBlock';
 
 export function PlaylistsBlock() {
-  const currentUser = useStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
 
   if (!currentUser) return null;
 

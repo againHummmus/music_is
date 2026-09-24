@@ -3,25 +3,28 @@ import Link from 'next/link';
 import BiPlayCircle from '~icons/bi/play-circle?width=16px&height=16px';
 import BiPauseCircle from '~icons/bi/pause-circle?width=16px&height=16px';
 import { createImgUrl } from '../utils/createUrlFromHash';
-import { useStore } from '@/app/store';
+import { usePlayerStore } from '@/stores/playerStore';
 import type { PlaylistRow } from '@/actions/types';
 
 export function PlaylistItem({ info }: { info: PlaylistRow }) {
-  const store = useStore();
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const currentPlaylistId = usePlayerStore((s) => s.currentPlaylist?.id);
+  const togglePlay = usePlayerStore((s) => s.togglePlay);
+  const setCurrentPlaylist = usePlayerStore((s) => s.setCurrentPlaylist);
+  const playTrack = usePlayerStore((s) => s.playTrack);
 
   const firstTrack = info.Playlist_track?.[0]?.Track;
 
-  const isThisPlaying =
-    store.currentPlaylist?.id === info.id && store.isPlaying;
+  const isThisPlaying = currentPlaylistId === info.id && isPlaying;
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
     if (isThisPlaying) {
-      store.togglePlay();
+      togglePlay();
     } else if (firstTrack) {
-      store.setCurrentPlaylist(info);
-      store.playTrack(firstTrack);
+      setCurrentPlaylist(info);
+      playTrack(firstTrack);
     }
   };
 

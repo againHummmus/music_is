@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { createPlaylist } from '@/actions/playlistApi';
 import { PlaylistItem } from '@/components/shared/playlist/PlaylistItem';
 import HugeiconsPlusSign from '~icons/hugeicons/plus-sign';
@@ -15,7 +15,7 @@ export default function PlaylistsScreen({
   initialUser: any;
   initialPlaylists?: any[];
 }) {
-  const storeUser = useStore((s) => s.user);
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
 
   const [newName, setNewName] = useState('');

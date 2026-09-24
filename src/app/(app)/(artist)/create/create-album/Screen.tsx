@@ -4,7 +4,7 @@ import React from 'react';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01';
 import { FileUploader } from 'react-drag-drop-files';
 import AkarIconsArrowBack from '~icons/akar-icons/arrow-back';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { RoundButton } from '@/components/shared/buttons/RoundButton';
 import type { UserWithArtist } from '@/actions/types';
 import { useArtistCreateAlbum } from '@hooks/UseArtistCreateAlbum';
@@ -16,8 +16,7 @@ export default function CreateAlbumScreen({
 }: {
   initialUser: UserWithArtist | null;
 }) {
-  const store = useStore((state) => state);
-  const storeUser = store.user;
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
   const artistId = user?.Artist?.id ?? null;
 

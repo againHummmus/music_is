@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useStore } from './store';
+import { useAuthStore } from '@/stores/authStore';
 
 /**
  * Thin client component that keeps the Zustand store refreshed after
@@ -9,7 +9,7 @@ import { useStore } from './store';
  * runs on every route, including public ones.
  */
 export default function ClientInit() {
-  const update = useStore((s) => s.update);
+  const update = useAuthStore((s) => s.update);
   useEffect(() => {
     update();
   }, [update]);

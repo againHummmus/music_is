@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
+import { useUiStore } from '@/stores/uiStore';
 import HugeiconsPlaylist01 from '~icons/hugeicons/playlist-01?width=24px&height=24px';
 import HugeiconsArrowUp02 from '~icons/hugeicons/arrow-up-02';
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=48px&height=48px';
@@ -23,8 +24,9 @@ export function TrackActions({
   setMenuOpen: (open: boolean) => void;
   setDeletedTrack: (track: any) => void;
 }) {
-  const store = useStore();
-  const track = store.chosenTrack;
+  const chosenTrack = useUiStore((s) => s.chosenTrack);
+  const user = useAuthStore((s) => s.user);
+  const track = chosenTrack;
 
   const [userPlaylistConnections, setUserPlaylistConnections] = useState<any[]>(
     []
@@ -33,7 +35,7 @@ export function TrackActions({
   const [action, setAction] = useState<ActionType | undefined>(undefined);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const userId = store.user?.id;
+  const userId = user?.id;
 
   useEffect(() => {
     if (!userId) return;
@@ -78,10 +80,10 @@ export function TrackActions({
 
   if (!track) return null;
 
-  const currentArtistId = store.user?.artistId;
+  const currentArtistId = user?.artistId;
   const isAuthor =
     currentArtistId != null && currentArtistId === track.artistId;
-  const isAdmin = store.user?.app_role === 'admin';
+  const isAdmin = user?.app_role === 'admin';
 
   const renderActionBlock = () => {
     switch (action) {

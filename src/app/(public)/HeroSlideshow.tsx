@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 
 const IMAGES = [
   '/images/for-hero/1.png',
@@ -24,7 +24,7 @@ export default function HeroSlideshow({
 }) {
   const [idx, setIdx] = useState(0);
   // Keep reacting to client-side auth changes (e.g. sign-out on this page).
-  const storeIsAuth = useStore((s) => s.isAuth);
+  const storeIsAuth = useAuthStore((s) => s.isAuth);
   const isAuth = initialAuth || storeIsAuth;
 
   useEffect(() => {

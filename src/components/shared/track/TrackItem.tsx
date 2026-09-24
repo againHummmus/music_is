@@ -6,7 +6,9 @@ import MagePlayFill from '~icons/mage/play-fill?width=48px&height=48px';
 import WeuiLikeFilled from '~icons/weui/like-filled?width=24px&height=24px';
 import WeuiLikeOutlined from '~icons/weui/like-outlined?width=24px&height=24px';
 import CharmMenuKebab from '~icons/charm/menu-kebab?width=16px&height=16px';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
+import { usePlayerStore } from '@/stores/playerStore';
+import { useUiStore } from '@/stores/uiStore';
 import { createTrackLike, deleteTrackLike } from '@/actions/trackLikeApi';
 import { searchTracks } from '@/actions/trackApi';
 import type { TrackRow } from '@/actions/types';
@@ -25,10 +27,17 @@ export function Track({
   className?: string;
   playlist?: PlaylistRow;
 }) {
-  const store = useStore();
+  const userId = useAuthStore((s) => s.user?.id);
+  const currentTrackId = usePlayerStore((s) => s.currentTrack?.id);
+  const chosenTrackId = useUiStore((s) => s.chosenTrack?.id);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const playTrack = usePlayerStore((s) => s.playTrack);
+  const togglePlay = usePlayerStore((s) => s.togglePlay);
+  const setCurrentPlaylist = usePlayerStore((s) => s.setCurrentPlaylist);
+  const setChosenTrack = useUiStore((s) => s.setChosenTrack);
 
   const isTrackLiked = () =>
-    !!info?.Track_like?.some((like) => like.userId === store.user?.id);
+    !!info?.Track_like?.some((like) => like.userId === userId);
   const [trackInfo, setTrackInfo] = useState<TrackInfo>({
     ...info,
     isLiked: isTrackLiked(),
@@ -38,11 +47,11 @@ export function Track({
   const [deletedTrack, setDeletedTrack] = useState<number>();
 
   const handlePlay = () => {
-    if (playlist) store.setCurrentPlaylist(playlist);
-    if (store.currentTrack?.id === info?.id) {
-      store.togglePlay();
+    if (playlist) setCurrentPlaylist(playlist);
+    if (currentTrackId === info?.id) {
+      togglePlay();
     } else {
-      store.playTrack(info);
+      playTrack(info);
     }
   };
 
@@ -64,7 +73,7 @@ export function Track({
       if (updated) {
         setTrackInfo({
           ...updated,
-          isLiked: updated.Track_like.some((l) => l.userId === store.user?.id),
+          isLiked: updated.Track_like.some((l) => l.userId === userId),
         } as TrackInfo);
       }
     } catch (e) {
@@ -76,13 +85,13 @@ export function Track({
   const handleKebabClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setMenuOpen(!menuOpen);
-    store.setChosenTrack(trackInfo);
+    setChosenTrack(trackInfo);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
-    if (!(e.target as Element).closest(`#${store.chosenTrack?.id}track`)) {
+    if (!(e.target as Element).closest(`#${chosenTrackId}track`)) {
       setMenuOpen(false);
-      store.setChosenTrack(undefined);
+      setChosenTrack(undefined);
     }
   };
 
@@ -107,7 +116,7 @@ export function Track({
               : 'none',
           }}
         >
-          {store.currentTrack?.id === info?.id && store.isPlaying ? (
+          {currentTrackId === info?.id && isPlaying ? (
             <MagePauseFill className="absolute inset-0 m-auto h-[20px] w-[20px] text-mainOrange transition-all group-hover:scale-[120%]" />
           ) : (
             <MagePlayFill className="absolute inset-0 m-auto h-[20px] w-[20px] text-mainOrange transition-all group-hover:scale-[120%]" />
@@ -135,7 +144,7 @@ export function Track({
             <CharmMenuKebab />
           </div>
 
-          {menuOpen && store.chosenTrack?.id === trackInfo?.id && (
+          {menuOpen && chosenTrackId === trackInfo?.id && (
             <div
               id={`${trackInfo.id}-track`}
               className="absolute right-0 top-full z-[5000] mt-2 min-w-[200px] rounded border border-darkStormy bg-white p-2 shadow-md"

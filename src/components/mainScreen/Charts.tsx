@@ -1,11 +1,11 @@
 'use client';
 import { Track } from '../shared/track/TrackItem';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { searchPlaylists } from '@/actions/playlistApi';
 import { ContentBlock } from '../shared/ContentBlock';
 
 export function Charts() {
-  const { user } = useStore();
+  const user = useAuthStore((s) => s.user);
 
   return (
     <ContentBlock

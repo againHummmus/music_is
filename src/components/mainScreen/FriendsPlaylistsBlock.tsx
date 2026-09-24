@@ -1,14 +1,14 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { BaseButtonDark } from '../shared/buttons/BaseButtonDark';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { searchMutualFriends } from '@/actions/userSubscriptionApi';
 import type { MutualFriendRow } from '@/actions/types';
 import { PlaylistItem } from '../shared/playlist/PlaylistItem';
 
 export function FriendsPlaylistsBlock() {
   const LIMIT = 20;
-  const currentUser = useStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
 
   const [friends, setFriends] = useState<MutualFriendRow[]>([]);
 

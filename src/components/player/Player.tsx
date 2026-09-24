@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { useStore } from '@/app/store';
-import Image from 'next/image';
+import { usePlayerStore } from '@/stores/playerStore';
 import MagePauseFill from '~icons/mage/pause-fill?width=48px&height=48px';
 import MagePlayFill from '~icons/mage/play-fill?width=48px&height=48px';
 import { createMp3Url, createImgUrl } from '../shared/utils/createUrlFromHash';
@@ -18,15 +17,13 @@ function formatTime(seconds: number): string {
 }
 
 export default function Player() {
-  const {
-    currentTrack,
-    isPlaying,
-    togglePlay,
-    playTrack,
-    currentTime,
-    setCurrentTime,
-    currentPlaylist,
-  } = useStore();
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const currentPlaylist = usePlayerStore((s) => s.currentPlaylist);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const currentTime = usePlayerStore((s) => s.currentTime);
+  const togglePlay = usePlayerStore((s) => s.togglePlay);
+  const playTrack = usePlayerStore((s) => s.playTrack);
+  const setCurrentTime = usePlayerStore((s) => s.setCurrentTime);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [localTime, setLocalTime] = useState(0);
@@ -106,7 +103,7 @@ export default function Player() {
 
   return (
     <div
-      className="after:content-'' sticky bottom-[50px] left-0 right-0 z-[10000] flex flex-col items-center bg-gray-900 from-mainBlack to-mainBlack/50 bg-cover bg-center p-2 text-white after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-gradient-to-r main:bottom-0 main:p-4"
+      className="after:content-'' sticky bottom-[50px] left-0 right-0 z-[10000] flex flex-col items-center bg-gray-900 from-mainBlack to-mainBlack/50 bg-cover bg-center p-1 main:px-4 text-white after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-gradient-to-r main:bottom-0 main:p-2"
       style={{
         backgroundImage: `url(${
           currentTrack.Album?.image_hash
@@ -119,7 +116,11 @@ export default function Player() {
         <div className="flex flex-row gap-[10px]">
           <div>
             <div className="flex flex-row items-center gap-10">
-              <div className="font-medium">{currentTrack.name}</div>
+              <span className="font-medium">{currentTrack.name}</span>
+              <span>∘</span>
+              <span className="text-sm text-gray-400">
+              {currentTrack.Artist?.name}
+            </span>
               <button
                 onClick={() => setIsRepeat(!isRepeat)}
                 aria-label="Repeat"
@@ -131,18 +132,15 @@ export default function Player() {
                 )}
               </button>
             </div>
-            <div className="text-sm text-gray-400">
-              {currentTrack.Artist?.name}
-            </div>
           </div>
         </div>
 
         <div className="flex flex-row gap-[10px]">
-          <button className="p-2" onClick={playPrevTrack} aria-label="Previous">
+          <button onClick={playPrevTrack} aria-label="Previous">
             <HugeiconsPrevious className="h-[20px] w-[20px] text-mainOrange" />
           </button>
           <button
-            className="mx-2 p-2"
+            className="mx-2"
             onClick={togglePlay}
             aria-label="Play/Pause"
           >
@@ -152,13 +150,13 @@ export default function Player() {
               <MagePlayFill className="w-[20px] text-mainOrange main:w-[25px]" />
             )}
           </button>
-          <button className="p-2" onClick={playNextTrack} aria-label="Next">
+          <button onClick={playNextTrack} aria-label="Next">
             <HugeiconsNext className="h-[20px] w-[20px] text-mainOrange" />
           </button>
         </div>
       </div>
 
-      <div className="relative z-[7000] mt-2 w-full">
+      <div className="relative z-[7000] w-full">
         <input
           type="range"
           min={0}

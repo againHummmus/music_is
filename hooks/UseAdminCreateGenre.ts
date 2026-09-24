@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { createGenre } from '@/actions/genreApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 export const useAdminCreateGenre = () => {
   const [genreName, setGenreName] = useState('');
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const canSubmit = genreName.trim().length > 0;
 
@@ -14,14 +14,14 @@ export const useAdminCreateGenre = () => {
     try {
       setLoading(true);
       await createGenre({ name: genreName });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Genre created!',
         redirectUrl: '/admin',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error in creating Genre',

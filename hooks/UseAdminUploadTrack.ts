@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createTrack } from '@/actions/trackApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 interface SuggestionItem {
   id: number | string;
@@ -21,7 +21,7 @@ export const useAdminUploadTrack = () => {
     null
   );
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const canSubmit = !!(
     file &&
@@ -51,14 +51,14 @@ export const useAdminUploadTrack = () => {
         file,
         isAddedByUser: false,
       });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Track uploaded successfully!',
         redirectUrl: '/admin',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error uploading track',

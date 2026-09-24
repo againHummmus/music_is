@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { createImgUrl } from '../utils/createUrlFromHash';
 import { createPostLike, deletePostLike } from '@/actions/postLikeApi';
 import { searchPosts } from '@/actions/postApi';
@@ -24,10 +24,10 @@ export const PostItem = ({
   post: Post & { Post_like: PostLike[] };
   handleDeletePost?: (id: number) => void;
 }) => {
-  const store = useStore();
+  const currentUser = useAuthStore((s) => s.user);
 
   const isPostLiked = () =>
-    !!post?.Post_like?.some((like: PostLike) => like.userId === store.user?.id);
+    !!post?.Post_like?.some((like: PostLike) => like.userId === currentUser?.id);
   const [postInfo, setPostInfo] = useState({
     ...post,
     isLiked: isPostLiked(),
@@ -35,7 +35,7 @@ export const PostItem = ({
   });
 
   const toggleLike = async () => {
-    if (!store.user) return;
+    if (!currentUser) return;
 
     const wasLiked = postInfo.isLiked;
     const originalLikeCount = postInfo.likeCount;
@@ -68,7 +68,7 @@ export const PostItem = ({
           setPostInfo((prev) => ({
             ...prev,
             isLiked: updatedPost.Post_like.some(
-              (l: PostLike) => l.userId === store.user?.id
+              (l: PostLike) => l.userId === currentUser?.id
             ),
             likeCount: updatedPost.Post_like.length,
           }));

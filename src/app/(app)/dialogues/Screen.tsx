@@ -1,6 +1,6 @@
 'use client';
 
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import Image from 'next/image';
 import { createImgUrl } from '@/components/shared/utils/createUrlFromHash';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ export default function DialoguesScreen({
   initialDialogues,
   initialLastMessages,
 }: Props) {
-  const storeUser = useStore((s) => s.user);
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
   const dialogues = initialDialogues;
   const lastMessages = initialLastMessages;

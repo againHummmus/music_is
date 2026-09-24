@@ -1,7 +1,8 @@
 'use client';
 
 import { useLayoutEffect } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
+import { useUiStore } from '@/stores/uiStore';
 import { Sidebar } from '@/widgets/Sidebar';
 import Header from '@/widgets/header/Header';
 import { MobileNav } from '@/widgets/mobile-nav/MobileNav';
@@ -17,7 +18,7 @@ export default function AppLayoutClient({ children, initialUser }: Props) {
   // Synchronously hydrate the store before the browser paints so every child
   // component sees the correct user on its very first render.
   useLayoutEffect(() => {
-    useStore.setState({
+    useAuthStore.setState({
       user: initialUser,
       isAuth: Boolean(initialUser),
       isLoading: false,
@@ -26,8 +27,8 @@ export default function AppLayoutClient({ children, initialUser }: Props) {
 
   // Use the server-provided value as fallback for the very first render
   // (before useLayoutEffect fires).
-  const storeUser = useStore((s) => s.user);
-  const modal = useStore((s) => s.modal);
+  const storeUser = useAuthStore((s) => s.user);
+  const modal = useUiStore((s) => s.modal);
   const user = storeUser ?? initialUser;
 
   if (!user) return null;

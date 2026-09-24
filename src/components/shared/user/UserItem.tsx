@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24px&height=24px';
 import { createImgUrl } from '../utils/createUrlFromHash';
 import Link from 'next/link';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { createSubscription, deleteSubscription, searchSubscriptions } from '@/actions/userSubscriptionApi';
 import type { UserRow } from '@/actions/types';
 import type { UserBasicRow } from '@/actions/types';
 
 export function User({ user }: { user: UserBasicRow }) {
-  const { user: currentUser } = useStore();
+  const currentUser = useAuthStore((s) => s.user);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subId, setSubId] = useState<string | number | null>(null);
   const [loading, setLoading] = useState(false);

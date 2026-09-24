@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createAlbum } from '@/actions/albumApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 export const useArtistCreateAlbum = (artistId?: number | null) => {
   const [file, setFile] = useState<File | null>(null);
   const [albumName, setAlbumName] = useState('');
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const preview = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
@@ -31,14 +31,14 @@ export const useArtistCreateAlbum = (artistId?: number | null) => {
         artistId: artistId ?? null,
         image_hash: file,
       });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Album created!',
         redirectUrl: '/create',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error in creating Album',

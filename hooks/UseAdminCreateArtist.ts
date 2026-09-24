@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createArtist } from '@/actions/artistApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 export const useAdminCreateArtist = () => {
   const [file, setFile] = useState<File | null>(null);
   const [artistName, setArtistName] = useState('');
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const preview = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
@@ -25,14 +25,14 @@ export const useAdminCreateArtist = () => {
     try {
       setLoading(true);
       await createArtist({ name: artistName, image: file });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Artist created!',
         redirectUrl: '/admin',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error in creating Artist',

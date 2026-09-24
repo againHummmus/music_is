@@ -2,7 +2,7 @@ import { createUserPlaylist } from '@/actions/userPlaylistApi';
 import { searchMutualFriends } from '@/actions/userSubscriptionApi';
 import type { MutualFriendRow } from '@/actions/types';
 import type { PlaylistRow } from '@/actions/types';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import React, { useState, useEffect } from 'react';
 
 const LIMIT = 20;
@@ -16,7 +16,7 @@ export default function FriendsList({
   playlistId: number;
   className?: string;
 }) {
-  const currentUser = useStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
   const [friends, setFriends] = useState<MutualFriendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const existingCollaboratorIds = new Set(

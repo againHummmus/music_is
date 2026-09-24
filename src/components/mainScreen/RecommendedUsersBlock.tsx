@@ -1,6 +1,6 @@
 'use client';
 import { User } from '../shared/user/UserItem';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { getUserRecommendations } from '@/actions/recsApi';
 import { ContentBlock } from '../shared/ContentBlock';
 
@@ -9,7 +9,7 @@ export function RecommendedUsersBlock({
 }: {
   showPlaceholder?: boolean;
 }) {
-  const currentUser = useStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
 
   if (!currentUser) return null;
 

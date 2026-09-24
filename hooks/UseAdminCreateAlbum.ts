@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createAlbum } from '@/actions/albumApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 interface SuggestionItem {
   id: number | string;
@@ -15,7 +15,7 @@ export const useAdminCreateAlbum = () => {
     null
   );
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const preview = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
@@ -41,14 +41,14 @@ export const useAdminCreateAlbum = () => {
         artistId: Number(selectedArtist.id),
         image_hash: file,
       });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Album created!',
         redirectUrl: '/admin',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error in creating Album',

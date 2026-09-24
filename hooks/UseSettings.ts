@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
+import { useUiStore } from '@/stores/uiStore';
 import { updateUser } from '@/actions/userApi';
 import type { UserWithArtist } from '@/actions/types';
 
 export const useSettings = (user: UserWithArtist | null | undefined) => {
-  const state = useStore();
+  const signOut = useAuthStore((s) => s.signOut);
+  const setModal = useUiStore((s) => s.setModal);
   const [username, setUsername] = useState(user?.username ?? '');
   const [editingName, setEditingName] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -15,12 +17,12 @@ export const useSettings = (user: UserWithArtist | null | undefined) => {
   };
 
   const handleLogout = async () => {
-    await state.signOut();
+    await signOut();
   };
 
   const handleSave = async () => {
     if (!file && !editingName) {
-      state.setModal({
+      setModal({
         isOpen: true,
         type: 'warning',
         message: 'Nothing to save',
@@ -34,7 +36,7 @@ export const useSettings = (user: UserWithArtist | null | undefined) => {
         file: file ?? undefined,
         newUsername: editingName ? username : undefined,
       });
-      state.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Profile saved!',
@@ -43,7 +45,7 @@ export const useSettings = (user: UserWithArtist | null | undefined) => {
       setFile(null);
     } catch (err) {
       console.error(err);
-      state.setModal({ isOpen: true, type: 'error', message: 'Save failed' });
+      setModal({ isOpen: true, type: 'error', message: 'Save failed' });
     } finally {
       setSaving(false);
     }

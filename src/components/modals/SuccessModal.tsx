@@ -1,6 +1,6 @@
 'use client';
 
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 import { useRouter } from 'next/navigation';
 import MingcuteCelebrateLine from '~icons/mingcute/celebrate-line?width=48px&height=48px';
 import MingcuteSadLine from '~icons/mingcute/sad-line?width=48px&height=48px';
@@ -9,17 +9,12 @@ import React from 'react';
 
 export function Modal() {
   const router = useRouter();
-  const modal = useStore((state) => state.modal);
-  const store = useStore((state) => state);
+  const modal = useUiStore((s) => s.modal);
+  const closeModal = useUiStore((s) => s.closeModal);
 
   const handleOk = () => {
     modal.redirectUrl && router.push(modal.redirectUrl);
-    store.setModal({
-      isOpen: false,
-      type: undefined,
-      message: undefined,
-      redirectUrl: undefined,
-    });
+    closeModal();
   };
 
   let bgStyle = '';

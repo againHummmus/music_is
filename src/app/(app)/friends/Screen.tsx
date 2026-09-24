@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { searchMutualFriends } from '@/actions/userSubscriptionApi';
 import HugeiconsSpinner01 from '~icons/uil/spinner?width=32px&height=32px';
 import { User } from '@/components/shared/user/UserItem';
@@ -15,7 +15,7 @@ export default function FriendsScreen({
   initialFriends?: any[];
 }) {
   const LIMIT = 20;
-  const storeUser = useStore((state) => state.user);
+  const storeUser = useAuthStore((state) => state.user);
   const currentUser = storeUser ?? initialUser;
 
   const [friends, setFriends] = useState<any[]>(initialFriends);

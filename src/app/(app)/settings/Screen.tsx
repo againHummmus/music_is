@@ -1,6 +1,6 @@
 'use client';
 
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { FileUploader } from 'react-drag-drop-files';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01?width=24px&height=24px';
 import type { UserWithArtist } from '@/actions/types';
@@ -13,8 +13,7 @@ export default function SettingsScreen({
 }: {
   initialUser: UserWithArtist | null;
 }) {
-  const state = useStore();
-  const storeUser = state.user;
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
 
   const {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createTrack } from '@/actions/trackApi';
-import { useStore } from '@/app/store';
+import { useUiStore } from '@/stores/uiStore';
 
 interface SuggestionItem {
   id: number | string;
@@ -17,7 +17,7 @@ export const useArtistUploadTrack = (artistId?: number | null) => {
   );
   const [rightsConfirmed, setRightsConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const store = useStore();
+  const setModal = useUiStore((s) => s.setModal);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRightsConfirmed(e.target.checked);
@@ -45,14 +45,14 @@ export const useArtistUploadTrack = (artistId?: number | null) => {
         file,
         isAddedByUser: true,
       });
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'success',
         message: 'Track uploaded!',
         redirectUrl: '/create',
       });
     } catch {
-      store.setModal({
+      setModal({
         isOpen: true,
         type: 'error',
         message: 'Error in uploading track :(',

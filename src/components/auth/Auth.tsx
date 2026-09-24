@@ -6,7 +6,7 @@ import { useState, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RoundButton } from '@/components/shared/buttons/RoundButton';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 
 interface PasswordInputProps {
   value: string;
@@ -64,8 +64,8 @@ export default function AuthScreen({
   const [error, setError] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const signInAction = useStore((state) => state.signIn);
-  const signUpAction = useStore((state) => state.signUp);
+  const signInAction = useAuthStore((state) => state.signIn);
+  const signUpAction = useAuthStore((state) => state.signUp);
 
   const handleSignIn = async () => {
     if (!email || !password) {

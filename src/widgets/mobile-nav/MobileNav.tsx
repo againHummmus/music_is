@@ -11,7 +11,7 @@ import HugeiconsUserGroup from '~icons/hugeicons/user-group?width=24px&height=24
 import Link from 'next/link';
 import { getMe } from '@/actions/userApi';
 import { useState, useEffect } from 'react';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 
 function RoleBasedLink({
   loading,
@@ -61,7 +61,7 @@ function RoleBasedLink({
 export function MobileNav() {
   const [app_role, setRole] = useState<'artist' | 'admin' | 'user'>('user');
   const [loading, setLoading] = useState(true);
-  const store = useStore((state) => state);
+  const storeUser = useAuthStore((s) => s.user);
 
   useEffect(() => {
     (async () => {
@@ -70,7 +70,7 @@ export function MobileNav() {
       setRole(user?.app_role ?? 'user');
       setLoading(false);
     })();
-  }, [store.user]);
+  }, [storeUser]);
   return (
     <div className="sticky bottom-[0px] left-[0px] right-[0px] z-[6000] hidden max-w-[100%] flex-row items-center justify-between bg-mainDark px-[15%] py-10 text-mainWhite max-main:flex">
       <Link

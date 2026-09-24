@@ -1,7 +1,7 @@
 'use client';
 
 import type { UserWithArtist } from '@/actions/types';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import type { ParticipantRow } from '@/actions/types';
 import MessageList from '@/components/messenger/MessageList';
 import MessageInput from '@/components/messenger/MessageInput';
@@ -15,7 +15,7 @@ export default function DialogueScreen({
   initialUser: UserWithArtist | null;
   initialParticipants: ParticipantRow[];
 }) {
-  const storeUser = useStore((s) => s.user);
+  const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
 
   return (

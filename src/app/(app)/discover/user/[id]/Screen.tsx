@@ -5,7 +5,7 @@ import { createImgUrl } from '@/components/shared/utils/createUrlFromHash';
 import Image from 'next/image';
 import { createSubscription, deleteSubscription } from '@/actions/userSubscriptionApi';
 import { createPost, deletePost } from '@/actions/postApi';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import { PlaylistItem } from '@/components/shared/playlist/PlaylistItem';
 import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24px&height=24px';
 import { PostItem } from '@/components/shared/post/PostItem';
@@ -32,8 +32,7 @@ export default function UserScreen({
   initialSubscriberCount: number;
   initialPosts: any[];
 }) {
-  const store = useStore();
-  const storeCurrentUser = store.user;
+  const storeCurrentUser = useAuthStore((s) => s.user);
   const currentUser = storeCurrentUser ?? initialCurrentUser;
 
   const user: any = initialViewedUser;

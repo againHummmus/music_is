@@ -1,29 +1,30 @@
 'use client';
-import { useStore } from '@/app/store';
+import { useAuthStore } from '@/stores/authStore';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function ActivationScreen() {
   const router = useRouter();
-  const store = useStore((state) => state);
+  const user = useAuthStore((s) => s.user);
+  const setIsLoading = useAuthStore((s) => s.setIsLoading);
 
   useEffect(() => {
-    store.setIsLoading(true);
-    if (!store.user) {
-      store.setIsLoading(false);
+    setIsLoading(true);
+    if (!user) {
+      setIsLoading(false);
       router.push('/auth?mode=signUp');
       return;
     }
     if (
-      store.user.is_activated === true &&
+      user.is_activated === true &&
       window.location.pathname === '/activate'
     ) {
-      store.setIsLoading(false);
+      setIsLoading(false);
       router.push('/library');
       return;
     }
-    store.setIsLoading(false);
-  }, [store.user, router]);
+    setIsLoading(false);
+  }, [user, router]);
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center">
