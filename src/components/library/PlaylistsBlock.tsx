@@ -17,7 +17,7 @@ export function PlaylistsBlock() {
           userId: currentUser.id,
           limit: 6,
         });
-        return (res as any).data;
+        return ((res as any).data ?? []).filter((item: any) => item.Playlist);
       }}
       renderItem={(item, index) => (
         <PlaylistItem key={index} info={item.Playlist} />

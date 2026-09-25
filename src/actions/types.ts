@@ -45,16 +45,23 @@ export const PLAYLIST_TRACK_SELECT = `
   Track ( ${TRACK_SELECT} )
 `;
 
+const PLAYLIST_EMBED_FIELDS = `
+  *,
+  Creator:Creator ( ${USER_BRIEF_SELECT} ),
+  Playlist_track (
+    *,
+    Track ( ${TRACK_SELECT} )
+  )
+`;
+
 export const USER_PLAYLIST_SELECT = `
   *,
-  Playlist (
-    *,
-    Creator:Creator ( ${USER_BRIEF_SELECT} ),
-    Playlist_track (
-      *,
-      Track ( ${TRACK_SELECT} )
-    )
-  )
+  Playlist ( ${PLAYLIST_EMBED_FIELDS} )
+`;
+
+export const USER_PLAYLIST_SELECT_INNER = `
+  *,
+  Playlist!inner ( ${PLAYLIST_EMBED_FIELDS} )
 `;
 
 export const USER_SELECT = `

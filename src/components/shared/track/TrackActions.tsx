@@ -45,7 +45,11 @@ export function TrackActions({
         userId,
         includeDefaultPlaylists: false,
       })
-        .then((res: any) => setUserPlaylistConnections(res.data))
+        .then((res: any) =>
+          setUserPlaylistConnections(
+            (res.data ?? []).filter((pl: any) => pl.Playlist)
+          )
+        )
         .catch(console.error)
         .finally(() => setLoading(false));
     })();

@@ -67,6 +67,10 @@ export default function UserPlaylistsScreen({
     return () => obs.disconnect();
   }, [loadMore]);
 
+  const visibleConnections = userPlaylistConnections.filter(
+    (conn) => conn.Playlist
+  );
+
   return (
     <div>
       <p className="mb-20 text-3xl font-bold">
@@ -82,13 +86,13 @@ export default function UserPlaylistsScreen({
               />
             ))}
           </div>
-        ) : userPlaylistConnections.length === 0 ? (
+        ) : visibleConnections.length === 0 ? (
           <div className="py-8 text-center text-gray-500">
             No playlists yet.
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 main:grid-cols-2">
-            {userPlaylistConnections.map((conn) => (
+            {visibleConnections.map((conn) => (
               <PlaylistItem key={conn.Playlist.id} info={conn.Playlist} />
             ))}
           </div>
@@ -96,13 +100,13 @@ export default function UserPlaylistsScreen({
 
         <div ref={loaderRef} />
 
-        {isFetching && userPlaylistConnections.length > 0 && (
+        {isFetching && visibleConnections.length > 0 && (
           <div className="py-4 text-center text-sm text-gray-500">
             Loading more…
           </div>
         )}
 
-        {!hasMore && userPlaylistConnections.length > 0 && (
+        {!hasMore && visibleConnections.length > 0 && (
           <div className="py-4 text-center text-sm text-gray-400">
             You&apos;ve reached the end!
           </div>

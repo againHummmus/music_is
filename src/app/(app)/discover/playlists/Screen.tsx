@@ -90,6 +90,10 @@ export default function PlaylistsScreen({
     }
   };
 
+  const visibleConnections = userPlaylistConnections.filter(
+    (conn) => conn.Playlist
+  );
+
   return (
     <div className="flex flex-col gap-10">
       <div
@@ -149,20 +153,20 @@ export default function PlaylistsScreen({
             />
           ))}
         </div>
-      ) : userPlaylistConnections.length === 0 ? (
+      ) : visibleConnections.length === 0 ? (
         <div className="flex h-[230px] flex-col items-center justify-center gap-20 rounded-[7px] border border-dashed border-mainOrange text-mainOrange">
           <StreamlineSleep className="h-[40px] w-[40px]" />
           <p>You have no playlists yet!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 main:grid-cols-2">
-          {userPlaylistConnections.map((conn) => (
+          {visibleConnections.map((conn) => (
             <PlaylistItem key={conn.Playlist.id} info={conn.Playlist} />
           ))}
         </div>
       )}
       <div ref={loaderRef} />
-      {!hasMore && userPlaylistConnections.length > 0 && (
+      {!hasMore && visibleConnections.length > 0 && (
         <div className="py-4 text-center text-sm text-gray-400">
           You&apos;ve reached the end!
         </div>
