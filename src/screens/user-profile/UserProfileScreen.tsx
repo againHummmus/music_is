@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Image from 'next/image';
 import { createSubscription, deleteSubscription } from '@/actions/userSubscriptionApi';
-import { createPost, deletePost } from '@/actions/postApi';
+import { createPost, deletePost, searchPosts } from '@/actions/postApi';
 import { useAuthStore } from '@/stores/authStore';
 import { PlaylistItem } from '@/components/playlist/PlaylistItem';
 import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24px&height=24px';
@@ -13,6 +13,7 @@ import { PostItem } from '@/components/post/PostItem';
 import HugeiconsBubbleChat from '~icons/hugeicons/bubble-chat?width=48px&height=48px';
 import { createDialogue } from '@/actions/dialogueApi';
 import { Section } from '@/components/ui/Section';
+import { useInfiniteList } from '@/hooks/useInfiniteList';
 import { TRACK_GRID_CLASS } from '@/components/ui/SectionSkeleton';
 import type {
   PlaylistWithTracksRow,
@@ -28,6 +29,7 @@ export function UserProfileScreen({
   initialSubId,
   initialSubscriberCount,
   initialPosts,
+  postsPageSize,
   albums,
 }: {
   initialCurrentUser: UserWithArtist | null;
@@ -36,6 +38,7 @@ export function UserProfileScreen({
   initialSubId: number | null;
   initialSubscriberCount: number;
   initialPosts: PostRow[];
+  postsPageSize: number;
   albums: ReactNode;
 }) {
   const storeCurrentUser = useAuthStore((s) => s.user);
@@ -50,7 +53,22 @@ export function UserProfileScreen({
     initialSubscriberCount
   );
 
-  const [posts, setPosts] = useState<PostRow[]>(initialPosts);
+  const {
+    items: posts,
+    setItems: setPosts,
+    hasMore: hasMorePosts,
+    isLoading: postsLoading,
+    loadMore: loadMorePosts,
+  } = useInfiniteList<PostRow>({
+    fetchPage: (_offset, limit, loaded) =>
+      searchPosts({
+        userId: user.id,
+        limit,
+        before: loaded.at(-1)?.created_at,
+      }),
+    limit: postsPageSize,
+    initialItems: initialPosts,
+  });
   const [newPost, setNewPost] = useState('');
   const [postLoading, setPostLoading] = useState(false);
 
@@ -209,6 +227,15 @@ export function UserProfileScreen({
               />
             ))}
           </div>
+          {hasMorePosts && (
+            <button
+              onClick={loadMorePosts}
+              disabled={postsLoading}
+              className="self-center rounded-[7px] bg-mainOrange px-4 py-2 text-white disabled:opacity-50"
+            >
+              {postsLoading ? 'Loading...' : 'Show more'}
+            </button>
+          )}
         </Section>
       )}
 

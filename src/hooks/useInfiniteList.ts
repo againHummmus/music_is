@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseInfiniteListOptions<T> {
-  fetchPage: (offset: number, limit: number) => Promise<T[]>;
+  fetchPage: (offset: number, limit: number, items: T[]) => Promise<T[]>;
   limit: number;
   initialItems?: T[];
   enabled?: boolean;
@@ -32,7 +32,11 @@ export function useInfiniteList<T>({
     isLoadingRef.current = true;
     setIsLoading(true);
     try {
-      const page = await fetchPageRef.current(offsetRef.current, limit);
+      const page = await fetchPageRef.current(
+        offsetRef.current,
+        limit,
+        items
+      );
       offsetRef.current += page.length;
       setItems((prev) => [...prev, ...page]);
       setHasMore(page.length === limit);
@@ -42,7 +46,7 @@ export function useInfiniteList<T>({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [enabled, hasMore, limit]);
+  }, [enabled, hasMore, limit, items]);
 
   useEffect(() => {
     const node = sentinelRef.current;
@@ -57,5 +61,5 @@ export function useInfiniteList<T>({
     return () => observer.disconnect();
   }, [loadMore, items.length]);
 
-  return { items, setItems, hasMore, isLoading, sentinelRef };
+  return { items, setItems, hasMore, isLoading, loadMore, sentinelRef };
 }

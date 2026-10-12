@@ -10,6 +10,8 @@ import { UserProfileScreen } from '@/screens/user-profile/UserProfileScreen';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { UserAlbumsBlock } from '@/screens/user-profile/UserAlbumsBlock';
 
+const POSTS_PAGE_SIZE = 20;
+
 export default async function Page({ params }: { params: { id: string } }) {
   const currentUser = await getCurrentUser();
 
@@ -23,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           })
         : Promise.resolve(null),
       countFollowers({ followee: params.id }),
-      searchPosts({ userId: params.id, limit: 100 }),
+      searchPosts({ userId: params.id, limit: POSTS_PAGE_SIZE }),
     ]);
 
     if (!viewedUser) {
@@ -40,6 +42,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       initialSubId={subscriptionId}
       initialSubscriberCount={initialSubscriberCount}
       initialPosts={initialPosts}
+      postsPageSize={POSTS_PAGE_SIZE}
       albums={
         viewedUser.Artist && (
           <Suspense fallback={null}>

@@ -1,6 +1,6 @@
 'use server';
 
-import { publicClient, requireSession } from './session';
+import { requireSession } from './session';
 
 const POST_LIKE_TABLE = 'Post_like';
 
@@ -20,28 +20,6 @@ export async function createPostLike({
   return data;
 }
 
-export async function searchPostLikes({
-  userId,
-  postId,
-  limit = 10,
-  offset = 0,
-}: {
-  userId?: string | number;
-  postId?: string | number;
-  limit?: number;
-  offset?: number;
-}) {
-  const supabase = publicClient();
-
-  let query = supabase.from(POST_LIKE_TABLE).select('*');
-  if (userId) query = query.eq('userId', Number(userId));
-  if (postId) query = query.eq('postId', Number(postId));
-  if (limit) query = query.range(offset, offset + limit - 1);
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return data ?? [];
-}
 
 export async function deletePostLike({
   postId,

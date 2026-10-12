@@ -9,15 +9,17 @@ import type { MessageRow } from '@/actions/types';
 interface MessageListProps {
   dialogueId: number;
   initialMessages: MessageRow[];
+  pageSize: number;
 }
 
-export function MessageList({ dialogueId, initialMessages }: MessageListProps) {
+export function MessageList({
+  dialogueId,
+  initialMessages,
+  pageSize,
+}: MessageListProps) {
   const user = useAuthStore((s) => s.user);
-  const messages = useDialogueMessages(
-    dialogueId,
-    initialMessages,
-    Boolean(user)
-  );
+  const { messages, hasOlder, isLoadingOlder, loadOlder } =
+    useDialogueMessages(dialogueId, initialMessages, pageSize, Boolean(user));
   const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +34,17 @@ export function MessageList({ dialogueId, initialMessages }: MessageListProps) {
       ref={listRef}
       className="min-h-full flex-1 space-y-2 overflow-y-auto p-4"
     >
+      {hasOlder && (
+        <div className="flex justify-center">
+          <button
+            onClick={loadOlder}
+            disabled={isLoadingOlder}
+            className="rounded-[7px] px-4 py-1 text-sm text-mainOrange hover:bg-mainOrange/10 disabled:opacity-50"
+          >
+            {isLoadingOlder ? 'Loading...' : 'Load earlier messages'}
+          </button>
+        </div>
+      )}
       {messages?.map((msg) => {
         const isOwn = msg.userId?.toString() === user.id.toString();
         return (

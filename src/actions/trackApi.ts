@@ -75,6 +75,7 @@ export async function searchTracks({
   if (artist) query = query.eq('artistId', Number(artist));
   if (album) query = query.eq('albumId', Number(album));
   if (name) query = query.ilike('name', `%${name}%`);
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

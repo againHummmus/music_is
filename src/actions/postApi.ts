@@ -57,7 +57,7 @@ export async function searchPosts(params: {
   trackId?: string | number;
   playlistId?: string | number;
   limit?: number;
-  offset?: number;
+  before?: string;
 }): Promise<PostRow[]> {
   const supabase = publicClient();
 
@@ -67,11 +67,11 @@ export async function searchPosts(params: {
   if (params?.trackId) query = query.eq('trackId', Number(params.trackId));
   if (params?.playlistId)
     query = query.eq('playlistId', Number(params.playlistId));
-  if (params?.limit) {
-    const offset = params?.offset ?? 0;
-    query = query.range(offset, offset + params.limit - 1);
-  }
-  query = query.order('created_at', { ascending: false });
+  if (params?.before) query = query.lt('created_at', params.before);
+  if (params?.limit) query = query.limit(params.limit);
+  query = query
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false });
 
   const { data, error } = await query;
   if (error) throw error;
@@ -95,9 +95,11 @@ export async function getPost({
 }
 
 export async function getFeedPosts({
-  limit = 50,
+  limit = 20,
+  before,
 }: {
   limit?: number;
+  before?: string;
 } = {}): Promise<PostRow[]> {
   const { supabase, user } = await requireSession();
 
@@ -112,11 +114,15 @@ export async function getFeedPosts({
     .filter((id): id is number => id !== null);
   if (followeeIds.length === 0) return [];
 
-  const { data, error } = await supabase
+  let query = supabase
     .from(POST_TABLE)
     .select(POST_SELECT)
-    .in('userId', followeeIds)
+    .in('userId', followeeIds);
+  if (before) query = query.lt('created_at', before);
+
+  const { data, error } = await query
     .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
     .limit(limit);
   if (error) throw error;
   return data ?? [];

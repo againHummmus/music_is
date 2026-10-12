@@ -29,6 +29,7 @@ export async function searchGenres({
 
   let query = supabase.from(GENRE_TABLE).select('*');
   if (name) query = query.ilike('name', `%${name}%`);
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

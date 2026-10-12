@@ -19,9 +19,11 @@ export const useSearch = () => {
   const [userResults, setUserResults] = useState<UserCardRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   const resetResults = () => {
     setPage(1);
+    setHasMore(false);
     setTrackResults([]);
     setPlaylistResults([]);
     setUserResults([]);
@@ -57,20 +59,20 @@ export const useSearch = () => {
             limit: PAGE_SIZE,
             offset,
           });
-          if (!cancelled)
-            setTrackResults((prev) =>
-              page === 1 ? data : [...prev, ...data]
-            );
+          if (cancelled) return;
+          setTrackResults((prev) => (page === 1 ? data : [...prev, ...data]));
+          setHasMore(data.length === PAGE_SIZE);
         } else if (tab === 'playlists') {
           const data = await searchPlaylists({
             name: query,
             limit: PAGE_SIZE,
             offset,
           });
-          if (!cancelled)
-            setPlaylistResults((prev) =>
-              page === 1 ? data : [...prev, ...data]
-            );
+          if (cancelled) return;
+          setPlaylistResults((prev) =>
+            page === 1 ? data : [...prev, ...data]
+          );
+          setHasMore(data.length === PAGE_SIZE);
         } else {
           const data = await searchUsers({
             username: query,
@@ -78,8 +80,9 @@ export const useSearch = () => {
             limit: PAGE_SIZE,
             offset,
           });
-          if (!cancelled)
-            setUserResults((prev) => (page === 1 ? data : [...prev, ...data]));
+          if (cancelled) return;
+          setUserResults((prev) => (page === 1 ? data : [...prev, ...data]));
+          setHasMore(data.length === PAGE_SIZE);
         }
       } catch (err) {
         console.error(err);
@@ -111,7 +114,7 @@ export const useSearch = () => {
     userResults,
     loading,
     setPage: changePage,
-    PAGE_SIZE,
+    hasMore,
     totalResults,
   };
 };

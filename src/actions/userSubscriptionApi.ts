@@ -119,6 +119,7 @@ export async function searchMutualFriends(params?: {
     .select(select)
     .in('id', mutualIds)
     .eq('viewerSubscription.Follower', user.id)
+    .order('id')
     .range(offset, offset + limit - 1);
   if (getPlaylists) {
     query = query.eq('User_playlist.Playlist.is_public', true);

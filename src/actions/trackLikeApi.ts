@@ -1,6 +1,6 @@
 'use server';
 
-import { publicClient, requireSession } from './session';
+import { requireSession } from './session';
 
 const TRACK_LIKE_TABLE = 'Track_like';
 
@@ -20,28 +20,6 @@ export async function createTrackLike({
   return data;
 }
 
-export async function searchTrackLikes({
-  userId,
-  trackId,
-  limit = 10,
-  offset = 0,
-}: {
-  userId?: string | number;
-  trackId?: string | number;
-  limit?: number;
-  offset?: number;
-}) {
-  const supabase = publicClient();
-
-  let query = supabase.from(TRACK_LIKE_TABLE).select('*');
-  if (userId) query = query.eq('userId', Number(userId));
-  if (trackId) query = query.eq('trackId', Number(trackId));
-  if (limit) query = query.range(offset, offset + limit - 1);
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return data ?? [];
-}
 
 export async function deleteTrackLike({
   trackId,

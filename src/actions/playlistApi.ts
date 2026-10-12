@@ -80,6 +80,7 @@ export async function searchPlaylists({
   if (creatorId) query = query.eq('Creator', Number(creatorId));
   if (typeof isPublic === 'boolean') query = query.eq('is_public', isPublic);
   if (typeof isDefault === 'boolean') query = query.eq('is_default', isDefault);
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

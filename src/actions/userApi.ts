@@ -67,6 +67,7 @@ export async function searchUsers(params?: {
   if (params?.id) query = query.eq('id', Number(params.id));
   const usernameQuery = params?.username ?? params?.name;
   if (usernameQuery) query = query.ilike('username', `%${usernameQuery}%`);
+  query = query.order('id');
   if (params?.limit) {
     const offset = params?.offset ?? 0;
     query = query.range(offset, offset + params.limit - 1);

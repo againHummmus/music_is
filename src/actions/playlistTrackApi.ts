@@ -1,6 +1,6 @@
 'use server';
 
-import { publicClient, requireSession, FORBIDDEN } from './session';
+import { requireSession, FORBIDDEN } from './session';
 import { assertPlaylistMember } from './guards';
 import { PLAYLIST_TRACK_SELECT } from './types';
 
@@ -45,25 +45,3 @@ export async function deletePlaylistTrack({ id }: { id: string | number }) {
   if (error) throw error;
 }
 
-export async function searchPlaylistTracks({
-  playlistId,
-  trackId,
-  limit = 10,
-  offset = 0,
-}: {
-  playlistId?: string | number;
-  trackId?: string | number;
-  limit?: number;
-  offset?: number;
-}) {
-  const supabase = publicClient();
-
-  let query = supabase.from(PLAYLIST_TRACK_TABLE).select(PLAYLIST_TRACK_SELECT);
-  if (playlistId) query = query.eq('playlistId', Number(playlistId));
-  if (trackId) query = query.eq('trackId', Number(trackId));
-  if (limit) query = query.range(offset, offset + limit - 1);
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return data ?? [];
-}

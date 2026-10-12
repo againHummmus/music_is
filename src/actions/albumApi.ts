@@ -62,6 +62,7 @@ export async function searchAlbums({
   if (id) query = query.eq('id', Number(id));
   if (name) query = query.ilike('name', `%${name}%`);
   if (artistId) query = query.eq('artistId', Number(artistId));
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

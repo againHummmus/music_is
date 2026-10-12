@@ -36,27 +36,30 @@ export async function createMessage({
 export async function getMessages({
   dialogueId,
   limit = 50,
-  offset = 0,
+  before,
   id,
 }: {
   dialogueId: number;
   limit?: number;
-  offset?: number;
+  before?: string;
   id?: number;
 }): Promise<MessageRow[]> {
   const { supabase, user } = await requireSession();
   await assertDialogueMember(supabase, user.id, dialogueId);
 
-  const safeOffset = Number.isFinite(offset) ? offset : 0;
-  let query = supabase.from(MESSAGE_TABLE).select(MESSAGE_SELECT);
-  query = query.eq('dialogueId', dialogueId);
+  let query = supabase
+    .from(MESSAGE_TABLE)
+    .select(MESSAGE_SELECT)
+    .eq('dialogueId', dialogueId);
   if (id) query = query.eq('id', id);
-  if (limit) query = query.range(safeOffset, safeOffset + limit - 1);
-  query = query.order('created_at', { ascending: true });
+  if (before) query = query.lt('created_at', before);
 
-  const { data, error } = await query;
+  const { data, error } = await query
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit);
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).reverse();
 }
 
 export async function getLastMessage({

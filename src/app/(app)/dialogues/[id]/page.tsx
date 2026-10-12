@@ -4,12 +4,14 @@ import { getMessages } from '@/actions/messageApi';
 import { DialogueScreen } from '@/screens/dialogue/DialogueScreen';
 import { EmptyState } from '@/components/ui/EmptyState';
 
+const MESSAGES_PAGE_SIZE = 50;
+
 export default async function Page({ params }: { params: { id: string } }) {
   const dialogueId = Number(params.id);
   const [serverUser, participants, messages] = await Promise.all([
     getCurrentUser(),
     getParticipants(dialogueId),
-    getMessages({ dialogueId }),
+    getMessages({ dialogueId, limit: MESSAGES_PAGE_SIZE }),
   ]);
 
   if (!participants) {
@@ -24,6 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       initialUser={serverUser}
       initialParticipants={participants}
       initialMessages={messages}
+      messagesPageSize={MESSAGES_PAGE_SIZE}
     />
   );
 }

@@ -14,11 +14,13 @@ export function DialogueScreen({
   initialUser,
   initialParticipants,
   initialMessages,
+  messagesPageSize,
 }: {
   dialogueId: number;
   initialUser: UserWithArtist | null;
   initialParticipants: ParticipantRow[];
   initialMessages: MessageRow[];
+  messagesPageSize: number;
 }) {
   const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
@@ -38,7 +40,11 @@ export function DialogueScreen({
           ))}
       </div>
       <div className="flex min-h-full flex-col">
-        <MessageList dialogueId={dialogueId} initialMessages={initialMessages} />
+        <MessageList
+          dialogueId={dialogueId}
+          initialMessages={initialMessages}
+          pageSize={messagesPageSize}
+        />
         <MessageInput dialogueId={dialogueId} />
       </div>
     </>

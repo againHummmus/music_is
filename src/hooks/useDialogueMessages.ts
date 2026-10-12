@@ -6,9 +6,33 @@ import type { MessageRow } from '@/actions/types';
 export function useDialogueMessages(
   dialogueId: number,
   initialMessages: MessageRow[],
+  pageSize: number,
   enabled: boolean
 ) {
   const [messages, setMessages] = useState(initialMessages);
+  const [hasOlder, setHasOlder] = useState(
+    initialMessages.length >= pageSize
+  );
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
+
+  const loadOlder = async () => {
+    const oldest = messages[0];
+    if (!oldest || isLoadingOlder) return;
+    setIsLoadingOlder(true);
+    try {
+      const older = await getMessages({
+        dialogueId,
+        limit: pageSize,
+        before: oldest.created_at,
+      });
+      setMessages((prev) => [...older, ...prev]);
+      setHasOlder(older.length === pageSize);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingOlder(false);
+    }
+  };
 
   useEffect(() => {
     if (!enabled) return;
@@ -46,5 +70,5 @@ export function useDialogueMessages(
     };
   }, [dialogueId, enabled]);
 
-  return messages;
+  return { messages, hasOlder, isLoadingOlder, loadOlder };
 }

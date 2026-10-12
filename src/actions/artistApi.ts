@@ -70,6 +70,7 @@ export async function searchArtists({
   let query = supabase.from(ARTIST_TABLE).select('*');
   if (id) query = query.eq('id', Number(id));
   if (name) query = query.ilike('name', `%${name}%`);
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

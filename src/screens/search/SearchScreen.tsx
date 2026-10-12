@@ -20,7 +20,7 @@ export function SearchScreen() {
     userResults,
     loading,
     setPage,
-    PAGE_SIZE,
+    hasMore,
     totalResults,
   } = useSearch();
 
@@ -87,7 +87,7 @@ export function SearchScreen() {
         </div>
       )}
 
-      {totalResults === PAGE_SIZE && !loading && (
+      {hasMore && !loading && (
         <div className="flex justify-center">
           <button
             onClick={() => setPage((p) => p + 1)}

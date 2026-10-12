@@ -82,6 +82,7 @@ export async function searchUserPlaylists({
   if (userId) query = query.eq('User', Number(userId));
   if (playlistId) query = query.eq('Playlist', Number(playlistId));
   if (typeof isCreator === 'boolean') query = query.eq('is_creator', isCreator);
+  query = query.order('id');
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;
