@@ -44,13 +44,11 @@ export async function deletePost({ id }: { id: string | number }) {
   const canDelete = user.app_role === 'admin' || post.userId === user.id;
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(POST_TABLE)
     .delete()
-    .eq('id', Number(id))
-    .select('*');
+    .eq('id', Number(id));
   if (error) throw error;
-  return data;
 }
 
 export async function searchPosts(params: {

@@ -77,9 +77,7 @@ export async function getLastMessage({
   return data?.[0] ?? null;
 }
 
-export async function deleteMessage(
-  messageId: number
-): Promise<{ success: boolean }> {
+export async function deleteMessage(messageId: number): Promise<void> {
   const { supabase, user } = await requireSession();
 
   const { data: message, error: messageError } = await supabase
@@ -95,5 +93,4 @@ export async function deleteMessage(
     .delete()
     .eq('id', messageId);
   if (error) throw error;
-  return { success: true };
 }

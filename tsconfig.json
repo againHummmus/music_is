@@ -23,9 +23,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@components/*": ["./components/*"],
-      "@public/*": ["./public/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@public/*": ["./public/*"]
     },
     "types": ["unplugin-icons/types/react"]
   },

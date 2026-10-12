@@ -1,17 +1,12 @@
 import { getCurrentUser } from '@/actions/session';
 import { searchUserPlaylists } from '@/actions/userPlaylistApi';
-import PlaylistsScreen from './Screen';
+import { PlaylistsScreen } from '@/screens/playlists/PlaylistsScreen';
 export default async function Page() {
   const user = await getCurrentUser();
 
-  let initialPlaylists: any[] = [];
-  if (user?.id) {
-    const { data } = await searchUserPlaylists({
-      userId: String(user.id),
-      limit: 6,
-    });
-    initialPlaylists = data ?? [];
-  }
+  const initialPlaylists = user?.id
+    ? await searchUserPlaylists({ userId: String(user.id), limit: 6 })
+    : [];
 
   return <PlaylistsScreen initialUser={user} initialPlaylists={initialPlaylists} />;
 }

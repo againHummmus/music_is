@@ -1,5 +1,5 @@
-import CreateAlbumAdminScreen from './Screen';
+import { AdminCreateAlbumScreen } from '@/screens/admin/create-album/AdminCreateAlbumScreen';
 
 export default function Page() {
-  return <CreateAlbumAdminScreen />;
+  return <AdminCreateAlbumScreen />;
 }

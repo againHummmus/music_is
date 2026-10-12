@@ -48,7 +48,7 @@ export async function createTrack({
     .single();
 
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function searchTracks({
@@ -69,7 +69,7 @@ export async function searchTracks({
   name?: string;
   limit?: number;
   offset?: number;
-}): Promise<{ data: TrackRow[] }> {
+}): Promise<TrackRow[]> {
   const supabase = publicClient();
 
   let idsFilter: number[] | null = null;
@@ -81,7 +81,7 @@ export async function searchTracks({
       .eq('userId', Number(likedByUserId));
     if (likesError) throw likesError;
     idsFilter = (likes ?? []).map((l) => l.trackId ?? 0);
-    if (idsFilter.length === 0) return { data: [] };
+    if (idsFilter.length === 0) return [];
   }
 
   let query = supabase.from(TRACK_TABLE).select(TRACK_SELECT);
@@ -95,7 +95,7 @@ export async function searchTracks({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data: data ?? [] };
+  return data ?? [];
 }
 
 export async function deleteTrack(trackId: string | number) {
@@ -117,11 +117,9 @@ export async function deleteTrack(trackId: string | number) {
     (user.artistId != null && user.artistId === track.artistId);
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(TRACK_TABLE)
     .delete()
-    .eq('id', Number(trackId))
-    .select('*');
+    .eq('id', Number(trackId));
   if (error) throw error;
-  return { data };
 }

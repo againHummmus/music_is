@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/actions/session';
-import AppLayoutClient from './AppLayoutClient';
+import { AppShell } from '@/components/layout/AppShell';
 
 export default async function AppLayout({
   children,
@@ -8,5 +8,5 @@ export default async function AppLayout({
 }) {
   const user = await getCurrentUser();
 
-  return <AppLayoutClient initialUser={user}>{children}</AppLayoutClient>;
+  return <AppShell initialUser={user}>{children}</AppShell>;
 }

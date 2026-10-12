@@ -1,4 +1,4 @@
-import AuthScreen from '@/components/auth/Auth';
+import { AuthScreen } from '@/screens/auth/AuthScreen';
 
 export const dynamic = 'force-dynamic';
 

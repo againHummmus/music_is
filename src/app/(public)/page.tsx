@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
-import HeroSlideshow from './HeroSlideshow';
+import { LandingScreen } from '@/screens/landing/LandingScreen';
 
 export default async function Page() {
   const supabase = createSupabaseServerClient();
@@ -7,5 +7,5 @@ export default async function Page() {
     data: { user: authUser },
   } = await supabase.auth.getUser();
 
-  return <HeroSlideshow initialAuth={!!authUser} />;
+  return <LandingScreen initialAuth={!!authUser} />;
 }

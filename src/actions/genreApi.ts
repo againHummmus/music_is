@@ -13,7 +13,7 @@ export async function createGenre({ name }: { name: string }) {
     .select('*')
     .single();
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function searchGenres({
@@ -33,5 +33,5 @@ export async function searchGenres({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }

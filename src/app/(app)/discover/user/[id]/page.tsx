@@ -2,10 +2,10 @@ import { getCurrentUser } from '@/actions/session';
 import { getUser } from '@/actions/userApi';
 import { searchSubscriptions, countFollowers } from '@/actions/userSubscriptionApi';
 import { searchPosts } from '@/actions/postApi';
-import UserScreen from './Screen';
-import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
+import { UserProfileScreen } from '@/screens/user-profile/UserProfileScreen';
+import { EmptyState } from '@/components/ui/EmptyState';
 
-export default async function Page({ params }: { params: any }) {
+export default async function Page({ params }: { params: { id: string } }) {
   const currentUser = await getCurrentUser();
 
   const [viewedUser, subResult, initialSubscriberCount, initialPosts] =
@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: any }) {
             followee: params.id,
             limit: 1,
           })
-        : Promise.resolve([] as any[]),
+        : Promise.resolve([]),
       countFollowers({ followee: params.id }),
       searchPosts({ userId: params.id, limit: 100 }),
     ]);
@@ -26,16 +26,12 @@ export default async function Page({ params }: { params: any }) {
 
     if (!viewedUser) {
       return (
-        <div className="flex h-[230px] flex-col items-center justify-center gap-20 rounded-[7px] border border-dashed border-mainOrange text-mainOrange">
-          <StreamlineSleep className="h-[40px] w-[40px]" />
-          <p>User not found!</p>
-        </div>
+        <EmptyState>User not found!</EmptyState>
       );
     }
 
   return (
-    <UserScreen
-      params={params}
+    <UserProfileScreen
       initialCurrentUser={currentUser}
       initialViewedUser={viewedUser}
       initialIsSubscribed={!!initialSub}

@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
 import { USER_WITH_ARTIST_SELECT } from './types';
 import type { UserWithArtist } from './types';
-import type { Database } from '../../database.types';
+import type { Database } from '@/types/database.types';
 
 export type SupabaseServerClient = SupabaseClient<Database>;
 
@@ -14,22 +14,6 @@ export type Session = {
 
 export const UNAUTHORIZED = 'Unauthorized';
 export const FORBIDDEN = 'Forbidden';
-
-export async function getCurrentUser(): Promise<UserWithArtist | null> {
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-  if (!authUser) return null;
-
-  const { data } = await supabase
-    .from('User')
-    .select(USER_WITH_ARTIST_SELECT)
-    .eq('sbUserId', authUser.id)
-    .single();
-
-  return (data as UserWithArtist | null) ?? null;
-}
 
 export async function getSession(): Promise<Session | null> {
   const supabase = createSupabaseServerClient();
@@ -44,8 +28,12 @@ export async function getSession(): Promise<Session | null> {
     .eq('sbUserId', authUser.id)
     .single();
 
-  const user = (data as UserWithArtist | null) ?? null;
-  return user ? { supabase, user } : null;
+  return data ? { supabase, user: data } : null;
+}
+
+export async function getCurrentUser(): Promise<UserWithArtist | null> {
+  const session = await getSession();
+  return session?.user ?? null;
 }
 
 export async function requireSession(): Promise<Session> {

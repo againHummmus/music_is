@@ -1,6 +1,6 @@
 'use server';
 
-import { getSession, publicClient, requireSession } from './session';
+import { getCurrentUser, publicClient, requireSession } from './session';
 import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
 import {
   USER_PUBLIC_COLUMNS,
@@ -13,8 +13,7 @@ import type { UserBasicRow, UserRow, UserWithArtist } from './types';
 const USER_TABLE = 'User';
 
 export async function getMe(): Promise<UserWithArtist | null> {
-  const session = await getSession();
-  return session?.user ?? null;
+  return getCurrentUser();
 }
 
 export async function getUser({
@@ -28,9 +27,9 @@ export async function getUser({
     .from(USER_TABLE)
     .select(USER_SELECT)
     .eq('id', Number(id))
-    .single();
+    .maybeSingle();
 
-  if (error) return null;
+  if (error) throw error;
   return data;
 }
 

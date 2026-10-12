@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { usePlayerStore } from '@/stores/playerStore';
 import MagePauseFill from '~icons/mage/pause-fill?width=48px&height=48px';
 import MagePlayFill from '~icons/mage/play-fill?width=48px&height=48px';
-import { createMp3Url, createImgUrl } from '../shared/utils/createUrlFromHash';
+import { createMp3Url, createImgUrl } from '@/lib/utils/createUrlFromHash';
 import HugeiconsRepeat from '~icons/hugeicons/repeat?width=48px&height=48px';
 import SolarArrowRightBold from '~icons/solar/arrow-right-bold?width=48px&height=48px';
 import HugeiconsPrevious from '~icons/hugeicons/previous?width=48px&height=48px';
@@ -16,7 +16,7 @@ function formatTime(seconds: number): string {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-export default function Player() {
+export function Player() {
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const currentPlaylist = usePlayerStore((s) => s.currentPlaylist);
   const isPlaying = usePlayerStore((s) => s.isPlaying);

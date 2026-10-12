@@ -1,5 +1,5 @@
-import CreateArtistScreen from './Screen';
+import { AdminCreateArtistScreen } from '@/screens/admin/create-artist/AdminCreateArtistScreen';
 
 export default function Page() {
-  return <CreateArtistScreen />;
+  return <AdminCreateArtistScreen />;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import ActivationScreen from '@/components/activate/Activate';
+import { ActivationScreen } from '@/screens/activation/ActivationScreen';
 
 export const dynamic = 'force-dynamic';
 

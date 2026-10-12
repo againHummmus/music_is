@@ -17,7 +17,7 @@ export async function createPostLike({
     .select('*')
     .single();
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function searchPostLikes({
@@ -40,7 +40,7 @@ export async function searchPostLikes({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }
 
 export async function deletePostLike({
@@ -50,12 +50,10 @@ export async function deletePostLike({
 }) {
   const { supabase, user } = await requireSession();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(POST_LIKE_TABLE)
     .delete()
     .eq('userId', user.id)
-    .eq('postId', Number(postId))
-    .select('*');
+    .eq('postId', Number(postId));
   if (error) throw error;
-  return { data };
 }

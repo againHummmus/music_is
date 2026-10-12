@@ -22,7 +22,7 @@ export async function createPlaylistTrack({
     .select(PLAYLIST_TRACK_SELECT)
     .single();
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function deletePlaylistTrack({ id }: { id: string | number }) {
@@ -38,13 +38,11 @@ export async function deletePlaylistTrack({ id }: { id: string | number }) {
 
   await assertPlaylistMember(supabase, user.id, link.playlistId);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(PLAYLIST_TRACK_TABLE)
     .delete()
-    .eq('id', Number(id))
-    .select('*');
+    .eq('id', Number(id));
   if (error) throw error;
-  return { data };
 }
 
 export async function searchPlaylistTracks({
@@ -67,5 +65,5 @@ export async function searchPlaylistTracks({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }

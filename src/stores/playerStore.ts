@@ -1,16 +1,16 @@
-import type { PlaylistRow, TrackRow } from '@/actions/types';
+import type { PlaylistWithTracksRow, TrackRow } from '@/actions/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 interface PlayerState {
   currentTrack: TrackRow | null;
-  currentPlaylist: PlaylistRow | undefined;
+  currentPlaylist: PlaylistWithTracksRow | undefined;
   isPlaying: boolean;
   currentTime: number;
   playTrack: (track: TrackRow) => void;
   togglePlay: () => void;
   setCurrentTime: (time: number) => void;
-  setCurrentPlaylist: (playlist: PlaylistRow) => void;
+  setCurrentPlaylist: (playlist: PlaylistWithTracksRow) => void;
   reset: () => void;
 }
 

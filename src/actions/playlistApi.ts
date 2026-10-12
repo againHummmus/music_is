@@ -30,7 +30,7 @@ export async function createPlaylist({
     .single();
 
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function deletePlaylist({ id }: { id: string | number }) {
@@ -48,13 +48,11 @@ export async function deletePlaylist({ id }: { id: string | number }) {
     (user.app_role === 'admin' || playlist.Creator === user.id);
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(PLAYLIST_TABLE)
     .delete()
-    .eq('id', Number(id))
-    .select('*');
+    .eq('id', Number(id));
   if (error) throw error;
-  return { data };
 }
 
 export async function searchPlaylists({

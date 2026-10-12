@@ -40,7 +40,7 @@ export async function createUserPlaylist({
     .select(USER_PLAYLIST_SELECT)
     .single();
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function deleteUserPlaylist({ id }: { id: string | number }) {
@@ -59,13 +59,11 @@ export async function deleteUserPlaylist({ id }: { id: string | number }) {
   }
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(USER_PLAYLIST_TABLE)
     .delete()
-    .eq('id', Number(id))
-    .select('*');
+    .eq('id', Number(id));
   if (error) throw error;
-  return { data };
 }
 
 export async function searchUserPlaylists({
@@ -99,5 +97,5 @@ export async function searchUserPlaylists({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }

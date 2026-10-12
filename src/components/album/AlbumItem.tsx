@@ -1,16 +1,21 @@
 import React from 'react';
-import { createImgUrl } from '../shared/utils/createUrlFromHash';
+import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Link from 'next/link';
+import type { Album } from '@/types/supabase';
 
-export default function AlbumCard({ album }: { album: any }) {
+export function AlbumItem({ album }: { album: Album }) {
   return (
     <Link
       className="transform overflow-hidden rounded-lg border border-mainOrange bg-white transition-transform duration-300 hover:-translate-y-[3px]"
       href={`/album/${album.id}`}
     >
       <img
-        src={createImgUrl(album.image_hash)}
-        alt={album.name}
+        src={
+          album.image_hash
+            ? createImgUrl(album.image_hash)
+            : '/images/recordersBackground.png'
+        }
+        alt={album.name ?? ''}
         className="h-48 w-full object-cover"
       />
       <div className="p-4">

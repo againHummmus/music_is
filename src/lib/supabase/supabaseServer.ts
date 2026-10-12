@@ -1,7 +1,7 @@
 import 'server-only';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import type { Database } from '../../../database.types';
+import type { Database } from '@/types/database.types';
 
 export function createSupabaseServerClient() {
   const cookieStore = cookies();

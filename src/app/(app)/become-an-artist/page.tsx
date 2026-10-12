@@ -1,8 +1,5 @@
-import { getCurrentUser } from '@/actions/session';
-import BecomeAnArtistScreen from './Screen';
+import { BecomeArtistScreen } from '@/screens/become-artist/BecomeArtistScreen';
 
-export default async function Page() {
-  const user = await getCurrentUser();
-
-  return <BecomeAnArtistScreen initialUser={user} />;
+export default function Page() {
+  return <BecomeArtistScreen />;
 }

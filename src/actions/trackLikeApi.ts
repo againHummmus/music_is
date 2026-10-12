@@ -17,7 +17,7 @@ export async function createTrackLike({
     .select('*')
     .single();
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function searchTrackLikes({
@@ -40,7 +40,7 @@ export async function searchTrackLikes({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }
 
 export async function deleteTrackLike({
@@ -50,12 +50,10 @@ export async function deleteTrackLike({
 }) {
   const { supabase, user } = await requireSession();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(TRACK_LIKE_TABLE)
     .delete()
     .eq('userId', user.id)
-    .eq('trackId', Number(trackId))
-    .select('*');
+    .eq('trackId', Number(trackId));
   if (error) throw error;
-  return { data };
 }

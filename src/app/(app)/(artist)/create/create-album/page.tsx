@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/actions/session';
-import CreateAlbumScreen from './Screen';
+import { ArtistCreateAlbumScreen } from '@/screens/artist/create-album/ArtistCreateAlbumScreen';
 
 export default async function Page() {
   const user = await getCurrentUser();
-  return <CreateAlbumScreen initialUser={user} />;
+  return <ArtistCreateAlbumScreen initialUser={user} />;
 }

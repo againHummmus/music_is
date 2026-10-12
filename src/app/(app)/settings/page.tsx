@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/actions/session';
-import SettingsScreen from './Screen';
+import { SettingsScreen } from '@/screens/settings/SettingsScreen';
 
 export default async function Page() {
   const user = await getCurrentUser();

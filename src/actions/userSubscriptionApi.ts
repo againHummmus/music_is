@@ -25,7 +25,7 @@ export async function createSubscription({
     .select('*')
     .single();
   if (error) throw error;
-  return data ? [data] : [];
+  return data;
 }
 
 export async function deleteSubscription({ id }: { id: string | number }) {
@@ -39,13 +39,11 @@ export async function deleteSubscription({ id }: { id: string | number }) {
   if (subError) throw subError;
   if (sub.Follower !== user.id) throw new Error(FORBIDDEN);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(SUB_TABLE)
     .delete()
-    .eq('id', Number(id))
-    .select('*');
+    .eq('id', Number(id));
   if (error) throw error;
-  return data;
 }
 
 export async function searchSubscriptions(

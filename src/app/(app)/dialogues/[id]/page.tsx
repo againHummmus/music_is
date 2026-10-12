@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/actions/session';
 import { getParticipants } from '@/actions/dialogueApi';
-import DialogueScreen from './Screen';
-import StreamlineSleep from '~icons/streamline/sleep?width=48px&height=48px';
+import { DialogueScreen } from '@/screens/dialogue/DialogueScreen';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const serverUser = await getCurrentUser();
@@ -10,10 +10,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   if (!participants) {
     return (
-      <div className="flex h-[230px] flex-col items-center justify-center gap-20 rounded-[7px] border border-dashed border-mainOrange text-mainOrange">
-        <StreamlineSleep className="h-[40px] w-[40px]" />
-        <p>Couldn&apos;t load the dialogue. Try again later.</p>
-      </div>
+      <EmptyState>Couldn&apos;t load the dialogue. Try again later.</EmptyState>
     );
   }
 

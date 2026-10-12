@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/actions/session';
-import UploadTrackScreen from './Screen';
+import { ArtistUploadTrackScreen } from '@/screens/artist/upload-track/ArtistUploadTrackScreen';
 
 export default async function Page() {
   const user = await getCurrentUser();
-  return <UploadTrackScreen initialUser={user} />;
+  return <ArtistUploadTrackScreen initialUser={user} />;
 }

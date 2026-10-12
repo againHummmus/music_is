@@ -24,7 +24,7 @@ export async function createArtist({
     .single();
   if (error) throw error;
 
-  return { data };
+  return data;
 }
 
 export async function becomeArtist({
@@ -51,7 +51,7 @@ export async function becomeArtist({
     .eq('id', user.id);
   if (userError) throw userError;
 
-  return { data: artist };
+  return artist;
 }
 
 export async function searchArtists({
@@ -74,5 +74,5 @@ export async function searchArtists({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }

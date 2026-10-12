@@ -38,7 +38,7 @@ export async function createAlbum({
     .single();
 
   if (error) throw error;
-  return { data };
+  return data;
 }
 
 export async function searchAlbums({
@@ -65,5 +65,5 @@ export async function searchAlbums({
 
   const { data, error } = await query;
   if (error) throw error;
-  return { data };
+  return data ?? [];
 }
