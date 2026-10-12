@@ -1,7 +1,7 @@
 import { TrackItem } from '@/components/track/TrackItem';
 import { ArrowButton } from '@/components/ui/buttons/ArrowButton';
 import { AlbumItem } from '@/components/album/AlbumItem';
-import type { PlaylistRow } from '@/actions/types';
+import type { PlaylistWithTrackStatsRow } from '@/actions/types';
 import type { AlbumRow } from '@/actions/types';
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -9,7 +9,7 @@ export function AddedByMeBlock({
   playlist,
   albums,
 }: {
-  playlist: PlaylistRow | null;
+  playlist: PlaylistWithTrackStatsRow | null;
   albums: AlbumRow[];
 }) {
   return (
@@ -26,11 +26,11 @@ export function AddedByMeBlock({
                 <TrackItem key={index} info={item.Track} playlist={playlist} />
                 <div className="felx-row flex items-center justify-center gap-[10px]">
                   <div className="flex items-center justify-center whitespace-nowrap text-mainOrange">
-                    {item.Track.Track_like?.length} likes
+                    {item.Track.Track_like[0]?.count ?? 0} likes
                   </div>
                   <div className="size-[3px] rounded-full bg-mainOrange" />
                   <div className="flex items-center justify-center whitespace-nowrap text-mainOrange">
-                    in {item.Track.Playlist_track?.length} playlists
+                    in {item.Track.Playlist_track[0]?.count ?? 0} playlists
                   </div>
                 </div>
               </>

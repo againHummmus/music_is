@@ -8,8 +8,6 @@ import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01?width=24p
 import HugeiconsUserGroup from '~icons/hugeicons/user-group?width=24px&height=24px';
 
 import Link from 'next/link';
-import { getMe } from '@/actions/userApi';
-import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 
 function RoleBasedLink({
@@ -58,18 +56,10 @@ function RoleBasedLink({
 }
 
 export function MobileNav() {
-  const [app_role, setRole] = useState<'artist' | 'admin' | 'user'>('user');
-  const [loading, setLoading] = useState(true);
   const storeUser = useAuthStore((s) => s.user);
+  const app_role = storeUser?.app_role ?? 'user';
+  const loading = !storeUser;
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const user = await getMe();
-      setRole(user?.app_role ?? 'user');
-      setLoading(false);
-    })();
-  }, [storeUser]);
   return (
     <div className="sticky bottom-[0px] left-[0px] right-[0px] z-[6000] hidden max-w-[100%] flex-row items-center justify-between bg-mainDark px-[15%] py-10 text-mainWhite max-main:flex">
       <Link

@@ -57,3 +57,16 @@ export async function deleteTrackLike({
     .eq('trackId', Number(trackId));
   if (error) throw error;
 }
+
+export async function getMyLikedTrackIds(): Promise<number[]> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(TRACK_LIKE_TABLE)
+    .select('trackId')
+    .eq('userId', user.id);
+  if (error) throw error;
+  return (data ?? [])
+    .map((like) => like.trackId)
+    .filter((id): id is number => id !== null);
+}

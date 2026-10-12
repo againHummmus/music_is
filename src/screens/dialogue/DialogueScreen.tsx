@@ -1,8 +1,11 @@
 'use client';
 
-import type { UserWithArtist } from '@/actions/types';
+import type {
+  MessageRow,
+  ParticipantRow,
+  UserWithArtist,
+} from '@/actions/types';
 import { useAuthStore } from '@/stores/authStore';
-import type { ParticipantRow } from '@/actions/types';
 import { MessageList } from '@/screens/dialogue/MessageList';
 import { MessageInput } from '@/screens/dialogue/MessageInput';
 
@@ -10,10 +13,12 @@ export function DialogueScreen({
   dialogueId,
   initialUser,
   initialParticipants,
+  initialMessages,
 }: {
   dialogueId: number;
   initialUser: UserWithArtist | null;
   initialParticipants: ParticipantRow[];
+  initialMessages: MessageRow[];
 }) {
   const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
@@ -33,7 +38,7 @@ export function DialogueScreen({
           ))}
       </div>
       <div className="flex min-h-full flex-col">
-        <MessageList dialogueId={dialogueId} />
+        <MessageList dialogueId={dialogueId} initialMessages={initialMessages} />
         <MessageInput dialogueId={dialogueId} />
       </div>
     </>

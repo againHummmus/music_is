@@ -1,41 +1,39 @@
-'use client';
-
 import { searchAlbums } from '@/actions/albumApi';
+import type { AlbumRow } from '@/actions/types';
 import { AlbumItem } from '@/components/album/AlbumItem';
-import { ContentBlock } from '@/components/ui/ContentBlock';
-import type { UserRow } from '@/actions/types';
+import { Section } from '@/components/ui/Section';
 
-export function UserAlbumsBlock({
-  user,
+export async function UserAlbumsBlock({
+  userId,
+  username,
+  artistId,
   limit = 4,
 }: {
-  user: UserRow;
+  userId: number;
+  username: string | null;
+  artistId: number;
   limit?: number;
 }) {
-  if (!user?.id) return null;
+  const albums = await searchAlbums({ artistId, limit, offset: 0 }).catch(
+    (): AlbumRow[] => []
+  );
+  if (albums.length === 0) return null;
 
   return (
-    <ContentBlock
+    <Section
       title={
         <>
-          Albums by <span className="text-mainOrange">{user.username}</span>
+          Albums by <span className="text-mainOrange">{username}</span>
         </>
       }
-      fetchItems={async () => {
-        if (!user?.Artist?.id) return [];
-        return searchAlbums({
-          artistId: user.Artist.id,
-          limit,
-          offset: 0,
-        });
-      }}
-      renderItem={(album) => <AlbumItem key={album.id} album={album} />}
-      gridClassName="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4"
       buttonLabel="Go"
-      buttonHref={`/discover/user/${user.id}/albums`}
-      skeletonItemClassName="aspect-square bg-neutral-800 rounded-lg animate-pulse"
-      skeletonCount={limit}
-      hideIfEmpty
-    />
+      buttonHref={`/discover/user/${userId}/albums`}
+    >
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+        {albums.map((album) => (
+          <AlbumItem key={album.id} album={album} />
+        ))}
+      </div>
+    </Section>
   );
 }

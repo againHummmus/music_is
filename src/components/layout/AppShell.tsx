@@ -3,6 +3,7 @@
 import { useLayoutEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUiStore } from '@/stores/uiStore';
+import { useLikesStore } from '@/stores/likesStore';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { MobileNav } from '@/components/layout/MobileNav';
@@ -13,9 +14,14 @@ import type { UserWithArtist } from '@/actions/types';
 interface Props {
   children: React.ReactNode;
   initialUser: UserWithArtist | null;
+  initialLikedTrackIds: number[];
 }
 
-export function AppShell({ children, initialUser }: Props) {
+export function AppShell({
+  children,
+  initialUser,
+  initialLikedTrackIds,
+}: Props) {
   // Synchronously hydrate the store before the browser paints so every child
   // component sees the correct user on its very first render.
   useLayoutEffect(() => {
@@ -24,7 +30,8 @@ export function AppShell({ children, initialUser }: Props) {
       isAuth: Boolean(initialUser),
       isLoading: false,
     });
-  }, [initialUser]);
+    useLikesStore.setState({ likedTrackIds: new Set(initialLikedTrackIds) });
+  }, [initialUser, initialLikedTrackIds]);
 
   // Use the server-provided value as fallback for the very first render
   // (before useLayoutEffect fires).

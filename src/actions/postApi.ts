@@ -93,3 +93,31 @@ export async function getPost({
   if (error) throw error;
   return data;
 }
+
+export async function getFeedPosts({
+  limit = 50,
+}: {
+  limit?: number;
+} = {}): Promise<PostRow[]> {
+  const { supabase, user } = await requireSession();
+
+  const { data: subscriptions, error: subscriptionsError } = await supabase
+    .from('User_user_subscription')
+    .select('Followee')
+    .eq('Follower', user.id);
+  if (subscriptionsError) throw subscriptionsError;
+
+  const followeeIds = (subscriptions ?? [])
+    .map((s) => s.Followee)
+    .filter((id): id is number => id !== null);
+  if (followeeIds.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from(POST_TABLE)
+    .select(POST_SELECT)
+    .in('userId', followeeIds)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data ?? [];
+}

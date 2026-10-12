@@ -8,6 +8,7 @@ import type { AuthResult, UserWithArtist } from '@/actions/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { usePlayerStore } from './playerStore';
+import { useLikesStore } from './likesStore';
 
 interface AuthState {
   isAuth: boolean;
@@ -71,6 +72,7 @@ export const useAuthStore = create<AuthState>()(
         }
         set({ isAuth: false, user: undefined });
         usePlayerStore.getState().reset();
+        useLikesStore.getState().reset();
       },
 
       update: async () => {

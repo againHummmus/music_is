@@ -1,61 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24px&height=24px';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
-import { createSubscription, deleteSubscription, searchSubscriptions } from '@/actions/userSubscriptionApi';
-import type { UserBasicRow } from '@/actions/types';
+import {
+  createSubscription,
+  deleteSubscription,
+} from '@/actions/userSubscriptionApi';
+import type { UserCardRow } from '@/actions/types';
 
-export function UserItem({ user }: { user: UserBasicRow }) {
+export function UserItem({ user }: { user: UserCardRow }) {
   const currentUser = useAuthStore((s) => s.user);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [subId, setSubId] = useState<number | null>(null);
+  const [subId, setSubId] = useState<number | null>(
+    user.viewerSubscription[0]?.id ?? null
+  );
   const [loading, setLoading] = useState(false);
-  const [subscriberCount, setSubscriberCount] = useState(0);
-
-  useEffect(() => {
-    if (!currentUser) return;
-
-    searchSubscriptions({
-      follower: currentUser.id,
-      followee: user.id,
-      limit: 1,
-    })
-      .then((data) => {
-        const first = data[0];
-        if (first) {
-          setIsSubscribed(true);
-          setSubId(first.id);
-        }
-      })
-      .catch(console.error);
-
-    searchSubscriptions({
-      followee: user.id,
-      limit: 1000,
-    })
-      .then((allSubs) => {
-        setSubscriberCount(allSubs.length);
-      })
-      .catch(console.error);
-  }, [currentUser, user.id]);
+  const [subscriberCount, setSubscriberCount] = useState(
+    user.followers[0]?.count ?? 0
+  );
+  const isSubscribed = subId !== null;
 
   const toggleSubscription = async () => {
     if (!currentUser) return;
     setLoading(true);
     try {
-      if (isSubscribed && subId) {
+      if (subId !== null) {
         await deleteSubscription({ id: subId });
-        setIsSubscribed(false);
         setSubId(null);
         setSubscriberCount((count) => count - 1);
       } else {
         const newSub = await createSubscription({
           followee: user.id,
         });
-        setIsSubscribed(true);
         setSubId(newSub.id);
         setSubscriberCount((count) => count + 1);
       }

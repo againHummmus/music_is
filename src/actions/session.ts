@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
 import { USER_WITH_ARTIST_SELECT } from './types';
@@ -15,7 +16,7 @@ export type Session = {
 export const UNAUTHORIZED = 'Unauthorized';
 export const FORBIDDEN = 'Forbidden';
 
-export async function getSession(): Promise<Session | null> {
+export const getSession = cache(async (): Promise<Session | null> => {
   const supabase = createSupabaseServerClient();
   const {
     data: { user: authUser },
@@ -29,7 +30,7 @@ export async function getSession(): Promise<Session | null> {
     .single();
 
   return data ? { supabase, user: data } : null;
-}
+});
 
 export async function getCurrentUser(): Promise<UserWithArtist | null> {
   const session = await getSession();

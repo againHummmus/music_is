@@ -2,10 +2,7 @@
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
 import { isPlaylistCreator } from './guards';
-import {
-  USER_PLAYLIST_SELECT,
-  USER_PLAYLIST_SELECT_INNER,
-} from './types';
+import { USER_PLAYLIST_SELECT } from './types';
 
 const USER_PLAYLIST_TABLE = 'User_playlist';
 
@@ -72,30 +69,39 @@ export async function searchUserPlaylists({
   isCreator,
   limit = 10,
   offset = 0,
-  includeDefaultPlaylists,
 }: {
   userId?: string | number;
   playlistId?: string | number;
   isCreator?: boolean;
   limit?: number;
   offset?: number;
-  includeDefaultPlaylists?: boolean;
 }) {
   const supabase = publicClient();
-  const excludeDefaults = includeDefaultPlaylists === false;
 
-  let query = supabase
-    .from(USER_PLAYLIST_TABLE)
-    .select(excludeDefaults ? USER_PLAYLIST_SELECT_INNER : USER_PLAYLIST_SELECT);
+  let query = supabase.from(USER_PLAYLIST_TABLE).select(USER_PLAYLIST_SELECT);
   if (userId) query = query.eq('User', Number(userId));
   if (playlistId) query = query.eq('Playlist', Number(playlistId));
   if (typeof isCreator === 'boolean') query = query.eq('is_creator', isCreator);
-  if (excludeDefaults) {
-    query = query.eq('Playlist.is_default', false);
-  }
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getMyPlaylistOptions(): Promise<
+  { id: number; name: string | null }[]
+> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(USER_PLAYLIST_TABLE)
+    .select('Playlist!inner ( id, name, is_default )')
+    .eq('User', user.id)
+    .eq('Playlist.is_default', false);
+  if (error) throw error;
+  return (data ?? []).map(({ Playlist }) => ({
+    id: Playlist.id,
+    name: Playlist.name,
+  }));
 }

@@ -7,9 +7,13 @@ import HugeiconsPlaylist01 from '~icons/hugeicons/playlist-01?width=24px&height=
 import HugeiconsArrowUp02 from '~icons/hugeicons/arrow-up-02';
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=48px&height=48px';
 import { createPlaylistTrack } from '@/actions/playlistTrackApi';
-import { searchUserPlaylists } from '@/actions/userPlaylistApi';
+import { getMyPlaylistOptions } from '@/actions/userPlaylistApi';
 import { deleteTrack } from '@/actions/trackApi';
-import type { PlaylistWithTracksRow } from '@/actions/types';
+
+interface PlaylistOption {
+  id: number;
+  name: string | null;
+}
 
 const ActionTypes = {
   AddToPlaylist: 'addToPlaylist',
@@ -29,8 +33,8 @@ export function TrackActions({
   const user = useAuthStore((s) => s.user);
   const track = chosenTrack;
 
-  const [playlists, setPlaylists] = useState<PlaylistWithTracksRow[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [playlists, setPlaylists] = useState<PlaylistOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [action, setAction] = useState<ActionType | undefined>(undefined);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -38,25 +42,13 @@ export function TrackActions({
 
   useEffect(() => {
     if (!userId) return;
-    (async function () {
-      setLoading(true);
-      await searchUserPlaylists({
-        userId,
-        includeDefaultPlaylists: false,
-      })
-        .then((connections) =>
-          setPlaylists(
-            connections.flatMap((conn) =>
-              conn.Playlist ? [conn.Playlist] : []
-            )
-          )
-        )
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    })();
+    getMyPlaylistOptions()
+      .then(setPlaylists)
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [userId]);
 
-  const handleAdd = async (playlist: PlaylistWithTracksRow) => {
+  const handleAdd = async (playlist: PlaylistOption) => {
     if (!track) return;
     try {
       await createPlaylistTrack({

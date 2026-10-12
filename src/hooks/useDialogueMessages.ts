@@ -3,8 +3,12 @@ import { supabase } from '@/lib/supabase/supabaseBrowser';
 import { getMessages } from '@/actions/messageApi';
 import type { MessageRow } from '@/actions/types';
 
-export function useDialogueMessages(dialogueId: number, enabled: boolean) {
-  const [messages, setMessages] = useState<MessageRow[]>([]);
+export function useDialogueMessages(
+  dialogueId: number,
+  initialMessages: MessageRow[],
+  enabled: boolean
+) {
+  const [messages, setMessages] = useState(initialMessages);
 
   useEffect(() => {
     if (!enabled) return;
@@ -14,12 +18,6 @@ export function useDialogueMessages(dialogueId: number, enabled: boolean) {
       setMessages((prev) =>
         prev.some((m) => m.id === message.id) ? prev : [...prev, message]
       );
-
-    getMessages({ dialogueId })
-      .then((data) => {
-        if (!cancelled) setMessages(data);
-      })
-      .catch(console.error);
 
     const channel = supabase
       .channel(`dialogue-${dialogueId}`)

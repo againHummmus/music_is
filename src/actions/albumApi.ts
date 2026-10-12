@@ -2,7 +2,8 @@
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
 import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
-import { ALBUM_SELECT } from './types';
+import { ALBUM_DETAILS_SELECT, ALBUM_SELECT } from './types';
+import type { AlbumDetailsRow } from './types';
 
 const ALBUM_TABLE = 'Album';
 
@@ -66,4 +67,16 @@ export async function searchAlbums({
   const { data, error } = await query;
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getAlbum(id: string | number): Promise<AlbumDetailsRow | null> {
+  const supabase = publicClient();
+
+  const { data, error } = await supabase
+    .from(ALBUM_TABLE)
+    .select(ALBUM_DETAILS_SELECT)
+    .eq('id', Number(id))
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }

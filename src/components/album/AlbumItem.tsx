@@ -1,9 +1,9 @@
 import React from 'react';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Link from 'next/link';
-import type { Album } from '@/types/supabase';
+import type { AlbumRow } from '@/actions/types';
 
-export function AlbumItem({ album }: { album: Album }) {
+export function AlbumItem({ album }: { album: AlbumRow }) {
   return (
     <Link
       className="transform overflow-hidden rounded-lg border border-mainOrange bg-white transition-transform duration-300 hover:-translate-y-[3px]"

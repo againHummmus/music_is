@@ -11,8 +11,6 @@ import HugeiconsSearch01 from '~icons/hugeicons/search-01?width=24px&height=24px
 
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
-import { useEffect, useState } from 'react';
-import { getMe } from '@/actions/userApi';
 
 function RoleBasedLink({
   loading,
@@ -63,18 +61,10 @@ function RoleBasedLink({
 }
 
 export function Sidebar() {
-  const [app_role, setRole] = useState<'artist' | 'admin' | 'user'>('user');
-  const [loading, setLoading] = useState(true);
   const storeUser = useAuthStore((s) => s.user);
+  const app_role = storeUser?.app_role ?? 'user';
+  const loading = !storeUser;
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const user = await getMe();
-      setRole(user?.app_role ?? 'user');
-      setLoading(false);
-    })();
-  }, [storeUser]);
 
   return (
     <div className="sticky top-[40px] hidden h-fit w-[20%] min-w-[200px] flex-col border-r border-lightStormy pl-10 pt-[20px] main:top-[65px] main:flex">

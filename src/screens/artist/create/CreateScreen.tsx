@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import IcRoundAlbum from '~icons/ic/round-album';
 import BiSoundwave from '~icons/bi/soundwave';
-import type { AlbumRow, PlaylistRow } from '@/actions/types';
+import type { AlbumRow, PlaylistWithTrackStatsRow } from '@/actions/types';
 import { AddedByMeBlock } from './AddedByMeBlock';
 
 export function CreateScreen({
   playlist,
   albums,
 }: {
-  playlist: PlaylistRow | null;
+  playlist: PlaylistWithTrackStatsRow | null;
   albums: AlbumRow[];
 }) {
   return (

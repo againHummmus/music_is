@@ -1,8 +1,8 @@
 'use server';
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
-import { PLAYLIST_SELECT } from './types';
-import type { PlaylistRow } from './types';
+import { PLAYLIST_SELECT, PLAYLIST_WITH_TRACK_STATS_SELECT } from './types';
+import type { PlaylistRow, PlaylistWithTrackStatsRow } from './types';
 
 const PLAYLIST_TABLE = 'Playlist';
 
@@ -85,4 +85,19 @@ export async function searchPlaylists({
   const { data, error } = await query;
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getAddedByMePlaylist(): Promise<PlaylistWithTrackStatsRow | null> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(PLAYLIST_TABLE)
+    .select(PLAYLIST_WITH_TRACK_STATS_SELECT)
+    .eq('Creator', user.id)
+    .eq('is_default', true)
+    .eq('name', 'Added by me')
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }

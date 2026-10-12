@@ -12,7 +12,8 @@ export async function getUserRecommendations(): Promise<RecommendationRow[]> {
   const { data, error } = await supabase
     .from(RECS_TABLE)
     .select(RECOMMENDATION_SELECT)
-    .eq('User', user.id);
+    .eq('User', user.id)
+    .eq('RecommendedUser.viewerSubscription.Follower', user.id);
   if (error) throw error;
   return data ?? [];
 }

@@ -1,13 +1,8 @@
 'use server';
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
-import {
-  MUTUAL_PLAYLISTS_SELECT,
-  MUTUAL_POSTS_SELECT,
-  SUBSCRIPTION_SELECT,
-  USER_PUBLIC_COLUMNS,
-} from './types';
-import type { MutualFriendRow, SubscriptionRow } from './types';
+import { MUTUAL_PLAYLISTS_SELECT, USER_CARD_SELECT } from './types';
+import type { MutualFriendRow } from './types';
 
 const SUB_TABLE = 'User_user_subscription';
 const USER_TABLE = 'User';
@@ -46,27 +41,24 @@ export async function deleteSubscription({ id }: { id: string | number }) {
   if (error) throw error;
 }
 
-export async function searchSubscriptions(
-  params: {
-    follower?: string | number;
-    followee?: string | number;
-    limit?: number;
-    offset?: number;
-  } = {}
-): Promise<SubscriptionRow[]> {
+export async function findSubscriptionId({
+  follower,
+  followee,
+}: {
+  follower: string | number;
+  followee: string | number;
+}): Promise<number | null> {
   const supabase = publicClient();
 
-  let query = supabase.from(SUB_TABLE).select(SUBSCRIPTION_SELECT);
-  if (params.follower) query = query.eq('Follower', Number(params.follower));
-  if (params.followee) query = query.eq('Followee', Number(params.followee));
-  if (params.limit) {
-    const offset = params.offset ?? 0;
-    query = query.range(offset, offset + params.limit - 1);
-  }
-
-  const { data, error } = await query;
+  const { data, error } = await supabase
+    .from(SUB_TABLE)
+    .select('id')
+    .eq('Follower', Number(follower))
+    .eq('Followee', Number(followee))
+    .limit(1)
+    .maybeSingle();
   if (error) throw error;
-  return data ?? [];
+  return data?.id ?? null;
 }
 
 export async function countFollowers({
@@ -87,14 +79,12 @@ export async function countFollowers({
 export async function searchMutualFriends(params?: {
   limit?: number;
   offset?: number;
-  getPosts?: boolean;
   getPlaylists?: boolean;
 }): Promise<MutualFriendRow[]> {
   const { supabase, user } = await requireSession();
   const {
     limit = 20,
     offset = 0,
-    getPosts,
     getPlaylists,
   } = params ?? {};
 
@@ -120,15 +110,21 @@ export async function searchMutualFriends(params?: {
 
   if (mutualIds.length === 0) return [];
 
-  let select = USER_PUBLIC_COLUMNS;
-  if (getPosts) select += `, ${MUTUAL_POSTS_SELECT}`;
-  if (getPlaylists) select += `, ${MUTUAL_PLAYLISTS_SELECT}`;
+  const select = getPlaylists
+    ? `${USER_CARD_SELECT}, ${MUTUAL_PLAYLISTS_SELECT}`
+    : USER_CARD_SELECT;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from(USER_TABLE)
     .select(select)
     .in('id', mutualIds)
+    .eq('viewerSubscription.Follower', user.id)
     .range(offset, offset + limit - 1);
+  if (getPlaylists) {
+    query = query.eq('User_playlist.Playlist.is_public', true);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return (data ?? []) as unknown as MutualFriendRow[];
 }

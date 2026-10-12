@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useAuthStore } from '@/stores/authStore';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import { createPostLike, deletePostLike } from '@/actions/postLikeApi';
-import { searchPosts } from '@/actions/postApi';
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=20px&height=20px';
 import WeuiLikeFilled from '~icons/weui/like-filled?width=20px&height=20px';
 import WeuiLikeOutlined from '~icons/weui/like-outlined?width=20px&height=20px';
@@ -21,13 +20,13 @@ export const PostItem = ({
 }: {
   user: Pick<User, 'id' | 'username' | 'avatar_url'>;
   isCurrentUser: boolean;
-  post: Post & { Post_like: PostLike[] };
+  post: Post & { Post_like: Pick<PostLike, 'userId'>[] };
   handleDeletePost?: (id: number) => void;
 }) => {
   const currentUser = useAuthStore((s) => s.user);
 
   const isPostLiked = () =>
-    !!post?.Post_like?.some((like: PostLike) => like.userId === currentUser?.id);
+    !!post?.Post_like?.some((like) => like.userId === currentUser?.id);
   const [postInfo, setPostInfo] = useState({
     ...post,
     isLiked: isPostLiked(),
@@ -61,24 +60,6 @@ export const PostItem = ({
         isLiked: wasLiked,
         likeCount: originalLikeCount,
       }));
-      setLikePending(false);
-      return;
-    }
-
-    try {
-      const updatedPosts = await searchPosts({ id: postInfo.id, limit: 1 });
-      const updatedPost = updatedPosts[0];
-      if (updatedPost) {
-        setPostInfo((prev) => ({
-          ...prev,
-          isLiked: updatedPost.Post_like.some(
-            (l: PostLike) => l.userId === currentUser.id
-          ),
-          likeCount: updatedPost.Post_like.length,
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to refresh post after like:', error);
     } finally {
       setLikePending(false);
     }

@@ -1,11 +1,11 @@
 import { TrackItem } from '@/components/track/TrackItem';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Image from 'next/image';
-import type { AlbumRow } from '@/actions/types';
+import type { AlbumDetailsRow } from '@/actions/types';
 import { EmptyState } from '@/components/ui/EmptyState';
 
-export function AlbumScreen({ album }: { album: AlbumRow }) {
-  const artistName = album.Track?.[0]?.Artist?.name || 'Unknown Artist';
+export function AlbumScreen({ album }: { album: AlbumDetailsRow }) {
+  const artistName = album.Artist?.name || 'Unknown Artist';
 
   return (
     <div className="flex flex-col gap-20">

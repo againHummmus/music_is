@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Image from 'next/image';
 import { createSubscription, deleteSubscription } from '@/actions/userSubscriptionApi';
@@ -11,12 +12,12 @@ import HugeiconsLocationUser01 from '~icons/hugeicons/location-user-01?width=24p
 import { PostItem } from '@/components/post/PostItem';
 import HugeiconsBubbleChat from '~icons/hugeicons/bubble-chat?width=48px&height=48px';
 import { createDialogue } from '@/actions/dialogueApi';
-import { UserAlbumsBlock } from '@/screens/user-profile/UserAlbumsBlock';
-import { ContentBlock } from '@/components/ui/ContentBlock';
+import { Section } from '@/components/ui/Section';
+import { TRACK_GRID_CLASS } from '@/components/ui/SectionSkeleton';
 import type {
   PlaylistWithTracksRow,
   PostRow,
-  UserRow,
+  UserProfileRow,
   UserWithArtist,
 } from '@/actions/types';
 
@@ -27,13 +28,15 @@ export function UserProfileScreen({
   initialSubId,
   initialSubscriberCount,
   initialPosts,
+  albums,
 }: {
   initialCurrentUser: UserWithArtist | null;
-  initialViewedUser: UserRow;
+  initialViewedUser: UserProfileRow;
   initialIsSubscribed: boolean;
   initialSubId: number | null;
   initialSubscriberCount: number;
   initialPosts: PostRow[];
+  albums: ReactNode;
 }) {
   const storeCurrentUser = useAuthStore((s) => s.user);
   const currentUser = storeCurrentUser ?? initialCurrentUser;
@@ -194,47 +197,40 @@ export function UserProfileScreen({
       )}
 
       {posts.length > 0 && (
-        <ContentBlock
-          title="Posts"
-          items={posts}
-          renderItem={(post) => (
-            <PostItem
-              key={post.id}
-              user={user}
-              isCurrentUser={isCurrentUser}
-              post={post}
-              handleDeletePost={isCurrentUser ? handleDeletePost : undefined}
-            />
-          )}
-          gridClassName="flex flex-col w-full gap-10"
-        />
+        <Section title="Posts">
+          <div className="flex w-full flex-col gap-10">
+            {posts.map((post) => (
+              <PostItem
+                key={post.id}
+                user={user}
+                isCurrentUser={isCurrentUser}
+                post={post}
+                handleDeletePost={isCurrentUser ? handleDeletePost : undefined}
+              />
+            ))}
+          </div>
+        </Section>
       )}
 
       {addedByMePlaylist && (
-        <ContentBlock
-          title="Added by me"
-          items={[addedByMePlaylist]}
-          renderItem={(playlist) => (
-            <PlaylistItem key={playlist.id} info={playlist} />
-          )}
-        />
+        <Section title="Added by me">
+          <div className={TRACK_GRID_CLASS}>
+            <PlaylistItem info={addedByMePlaylist} />
+          </div>
+        </Section>
       )}
 
       {publicPlaylists.length > 0 && (
-        <ContentBlock
-          title="Public playlists"
-          items={publicPlaylists}
-          renderItem={(playlist) => (
-            <PlaylistItem key={playlist.id} info={playlist} />
-          )}
-        />
+        <Section title="Public playlists">
+          <div className={TRACK_GRID_CLASS}>
+            {publicPlaylists.map((playlist) => (
+              <PlaylistItem key={playlist.id} info={playlist} />
+            ))}
+          </div>
+        </Section>
       )}
 
-      {user?.Artist && (
-        <div className="flex flex-col gap-10">
-          <UserAlbumsBlock user={user} />
-        </div>
-      )}
+      {albums}
     </div>
   );
 }

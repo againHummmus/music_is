@@ -4,14 +4,20 @@ import { useEffect, useRef } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { TrackItem } from '@/components/track/TrackItem';
 import { useDialogueMessages } from '@/hooks/useDialogueMessages';
+import type { MessageRow } from '@/actions/types';
 
 interface MessageListProps {
   dialogueId: number;
+  initialMessages: MessageRow[];
 }
 
-export function MessageList({ dialogueId }: MessageListProps) {
+export function MessageList({ dialogueId, initialMessages }: MessageListProps) {
   const user = useAuthStore((s) => s.user);
-  const messages = useDialogueMessages(dialogueId, Boolean(user));
+  const messages = useDialogueMessages(
+    dialogueId,
+    initialMessages,
+    Boolean(user)
+  );
   const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 

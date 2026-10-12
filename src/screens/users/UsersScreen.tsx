@@ -4,10 +4,15 @@ import { searchUsers } from '@/actions/userApi';
 import HugeiconsSpinner01 from '~icons/uil/spinner?width=32px&height=32px';
 import { UserItem } from '@/components/user/UserItem';
 import { useInfiniteList } from '@/hooks/useInfiniteList';
+import type { UserCardRow } from '@/actions/types';
 
-const LIMIT = 20;
-
-export function UsersScreen() {
+export function UsersScreen({
+  initialUsers,
+  pageSize,
+}: {
+  initialUsers: UserCardRow[];
+  pageSize: number;
+}) {
   const {
     items: users,
     hasMore,
@@ -15,7 +20,8 @@ export function UsersScreen() {
     sentinelRef,
   } = useInfiniteList({
     fetchPage: (offset, limit) => searchUsers({ limit, offset }),
-    limit: LIMIT,
+    limit: pageSize,
+    initialItems: initialUsers,
   });
 
   return (

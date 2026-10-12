@@ -1,37 +1,27 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/stores/authStore';
+import { getCurrentUser } from '@/actions/session';
 import { searchMutualFriends } from '@/actions/userSubscriptionApi';
 import type { MutualFriendRow } from '@/actions/types';
 import { PlaylistItem } from '@/components/playlist/PlaylistItem';
 
-export function FriendsPlaylistsBlock() {
-  const LIMIT = 20;
-  const currentUser = useAuthStore((state) => state.user);
+const LIMIT = 20;
 
-  const [friends, setFriends] = useState<MutualFriendRow[]>([]);
+export async function FriendsPlaylistsBlock() {
+  const user = await getCurrentUser();
+  if (!user) return null;
 
-  useEffect(() => {
-    if (!currentUser) return;
-    let canceled = false;
+  const friends = await searchMutualFriends({
+    limit: LIMIT,
+    getPlaylists: true,
+  }).catch((): MutualFriendRow[] => []);
 
-    searchMutualFriends({
-      limit: LIMIT,
-      getPlaylists: true,
-    })
-      .then((data) => {
-        if (canceled) return;
-        setFriends(data);
-      })
-      .catch(console.error)
-      .finally(() => {});
+  const friendsWithPlaylists = friends.flatMap((friend) => {
+    const playlists = friend.User_playlist.flatMap((up) =>
+      up.Playlist?.is_public ? [up.Playlist] : []
+    );
+    return playlists.length > 0 ? [{ friend, playlists }] : [];
+  });
 
-    return () => {
-      canceled = true;
-    };
-  }, [currentUser]);
-
-  if (friends.length <= 0) return null;
+  if (friendsWithPlaylists.length === 0) return null;
 
   return (
     <div className="group/pblock space-y-10">
@@ -43,7 +33,7 @@ export function FriendsPlaylistsBlock() {
           </div>
         </div>
       </div>
-      {friends.map((friend, index) => {
+      {friendsWithPlaylists.map(({ friend, playlists }, index) => {
         const borderColors = [
           'border-funnyGreen',
           'border-funnyRed',
@@ -59,14 +49,9 @@ export function FriendsPlaylistsBlock() {
               {friend.username}
             </p>
             <div className="grid w-full grid-cols-1 gap-10 laptop:grid-cols-2">
-              {friend?.User_playlist?.filter(
-                (up) => up.Playlist?.is_public
-              ).map(
-                (up) =>
-                  up.Playlist && (
-                    <PlaylistItem key={up.Playlist.id} info={up.Playlist} />
-                  )
-              )}
+              {playlists.map((playlist) => (
+                <PlaylistItem key={playlist.id} info={playlist} />
+              ))}
             </div>
           </div>
         );

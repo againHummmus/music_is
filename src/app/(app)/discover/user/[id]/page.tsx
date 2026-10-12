@@ -1,28 +1,30 @@
+import { Suspense } from 'react';
 import { getCurrentUser } from '@/actions/session';
-import { getUser } from '@/actions/userApi';
-import { searchSubscriptions, countFollowers } from '@/actions/userSubscriptionApi';
+import { getUserProfile } from '@/actions/userApi';
+import {
+  countFollowers,
+  findSubscriptionId,
+} from '@/actions/userSubscriptionApi';
 import { searchPosts } from '@/actions/postApi';
 import { UserProfileScreen } from '@/screens/user-profile/UserProfileScreen';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { UserAlbumsBlock } from '@/screens/user-profile/UserAlbumsBlock';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const currentUser = await getCurrentUser();
 
-  const [viewedUser, subResult, initialSubscriberCount, initialPosts] =
+  const [viewedUser, subscriptionId, initialSubscriberCount, initialPosts] =
     await Promise.all([
-      getUser({ id: String(params.id) }),
+      getUserProfile(params.id),
       currentUser
-        ? searchSubscriptions({
+        ? findSubscriptionId({
             follower: currentUser.id,
             followee: params.id,
-            limit: 1,
           })
-        : Promise.resolve([]),
+        : Promise.resolve(null),
       countFollowers({ followee: params.id }),
       searchPosts({ userId: params.id, limit: 100 }),
     ]);
-
-  const initialSub = subResult[0] ?? null;
 
     if (!viewedUser) {
       return (
@@ -34,10 +36,21 @@ export default async function Page({ params }: { params: { id: string } }) {
     <UserProfileScreen
       initialCurrentUser={currentUser}
       initialViewedUser={viewedUser}
-      initialIsSubscribed={!!initialSub}
-      initialSubId={initialSub?.id ?? null}
+      initialIsSubscribed={subscriptionId !== null}
+      initialSubId={subscriptionId}
       initialSubscriberCount={initialSubscriberCount}
       initialPosts={initialPosts}
+      albums={
+        viewedUser.Artist && (
+          <Suspense fallback={null}>
+            <UserAlbumsBlock
+              userId={viewedUser.id}
+              username={viewedUser.username}
+              artistId={viewedUser.Artist.id}
+            />
+          </Suspense>
+        )
+      }
     />
   );
 }

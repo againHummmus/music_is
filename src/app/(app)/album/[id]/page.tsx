@@ -1,10 +1,9 @@
-import { searchAlbums } from '@/actions/albumApi';
+import { getAlbum } from '@/actions/albumApi';
 import { AlbumScreen } from '@/screens/album/AlbumScreen';
 import { EmptyState } from '@/components/ui/EmptyState';
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const albums = await searchAlbums({ id: params.id, limit: 1 });
-  const album = albums[0] ?? null;
+  const album = await getAlbum(params.id);
 
   if (!album) {
     return (

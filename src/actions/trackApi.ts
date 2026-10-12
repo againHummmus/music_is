@@ -6,7 +6,6 @@ import { TRACK_SELECT } from './types';
 import type { TrackRow } from './types';
 
 const TRACK_TABLE = 'Track';
-const TRACK_LIKE_TABLE = 'Track_like';
 
 export async function createTrack({
   genreId,
@@ -56,7 +55,6 @@ export async function searchTracks({
   genre,
   artist,
   album,
-  likedByUserId,
   name,
   limit = 10,
   offset = 0,
@@ -65,24 +63,11 @@ export async function searchTracks({
   genre?: string | number;
   artist?: string | number;
   album?: string | number;
-  likedByUserId?: string | number;
   name?: string;
   limit?: number;
   offset?: number;
 }): Promise<TrackRow[]> {
   const supabase = publicClient();
-
-  let idsFilter: number[] | null = null;
-
-  if (likedByUserId) {
-    const { data: likes, error: likesError } = await supabase
-      .from(TRACK_LIKE_TABLE)
-      .select('trackId')
-      .eq('userId', Number(likedByUserId));
-    if (likesError) throw likesError;
-    idsFilter = (likes ?? []).map((l) => l.trackId ?? 0);
-    if (idsFilter.length === 0) return [];
-  }
 
   let query = supabase.from(TRACK_TABLE).select(TRACK_SELECT);
   if (id) query = query.eq('id', Number(id));
@@ -90,7 +75,6 @@ export async function searchTracks({
   if (artist) query = query.eq('artistId', Number(artist));
   if (album) query = query.eq('albumId', Number(album));
   if (name) query = query.ilike('name', `%${name}%`);
-  if (idsFilter) query = query.in('id', idsFilter);
   if (limit) query = query.range(offset, offset + limit - 1);
 
   const { data, error } = await query;

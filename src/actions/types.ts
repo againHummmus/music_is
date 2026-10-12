@@ -4,25 +4,40 @@ import type { Database } from '@/types/database.types';
 type Db = SupabaseClient<Database>;
 
 export const TRACK_SELECT = `
-  *,
-  Album(*),
-  Artist(*),
-  Genre(*),
-  Track_like(*),
-  Playlist_track(*)
+  id,
+  name,
+  file_hash,
+  artistId,
+  albumId,
+  Album ( id, name, image_hash ),
+  Artist ( id, name )
+`;
+
+export const TRACK_WITH_STATS_SELECT = `
+  ${TRACK_SELECT},
+  Track_like ( count ),
+  Playlist_track ( count )
 `;
 
 export const USER_BRIEF_SELECT = `id, username, avatar_url`;
 
-export const USER_PUBLIC_COLUMNS = `id, created_at, username, avatar_url, app_role, artistId, is_activated, preferences_vector`;
+export const USER_PUBLIC_COLUMNS = `id, username, avatar_url, app_role, artistId`;
 
-export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, email, sbUserId`;
+export const USER_CARD_SELECT = `
+  ${USER_PUBLIC_COLUMNS},
+  followers:User_user_subscription!User_user_subscription_Followee_fkey ( count ),
+  viewerSubscription:User_user_subscription!User_user_subscription_Followee_fkey ( id )
+`;
+
+export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, created_at, is_activated, email, sbUserId`;
 
 export const USER_WITH_ARTIST_SELECT = `${USER_SELF_COLUMNS}, Artist(*)`;
 
-export const ALBUM_SELECT = `
-  *,
-  Artist(*),
+export const ALBUM_SELECT = `id, name, year, image_hash, artistId`;
+
+export const ALBUM_DETAILS_SELECT = `
+  ${ALBUM_SELECT},
+  Artist ( id, name ),
   Track ( ${TRACK_SELECT} )
 `;
 
@@ -50,30 +65,28 @@ const PLAYLIST_EMBED_FIELDS = `
   )
 `;
 
+export const PLAYLIST_WITH_TRACK_STATS_SELECT = `
+  *,
+  Creator:Creator ( ${USER_BRIEF_SELECT} ),
+  Playlist_track (
+    *,
+    Track ( ${TRACK_WITH_STATS_SELECT} )
+  )
+`;
+
 export const USER_PLAYLIST_SELECT = `
   *,
   Playlist ( ${PLAYLIST_EMBED_FIELDS} )
 `;
 
-export const USER_PLAYLIST_SELECT_INNER = `
-  *,
-  Playlist!inner ( ${PLAYLIST_EMBED_FIELDS} )
-`;
+export const USER_SELECT = `${USER_PUBLIC_COLUMNS}, Artist(*)`;
 
-export const USER_SELECT = `
-  ${USER_PUBLIC_COLUMNS},
-  Artist(*),
+export const USER_PROFILE_SELECT = `
+  ${USER_SELECT},
   User_playlist (
     id,
     is_creator,
-    Playlist (
-      *,
-      Creator:Creator ( ${USER_BRIEF_SELECT} ),
-      Playlist_track (
-        *,
-        Track ( ${TRACK_SELECT} )
-      )
-    )
+    Playlist ( ${PLAYLIST_EMBED_FIELDS} )
   )
 `;
 
@@ -86,12 +99,7 @@ export const MESSAGE_SELECT = `
 export const POST_SELECT = `
   *,
   User:User ( ${USER_BRIEF_SELECT} ),
-  Post_like(*),
-  Track ( ${TRACK_SELECT} ),
-  Playlist (
-    *,
-    Creator:Creator ( ${USER_BRIEF_SELECT} )
-  )
+  Post_like ( userId )
 `;
 
 export const DIALOGUE_SELECT = `
@@ -113,24 +121,8 @@ export const PARTICIPANT_SELECT = `userId, is_creator, User:User ( ${USER_BRIEF_
 
 export const RECOMMENDATION_SELECT = `
   *,
-  RecommendedUser:User!User_recommendation_RecommendedUser_fkey ( * )
-`;
-
-export const SUBSCRIPTION_SELECT = `
-  *,
-  Followee:User!User_user_subscription_Followee_fkey (
-    ${USER_PUBLIC_COLUMNS},
-    Post (
-      *,
-      Post_like(*)
-    )
-  )
-`;
-
-export const MUTUAL_POSTS_SELECT = `
-  Post (
-    *,
-    Post_like(*)
+  RecommendedUser:User!User_recommendation_RecommendedUser_fkey (
+    ${USER_CARD_SELECT}
   )
 `;
 
@@ -138,15 +130,7 @@ export const MUTUAL_PLAYLISTS_SELECT = `
   User_playlist (
     id,
     is_creator,
-    Playlist (
-      *,
-      Creator:Creator ( ${USER_BRIEF_SELECT} ),
-      User_playlist ( id, User ),
-      Playlist_track (
-        *,
-        Track ( ${TRACK_SELECT} )
-      )
-    )
+    Playlist ( ${PLAYLIST_EMBED_FIELDS} )
   )
 `;
 
@@ -156,6 +140,12 @@ export type TrackRow = QueryData<ReturnType<typeof _trackQuery>>[number];
 const _albumQuery = (db: Db) => db.from('Album').select(ALBUM_SELECT);
 export type AlbumRow = QueryData<ReturnType<typeof _albumQuery>>[number];
 
+const _albumDetailsQuery = (db: Db) =>
+  db.from('Album').select(ALBUM_DETAILS_SELECT);
+export type AlbumDetailsRow = QueryData<
+  ReturnType<typeof _albumDetailsQuery>
+>[number];
+
 const _playlistQuery = (db: Db) => db.from('Playlist').select(PLAYLIST_SELECT);
 export type PlaylistRow = QueryData<ReturnType<typeof _playlistQuery>>[number];
 
@@ -163,6 +153,12 @@ const _playlistWithTracksQuery = (db: Db) =>
   db.from('Playlist').select(PLAYLIST_EMBED_FIELDS);
 export type PlaylistWithTracksRow = QueryData<
   ReturnType<typeof _playlistWithTracksQuery>
+>[number];
+
+const _playlistWithTrackStatsQuery = (db: Db) =>
+  db.from('Playlist').select(PLAYLIST_WITH_TRACK_STATS_SELECT);
+export type PlaylistWithTrackStatsRow = QueryData<
+  ReturnType<typeof _playlistWithTrackStatsQuery>
 >[number];
 
 const _playlistTrackQuery = (db: Db) =>
@@ -177,8 +173,13 @@ export type UserPlaylistRow = QueryData<
   ReturnType<typeof _userPlaylistQuery>
 >[number];
 
-const _userFullQuery = (db: Db) => db.from('User').select(USER_SELECT);
-export type UserRow = QueryData<ReturnType<typeof _userFullQuery>>[number];
+const _userQuery = (db: Db) => db.from('User').select(USER_SELECT);
+export type UserRow = QueryData<ReturnType<typeof _userQuery>>[number];
+
+const _userProfileQuery = (db: Db) => db.from('User').select(USER_PROFILE_SELECT);
+export type UserProfileRow = QueryData<
+  ReturnType<typeof _userProfileQuery>
+>[number];
 
 const _userWithArtistQuery = (db: Db) =>
   db.from('User').select(USER_WITH_ARTIST_SELECT);
@@ -190,6 +191,9 @@ const _userBasicQuery = (db: Db) => db.from('User').select(USER_PUBLIC_COLUMNS);
 export type UserBasicRow = QueryData<
   ReturnType<typeof _userBasicQuery>
 >[number];
+
+const _userCardQuery = (db: Db) => db.from('User').select(USER_CARD_SELECT);
+export type UserCardRow = QueryData<ReturnType<typeof _userCardQuery>>[number];
 
 const _messageQuery = (db: Db) => db.from('Message').select(MESSAGE_SELECT);
 export type MessageRow = QueryData<ReturnType<typeof _messageQuery>>[number];
@@ -213,16 +217,8 @@ export type RecommendationRow = QueryData<
   ReturnType<typeof _recsQuery>
 >[number];
 
-const _subscriptionQuery = (db: Db) =>
-  db.from('User_user_subscription').select(SUBSCRIPTION_SELECT);
-export type SubscriptionRow = QueryData<
-  ReturnType<typeof _subscriptionQuery>
->[number];
-
 const _mutualFriendQuery = (db: Db) =>
-  db.from('User').select(
-    `${USER_PUBLIC_COLUMNS}, ${MUTUAL_POSTS_SELECT}, ${MUTUAL_PLAYLISTS_SELECT}`
-  );
+  db.from('User').select(`${USER_CARD_SELECT}, ${MUTUAL_PLAYLISTS_SELECT}`);
 export type MutualFriendRow = QueryData<
   ReturnType<typeof _mutualFriendQuery>
 >[number];

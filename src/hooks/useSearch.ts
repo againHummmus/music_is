@@ -5,7 +5,7 @@ import { searchPlaylists } from '@/actions/playlistApi';
 import { searchUsers } from '@/actions/userApi';
 import type { TrackRow } from '@/actions/types';
 import type { PlaylistRow } from '@/actions/types';
-import type { UserBasicRow } from '@/actions/types';
+import type { UserCardRow } from '@/actions/types';
 
 export type SearchTab = 'tracks' | 'playlists' | 'users';
 
@@ -16,7 +16,7 @@ export const useSearch = () => {
   const [query, setQuery] = useState('');
   const [trackResults, setTrackResults] = useState<TrackRow[]>([]);
   const [playlistResults, setPlaylistResults] = useState<PlaylistRow[]>([]);
-  const [userResults, setUserResults] = useState<UserBasicRow[]>([]);
+  const [userResults, setUserResults] = useState<UserCardRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 

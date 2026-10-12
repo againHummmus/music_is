@@ -1,20 +1,22 @@
 'use server';
 
-import { getCurrentUser, publicClient, requireSession } from './session';
+import { publicClient, requireSession } from './session';
 import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
 import {
-  USER_PUBLIC_COLUMNS,
+  USER_CARD_SELECT,
+  USER_PROFILE_SELECT,
   USER_SELECT,
   USER_WITH_ARTIST_SELECT,
 } from './types';
 import type { TablesUpdate } from '@/types/supabase';
-import type { UserBasicRow, UserRow, UserWithArtist } from './types';
+import type {
+  UserCardRow,
+  UserProfileRow,
+  UserRow,
+  UserWithArtist,
+} from './types';
 
 const USER_TABLE = 'User';
-
-export async function getMe(): Promise<UserWithArtist | null> {
-  return getCurrentUser();
-}
 
 export async function getUser({
   id,
@@ -33,16 +35,34 @@ export async function getUser({
   return data;
 }
 
+export async function getUserProfile(
+  id: string | number
+): Promise<UserProfileRow | null> {
+  const supabase = publicClient();
+
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .select(USER_PROFILE_SELECT)
+    .eq('id', Number(id))
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function searchUsers(params?: {
   id?: string | number;
   username?: string;
   name?: string;
   limit?: number;
   offset?: number;
-}): Promise<UserBasicRow[]> {
-  const supabase = publicClient();
+}): Promise<UserCardRow[]> {
+  const { supabase, user } = await requireSession();
 
-  let query = supabase.from(USER_TABLE).select(USER_PUBLIC_COLUMNS);
+  let query = supabase
+    .from(USER_TABLE)
+    .select(USER_CARD_SELECT)
+    .eq('viewerSubscription.Follower', user.id);
 
   if (params?.id) query = query.eq('id', Number(params.id));
   const usernameQuery = params?.username ?? params?.name;
