@@ -80,14 +80,20 @@ export function AuthScreen({
     setLoading(true);
     setError('');
 
-    const res = await signInAction(email, password);
-    if (res.error) {
-      console.error(res.error?.message ?? res.error);
-      setError(res.error?.message ?? 'Something went wrong');
-    } else {
-      router.push('/library');
+    try {
+      const res = await signInAction(email, password);
+      if (res.error) {
+        console.error(res.error?.message ?? res.error);
+        setError(res.error?.message ?? 'Something went wrong');
+      } else {
+        router.push('/library');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Could not reach the server. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async () => {
@@ -108,14 +114,20 @@ export function AuthScreen({
     setLoading(true);
     setError('');
 
-    const res = await signUpAction(email, password, username);
-    if (res.error) {
-      console.error(res.error?.message ?? res.error);
-      setError(res.error?.message ?? 'Something went wrong:(');
-    } else {
-      router.push(res.needsConfirmation ? '/activate' : '/library');
+    try {
+      const res = await signUpAction(email, password, username);
+      if (res.error) {
+        console.error(res.error?.message ?? res.error);
+        setError(res.error?.message ?? 'Something went wrong:(');
+      } else {
+        router.push(res.needsConfirmation ? '/activate' : '/library');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Could not reach the server. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

@@ -8,6 +8,8 @@ import { getCurrentUser } from './session';
 import type { SupabaseServerClient } from './session';
 
 const USER_TABLE = 'User';
+const ACCOUNT_EXISTS =
+  'An account with this email already exists. Please sign in instead.';
 const PROFILE_MISSING =
   'Your profile could not be found. Please contact support.';
 
@@ -62,6 +64,13 @@ export async function signUp({
 
   if (error || !data?.user) {
     return { data: { user: null }, error, needsConfirmation: false };
+  }
+  if (data.user.identities?.length === 0) {
+    return {
+      data: { user: null },
+      error: { message: ACCOUNT_EXISTS },
+      needsConfirmation: false,
+    };
   }
   if (!data.session) {
     return { data: { user: null }, error: null, needsConfirmation: true };
