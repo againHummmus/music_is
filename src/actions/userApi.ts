@@ -113,5 +113,5 @@ export async function updateUser({
   if (updates.avatar_url && user.avatar_url) {
     await removeStoredFile(supabase, 'img', user.avatar_url);
   }
-  return data;
+  return { ...data, email: user.email };
 }

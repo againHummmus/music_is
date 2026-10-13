@@ -4,7 +4,13 @@ import { TrackItem } from '@/components/track/TrackItem';
 import { TRACK_GRID_CLASS } from '@/components/ui/SectionSkeleton';
 import type { TrackRow } from '@/actions/types';
 
-export function TrackList({ tracks, queueId }: { tracks: TrackRow[]; queueId: string }) {
+export function TrackList({
+  tracks,
+  queueId,
+}: {
+  tracks: TrackRow[];
+  queueId: string;
+}) {
   const queue = { id: queueId, tracks };
 
   return (

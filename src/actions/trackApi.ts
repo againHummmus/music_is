@@ -108,11 +108,13 @@ export async function deleteTrack(trackId: string | number) {
     (user.artistId != null && user.artistId === track.artistId);
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { error } = await supabase
+  const { data: deleted, error } = await supabase
     .from(TRACK_TABLE)
     .delete()
-    .eq('id', Number(trackId));
+    .eq('id', Number(trackId))
+    .select('id');
   if (error) throw error;
+  if (!deleted?.length) throw new Error(FORBIDDEN);
 
   await removeStoredFile(supabase, 'mp3', track.file_hash);
 }

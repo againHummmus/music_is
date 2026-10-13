@@ -6,8 +6,14 @@ import type { TrackCollection } from './trackCollections';
 
 const FULL_LIST_SIZE = 100;
 
-export async function TrackCollectionScreen({ collection }: { collection: TrackCollection }) {
-  const tracks = await collection.load(FULL_LIST_SIZE).catch((): TrackRow[] => []);
+export async function TrackCollectionScreen({
+  collection,
+}: {
+  collection: TrackCollection;
+}) {
+  const tracks = await collection
+    .load(FULL_LIST_SIZE)
+    .catch((): TrackRow[] => []);
 
   return (
     <Section title={collection.title}>

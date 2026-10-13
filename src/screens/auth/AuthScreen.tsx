@@ -111,9 +111,9 @@ export function AuthScreen({
     const res = await signUpAction(email, password, username);
     if (res.error) {
       console.error(res.error?.message ?? res.error);
-      setError('Something went wrong:(');
+      setError(res.error?.message ?? 'Something went wrong:(');
     } else {
-      router.push('/activate');
+      router.push(res.needsConfirmation ? '/activate' : '/library');
     }
     setLoading(false);
   };

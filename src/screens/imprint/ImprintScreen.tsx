@@ -13,6 +13,14 @@ export function ImprintScreen() {
       <p>
         Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
       </p>
+
+      <h2>Music credits</h2>
+      <p>
+        The demo music on {SITE_NAME} consists of public-domain (CC0) recordings by Musopen and
+        other performers, published on{' '}
+        <a href="https://commons.wikimedia.org/wiki/Category:Musopen">Wikimedia Commons</a>.
+        Composer portraits and album covers are public-domain images from Wikimedia Commons.
+      </p>
     </LegalPage>
   );
 }

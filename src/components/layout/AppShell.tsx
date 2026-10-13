@@ -9,6 +9,7 @@ import { Header } from '@/components/layout/Header';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Player } from '@/components/player/Player';
 import { StatusModal } from '@/components/ui/StatusModal';
+import { ProfileMissing } from '@/components/layout/ProfileMissing';
 import type { UserWithArtist } from '@/actions/types';
 
 interface Props {
@@ -39,7 +40,7 @@ export function AppShell({
   const modal = useUiStore((s) => s.modal);
   const user = storeUser ?? initialUser;
 
-  if (!user) return null;
+  if (!user) return <ProfileMissing />;
 
   return (
     <>

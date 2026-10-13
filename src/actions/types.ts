@@ -29,7 +29,7 @@ export const USER_CARD_SELECT = `
   viewerSubscription:User_user_subscription!User_user_subscription_Followee_fkey ( id )
 `;
 
-export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, created_at, is_activated, email, sbUserId, recommendations_enabled`;
+export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, created_at, sbUserId, recommendations_enabled`;
 
 export const USER_WITH_ARTIST_SELECT = `${USER_SELF_COLUMNS}, Artist(*)`;
 
@@ -201,7 +201,7 @@ export type MutualFriendRow = QueryData<
   ReturnType<typeof _mutualFriendQuery>
 >[number];
 
-export type UserWithArtist = UserWithArtistRow;
+export type UserWithArtist = UserWithArtistRow & { email: string | null };
 
 export type AuthResult = {
   data: {

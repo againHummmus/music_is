@@ -3,11 +3,13 @@
 import { headers } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
 import { USER_WITH_ARTIST_SELECT } from './types';
-import type { AuthResult, UserWithArtist } from './types';
+import type { AuthResult } from './types';
+import { getCurrentUser } from './session';
 import type { SupabaseServerClient } from './session';
-import type { TablesInsert, TablesUpdate } from '@/types/supabase';
 
 const USER_TABLE = 'User';
+const PROFILE_MISSING =
+  'Your profile could not be found. Please contact support.';
 
 function originFromHeaders(): string | undefined {
   const headerList = headers();
@@ -20,67 +22,21 @@ function originFromHeaders(): string | undefined {
   return `${protocol}://${host}`;
 }
 
-async function ensurePublicUser(
+async function loadProfile(
   supabase: SupabaseServerClient,
-  {
-    sbUserId,
-    email,
-    username,
-    isActivated,
-  }: {
-    sbUserId: string;
-    email?: string | null;
-    username?: string | null;
-    isActivated?: boolean;
-  }
-): Promise<{
-  data: UserWithArtist | null;
-  error: { message: string } | null;
-}> {
-  const { data: existing } = await supabase
+  sbUserId: string,
+  email: string | undefined
+): Promise<AuthResult> {
+  const { data, error } = await supabase
     .from(USER_TABLE)
     .select(USER_WITH_ARTIST_SELECT)
     .eq('sbUserId', sbUserId)
-    .single();
-
-  if (existing) {
-    const updates: TablesUpdate<'User'> = {};
-    if (
-      typeof isActivated === 'boolean' &&
-      existing.is_activated !== isActivated
-    ) {
-      updates.is_activated = isActivated;
-    }
-    if (email && existing.email !== email) updates.email = email;
-
-    if (Object.keys(updates).length > 0) {
-      const { data: updated, error } = await supabase
-        .from(USER_TABLE)
-        .update(updates)
-        .eq('id', existing.id)
-        .select(USER_WITH_ARTIST_SELECT)
-        .single();
-      return { data: updated ?? existing, error };
-    }
-    return { data: existing, error: null };
+    .maybeSingle();
+  if (error) return { data: { user: null }, error };
+  if (!data) {
+    return { data: { user: null }, error: { message: PROFILE_MISSING } };
   }
-
-  const payload: TablesInsert<'User'> = {
-    sbUserId,
-    email: email ?? null,
-    username: username ?? (email ? email.split('@')[0] : 'User'),
-    app_role: 'user',
-    is_activated: Boolean(isActivated),
-    avatar_url: null,
-  };
-
-  const { data, error } = await supabase
-    .from(USER_TABLE)
-    .insert(payload)
-    .select(USER_WITH_ARTIST_SELECT)
-    .single();
-
-  return { data, error };
+  return { data: { user: { ...data, email: email ?? null } }, error: null };
 }
 
 export async function signUp({
@@ -91,7 +47,7 @@ export async function signUp({
   email: string;
   password: string;
   username: string;
-}): Promise<AuthResult> {
+}): Promise<AuthResult & { needsConfirmation: boolean }> {
   const supabase = createSupabaseServerClient();
   const origin = originFromHeaders();
 
@@ -105,20 +61,16 @@ export async function signUp({
   });
 
   if (error || !data?.user) {
-    return { data: { user: null }, error };
+    return { data: { user: null }, error, needsConfirmation: false };
+  }
+  if (!data.session) {
+    return { data: { user: null }, error: null, needsConfirmation: true };
   }
 
-  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
-    supabase,
-    {
-      sbUserId: data.user.id,
-      email,
-      username,
-      isActivated: Boolean(data.user.email_confirmed_at),
-    }
-  );
-
-  return { data: { user: publicUser }, error: publicUserError };
+  return {
+    ...(await loadProfile(supabase, data.user.id, data.user.email)),
+    needsConfirmation: false,
+  };
 }
 
 export async function signIn({
@@ -139,17 +91,7 @@ export async function signIn({
     return { data: { user: null }, error };
   }
 
-  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
-    supabase,
-    {
-      sbUserId: data.user.id,
-      email: data.user.email,
-      username: data.user.user_metadata?.username,
-      isActivated: Boolean(data.user.email_confirmed_at),
-    }
-  );
-
-  return { data: { user: publicUser }, error: publicUserError };
+  return loadProfile(supabase, data.user.id, data.user.email);
 }
 
 export async function signOut(): Promise<AuthResult> {
@@ -159,25 +101,8 @@ export async function signOut(): Promise<AuthResult> {
 }
 
 export async function getUser(): Promise<AuthResult> {
-  const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase.auth.getUser();
-  const authUser = data?.user ?? null;
-
-  if (!authUser) {
-    return { data: { user: null }, error };
-  }
-
-  const { data: publicUser, error: publicUserError } = await ensurePublicUser(
-    supabase,
-    {
-      sbUserId: authUser.id,
-      email: authUser.email,
-      username: authUser.user_metadata?.username,
-      isActivated: Boolean(authUser.email_confirmed_at),
-    }
-  );
-
-  return { data: { user: publicUser }, error: error ?? publicUserError };
+  const user = await getCurrentUser();
+  return { data: { user }, error: null };
 }
 
 export async function resendConfirmation(email: string) {

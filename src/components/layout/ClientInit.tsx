@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import type { UserWithArtist } from '@/actions/types';
 
-/**
- * Thin client component that keeps the Zustand store refreshed on public
- * routes, which have no server-provided user hydration.
- */
-export function ClientInit() {
-  const update = useAuthStore((s) => s.update);
-  useEffect(() => {
-    update();
-  }, [update]);
+export function ClientInit({
+  initialUser,
+}: {
+  initialUser: UserWithArtist | null;
+}) {
+  useLayoutEffect(() => {
+    useAuthStore.setState({
+      user: initialUser ?? undefined,
+      isAuth: Boolean(initialUser),
+      isLoading: false,
+    });
+  }, [initialUser]);
   return null;
 }

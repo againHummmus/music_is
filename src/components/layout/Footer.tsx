@@ -42,10 +42,6 @@ export const Footer = () => {
           <div className="max-w-sm text-center text-xs text-gray-400 max-main:w-full max-main:text-center md:text-right">
             For all complaints, please contact: {CONTACT_EMAIL}
           </div>
-          <div className="max-w-sm text-center text-xs text-gray-400 md:text-right">
-            The service may contain information not intended for persons under
-            18 years of age.
-          </div>
         </div>
       </div>
     </footer>

@@ -28,8 +28,16 @@ export async function createPlaylist({
     })
     .select(PLAYLIST_SELECT)
     .single();
-
   if (error) throw error;
+
+  const { error: linkError } = await supabase
+    .from('User_playlist')
+    .insert({ User: user.id, Playlist: data.id, is_creator: true });
+  if (linkError) {
+    await supabase.from(PLAYLIST_TABLE).delete().eq('id', data.id);
+    throw linkError;
+  }
+
   return data;
 }
 
@@ -48,11 +56,13 @@ export async function deletePlaylist({ id }: { id: string | number }) {
     (user.app_role === 'admin' || playlist.Creator === user.id);
   if (!canDelete) throw new Error(FORBIDDEN);
 
-  const { error } = await supabase
+  const { data: deleted, error } = await supabase
     .from(PLAYLIST_TABLE)
     .delete()
-    .eq('id', Number(id));
+    .eq('id', Number(id))
+    .select('id');
   if (error) throw error;
+  if (!deleted?.length) throw new Error(FORBIDDEN);
 }
 
 export async function searchPlaylists({

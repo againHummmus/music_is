@@ -4,7 +4,7 @@ import { CONTACT_EMAIL, OPERATOR_NAME, SITE_NAME } from '@/lib/siteConfig';
 
 export function TermsScreen() {
   return (
-    <LegalPage title="Terms of Service" effectiveDate="[DATE]">
+    <LegalPage title="Terms of Service" effectiveDate="13.10.2026">
       <p>
         These terms govern your use of {SITE_NAME}, operated by {OPERATOR_NAME}. By creating an
         account or using the service, you agree to them. If you do not agree, please do not use{' '}
@@ -43,7 +43,6 @@ export function TermsScreen() {
         You must not try to access other users&apos; accounts or data, overload the service, or
         bypass its security.
       </p>
-      <p>[ADD ANY OTHER RULES]</p>
 
       <h2>4. Reporting and removing content</h2>
       <p>
@@ -86,7 +85,12 @@ export function TermsScreen() {
       </p>
 
       <h2>10. Governing law</h2>
-      <p>[GOVERNING LAW AND JURISDICTION]</p>
+      <p>These terms are governed by the laws of Serbia</p>
+      <p>
+        If you are a consumer living in the EU/EEA or the UK, you also keep the protection of the
+        mandatory consumer laws of your country, and you can bring claims in the courts where you
+        live.
+      </p>
 
       <h2>11. Contact</h2>
       <p>

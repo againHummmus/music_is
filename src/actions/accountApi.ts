@@ -20,6 +20,7 @@ export interface AccountExport {
   posts: { id: number; content: string | null; createdAt: string }[];
   likedPosts: { postId: number | null; likedAt: string }[];
   likedTracks: { trackId: number | null; name: string | null; likedAt: string }[];
+  likedPlaylists: { playlistId: number | null; likedAt: string }[];
   playlists: {
     id: number;
     name: string | null;
@@ -44,7 +45,7 @@ export interface AccountExport {
 export async function exportMyData(): Promise<AccountExport> {
   const { supabase, user } = await requireSession();
 
-  const [posts, postLikes, trackLikes, playlists, following, followers, messages] =
+  const [posts, postLikes, trackLikes, playlistLikes, playlists, following, followers, messages] =
     await Promise.all([
       supabase.from('Post').select('id, content, created_at').eq('userId', user.id),
       supabase.from('Post_like').select('postId, created_at').eq('userId', user.id),
@@ -52,6 +53,7 @@ export async function exportMyData(): Promise<AccountExport> {
         .from('Track_like')
         .select('trackId, created_at, Track ( name )')
         .eq('userId', user.id),
+      supabase.from('Playlist_like').select('playlistId, created_at').eq('userId', user.id),
       supabase
         .from('Playlist')
         .select('id, name, description, is_public, Playlist_track ( Track ( name ) )')
@@ -71,6 +73,7 @@ export async function exportMyData(): Promise<AccountExport> {
     posts,
     postLikes,
     trackLikes,
+    playlistLikes,
     playlists,
     following,
     followers,
@@ -117,6 +120,10 @@ export async function exportMyData(): Promise<AccountExport> {
     likedTracks: (trackLikes.data ?? []).map((like) => ({
       trackId: like.trackId,
       name: like.Track?.name ?? null,
+      likedAt: like.created_at,
+    })),
+    likedPlaylists: (playlistLikes.data ?? []).map((like) => ({
+      playlistId: like.playlistId,
       likedAt: like.created_at,
     })),
     playlists: (playlists.data ?? []).map((playlist) => ({

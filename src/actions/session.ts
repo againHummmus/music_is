@@ -29,7 +29,9 @@ export const getSession = cache(async (): Promise<Session | null> => {
     .eq('sbUserId', authUser.id)
     .single();
 
-  return data ? { supabase, user: data } : null;
+  return data
+    ? { supabase, user: { ...data, email: authUser.email ?? null } }
+    : null;
 });
 
 export async function getCurrentUser(): Promise<UserWithArtist | null> {

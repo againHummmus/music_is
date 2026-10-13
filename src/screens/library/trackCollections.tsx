@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
-import { getChartTracks, getFriendsLikeTracks, getLikedTracks } from '@/actions/libraryApi';
+import {
+  getChartTracks,
+  getFriendsLikeTracks,
+  getLikedTracks,
+} from '@/actions/libraryApi';
 import type { TrackRow } from '@/actions/types';
 
 export interface TrackCollection {
@@ -30,5 +34,9 @@ export const TRACK_COLLECTIONS = {
   },
 } satisfies Record<string, TrackCollection>;
 
-export const findTrackCollection = (slug: string): TrackCollection | undefined =>
-  Object.values(TRACK_COLLECTIONS).find((collection) => collection.slug === slug);
+export const findTrackCollection = (
+  slug: string
+): TrackCollection | undefined =>
+  Object.values(TRACK_COLLECTIONS).find(
+    (collection) => collection.slug === slug
+  );

@@ -6,16 +6,27 @@ import type { TrackCollection } from './trackCollections';
 
 const PREVIEW_SIZE = 6;
 
-export async function TrackCollectionBlock({ collection }: { collection: TrackCollection }) {
-  const tracks = await collection.load(PREVIEW_SIZE + 1).catch((): TrackRow[] => []);
+export async function TrackCollectionBlock({
+  collection,
+}: {
+  collection: TrackCollection;
+}) {
+  const tracks = await collection
+    .load(PREVIEW_SIZE + 1)
+    .catch((): TrackRow[] => []);
 
   return (
     <Section
       title={collection.title}
       buttonLabel="Go"
-      buttonHref={tracks.length > PREVIEW_SIZE ? `/library/${collection.slug}` : undefined}>
+      buttonHref={
+        tracks.length > PREVIEW_SIZE ? `/library/${collection.slug}` : undefined
+      }>
       {tracks.length > 0 ? (
-        <TrackList tracks={tracks.slice(0, PREVIEW_SIZE)} queueId={`library-${collection.slug}`} />
+        <TrackList
+          tracks={tracks.slice(0, PREVIEW_SIZE)}
+          queueId={`library-${collection.slug}`}
+        />
       ) : (
         <EmptyState>{collection.emptyText}</EmptyState>
       )}

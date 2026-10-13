@@ -22,18 +22,9 @@ interface AuthState {
     email: string,
     password: string,
     username: string
-  ) => Promise<AuthResult>;
+  ) => Promise<AuthResult & { needsConfirmation: boolean }>;
   signOut: () => Promise<void>;
   update: () => Promise<void>;
-}
-
-function normalizeUser(user: UserWithArtist | null): UserWithArtist | undefined {
-  if (!user) return undefined;
-  return {
-    ...user,
-    is_activated:
-      typeof user.is_activated === 'boolean' ? user.is_activated : false,
-  };
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -50,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
       signIn: async (email, password) => {
         const response = await signInAction({ email, password });
         if (!response.error) {
-          const user = normalizeUser(response.data?.user ?? null);
+          const user = response.data?.user ?? undefined;
           set({ isAuth: Boolean(user), user });
         }
         return response;
@@ -59,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email, password, username) => {
         const response = await signUpAction({ email, password, username });
         if (!response.error) {
-          const user = normalizeUser(response.data?.user ?? null);
+          const user = response.data?.user ?? undefined;
           set({ isAuth: Boolean(user), user });
         }
         return response;
@@ -88,7 +79,7 @@ export const useAuthStore = create<AuthState>()(
 
         set({
           isAuth: true,
-          user: normalizeUser(response.data.user),
+          user: response.data.user,
           isLoading: false,
         });
       },

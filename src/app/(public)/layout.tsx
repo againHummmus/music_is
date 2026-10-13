@@ -1,13 +1,16 @@
+import { getCurrentUser } from '@/actions/session';
 import { ClientInit } from '@/components/layout/ClientInit';
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+
   return (
     <div className="w-full min-w-0">
-      <ClientInit />
+      <ClientInit initialUser={user} />
       {children}
     </div>
   );

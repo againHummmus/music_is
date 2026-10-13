@@ -4,7 +4,7 @@ import { CONTACT_EMAIL, OPERATOR_NAME, SITE_NAME } from '@/lib/siteConfig';
 
 export function PrivacyScreen() {
   return (
-    <LegalPage title="Privacy Policy" effectiveDate="[DATE]">
+    <LegalPage title="Privacy Policy" effectiveDate="13.10.2026">
       <p>
         This policy explains what personal data {SITE_NAME} (&quot;we&quot;, &quot;us&quot;)
         collects, why, and what you can do about it.
@@ -52,9 +52,11 @@ export function PrivacyScreen() {
 
       <h2>What is public</h2>
       <p>
-        Your username, avatar, role, follower count, posts, public playlists, and the tracks, albums
-        and artwork you upload are visible to everyone. Uploaded files are served from public URLs.
-        Private messages are visible only to the participants of the conversation.
+        Your username, avatar, role, sign-up date, posts, public playlists, and the tracks, albums
+        and artwork you upload are visible to everyone. So are your likes on tracks, posts and
+        playlists, the people you follow and the people who follow you. Uploaded files are served
+        from public URLs. Your email address is never shown to other users. Private messages are
+        visible only to the participants of the conversation.
       </p>
 
       <h2>Why we use your data</h2>
@@ -118,7 +120,7 @@ export function PrivacyScreen() {
           Region: Ireland.
         </li>
         <li>
-          <strong>Vercel</strong> — website hosting. Region: [REGION].
+          <strong>Vercel</strong> — website hosting. Region: Ireland.
         </li>
       </ul>
       <p>
@@ -128,24 +130,22 @@ export function PrivacyScreen() {
 
       <h2>International transfers</h2>
       <p>
-        Your data is stored in Ireland. When data is transferred out of the EU/EEA or the
-        UK, we rely on the European Commission&apos;s Standard Contractual Clauses and/or the EU–US
-        Data Privacy Framework used by our providers.
+        Your data is stored in Ireland. When data is transferred out of the EU/EEA or the UK, we
+        rely on the European Commission&apos;s Standard Contractual Clauses and/or the EU–US Data
+        Privacy Framework used by our providers.
       </p>
 
       <h2>How long we keep data</h2>
       <ul>
         <li>Account, profile and content — while your account exists.</li>
         <li>
-          After you delete your account — removed immediately; backups are overwritten within [N]
-          days.
+          After you delete your account — removed immediately. We do not keep database backups.
         </li>
         <li>
           Messages you sent stay visible to the people you talked to, but are no longer linked to
           you.
         </li>
-        <li>Technical logs — up to [N] days.</li>
-        <li>Unconfirmed sign-ups — deleted after [N] days.</li>
+        <li>Technical logs — up to 7 days.</li>
       </ul>
 
       <h2>Your rights</h2>

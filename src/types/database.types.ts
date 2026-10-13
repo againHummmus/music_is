@@ -600,9 +600,7 @@ export type Database = {
           artistId: number | null;
           avatar_url: string | null;
           created_at: string;
-          email: string | null;
           id: number;
-          is_activated: boolean;
           recommendations_enabled: boolean;
           sbUserId: string | null;
           username: string | null;
@@ -612,9 +610,7 @@ export type Database = {
           artistId?: number | null;
           avatar_url?: string | null;
           created_at?: string;
-          email?: string | null;
           id?: number;
-          is_activated?: boolean;
           recommendations_enabled?: boolean;
           sbUserId?: string | null;
           username?: string | null;
@@ -624,9 +620,7 @@ export type Database = {
           artistId?: number | null;
           avatar_url?: string | null;
           created_at?: string;
-          email?: string | null;
           id?: number;
-          is_activated?: boolean;
           recommendations_enabled?: boolean;
           sbUserId?: string | null;
           username?: string | null;
@@ -885,6 +879,10 @@ export type Database = {
           track_id: number;
         }[];
       };
+      can_publish_for_artist: {
+        Args: { target_artist_id: number };
+        Returns: boolean;
+      };
       current_app_user_id: { Args: never; Returns: number };
       custom_access_token_hook: { Args: { event: Json }; Returns: Json };
       delete_my_account: { Args: never; Returns: undefined };
@@ -908,8 +906,8 @@ export type Database = {
         Args: { target_dialogue_id: number };
         Returns: boolean;
       };
-      is_member_of_dialogue: {
-        Args: { check_dialogue_id: number };
+      is_playlist_creator: {
+        Args: { target_playlist_id: number };
         Returns: boolean;
       };
       recommended_users: {
@@ -919,7 +917,6 @@ export type Database = {
           user_id: number;
         }[];
       };
-      select_setting: { Args: { setting_name: string }; Returns: string };
     };
     Enums: {
       roles: 'admin' | 'user' | 'artist';
