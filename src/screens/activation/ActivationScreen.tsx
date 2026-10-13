@@ -1,6 +1,6 @@
 export function ActivationScreen() {
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center">
+    <div className="relative flex h-screen w-full flex-col items-center justify-center px-20">
       <div>
         <h1 className="mb-4 w-full text-center text-2xl font-bold">
           Great! The link was sent to your email.
