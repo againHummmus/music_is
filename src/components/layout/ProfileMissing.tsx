@@ -15,10 +15,10 @@ export function ProfileMissing() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-20 p-20 text-center">
-      <h1 className="text-2xl font-bold text-mainBlack">
+      <h1 className="text-center text-2xl font-bold text-mainBlack">
         We could not load your profile
       </h1>
-      <p className="max-w-[480px] text-gray-600">
+      <p className="max-w-[480px] text-center text-gray-600">
         Try signing in again. If this keeps happening, write to{' '}
         <a href={`mailto:${CONTACT_EMAIL}`} className="text-mainOrange">
           {CONTACT_EMAIL}

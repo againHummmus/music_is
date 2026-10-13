@@ -5,7 +5,7 @@ export function EmptyState({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-[230px] flex-col items-center justify-center gap-20 rounded-[7px] border border-dashed border-mainOrange text-mainOrange">
       <StreamlineSleep className="h-[40px] w-[40px]" />
-      <p>{children}</p>
+      <p className="text-center">{children}</p>
     </div>
   );
 }

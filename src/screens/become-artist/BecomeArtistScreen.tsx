@@ -38,15 +38,15 @@ export function BecomeArtistScreen() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-4">
       <header className="text-center">
-        <h1 className="text-2xl font-bold sm:text-3xl">
+        <h1 className="text-center text-2xl font-bold sm:text-3xl">
           <span className="text-orange-500">Becoming</span> an artist
         </h1>
-        <p className="mt-2 text-sm sm:text-base">
+        <p className="mt-2 text-center text-sm sm:text-base">
           You only need a photo and a scenery name to become one!
         </p>
       </header>
 
-      <main className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-white p-6 shadow-sm">
+      <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-white p-6 shadow-sm">
         <section className="flex flex-col gap-2">
           <label className="text-base font-medium text-mainBlack/70">
             Add your most iconic picture:
@@ -92,7 +92,7 @@ export function BecomeArtistScreen() {
             onChange={(e) => setArtistName(e.target.value)}
           />
         </section>
-      </main>
+      </div>
 
       <RoundButton
         title="OK"

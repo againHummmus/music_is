@@ -45,7 +45,7 @@ export function StatusModal() {
         <div
           className={`flex flex-row items-center justify-center gap-2 rounded-t-lg text-center text-mainDark ${bgStyle} p-6`}
         >
-          <p className="text-2xl font-semibold text-white">{modal.message}</p>
+          <p className="text-center text-2xl font-semibold text-white">{modal.message}</p>
           {icon}
         </div>
         <div className="m-6 flex justify-center">

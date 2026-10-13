@@ -23,7 +23,7 @@ export function LandingScreen({ initialAuth }: { initialAuth: boolean }) {
             alt="logo"
             className="mx-auto"
           />
-          <p className="mx-auto text-xl font-medium leading-tight text-white">
+          <p className="mx-auto text-center text-xl font-medium leading-tight text-white">
             Find your musical soulmate
           </p>
           <div className="mx-auto mt-4 flex flex-col gap-2 text-white">
