@@ -13,6 +13,8 @@ import type {
 } from '@/actions/types';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useInfiniteList } from '@/hooks/useInfiniteList';
+import { useUiStore } from '@/stores/uiStore';
+import { describeError } from '@/lib/utils/describeError';
 
 const LIMIT = 6;
 
@@ -22,9 +24,11 @@ const toPlaylists = (connections: UserPlaylistRow[]): PlaylistWithTracksRow[] =>
 export function PlaylistsScreen({
   initialUser,
   initialPlaylists,
+  openCreateForm = false,
 }: {
   initialUser: UserWithArtist | null;
   initialPlaylists?: UserPlaylistRow[];
+  openCreateForm?: boolean;
 }) {
   const storeUser = useAuthStore((s) => s.user);
   const user = storeUser ?? initialUser;
@@ -33,7 +37,8 @@ export function PlaylistsScreen({
   const [newDescription, setDescription] = useState('');
   const [newIsPublic, setNewIsPublic] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [showAddPlaylist, setShowAddPlaylist] = useState(false);
+  const [showAddPlaylist, setShowAddPlaylist] = useState(openCreateForm);
+  const setModal = useUiStore((s) => s.setModal);
 
   const userId = user?.id;
   const [createdPlaylists, setCreatedPlaylists] = useState<
@@ -70,6 +75,11 @@ export function PlaylistsScreen({
       setNewIsPublic(false);
     } catch (err) {
       console.error('Failed to create playlist:', err);
+      setModal({
+        isOpen: true,
+        type: 'error',
+        message: `Could not create the playlist: ${describeError(err)}`,
+      });
     } finally {
       setCreating(false);
     }

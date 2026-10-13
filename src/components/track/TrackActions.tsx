@@ -9,6 +9,8 @@ import HugeiconsFlag02 from '~icons/hugeicons/flag-02?width=24px&height=24px';
 import { createReportHref } from '@/lib/utils/createReportHref';
 import { createPlaylistTrack } from '@/actions/playlistTrackApi';
 import { getMyPlaylistOptions } from '@/actions/userPlaylistApi';
+import { createPlaylist } from '@/actions/playlistApi';
+import { describeError } from '@/lib/utils/describeError';
 import type { TrackRow } from '@/actions/types';
 import { deleteTrack } from '@/actions/trackApi';
 
@@ -39,6 +41,9 @@ export function TrackActions({
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState<ActionType | undefined>(undefined);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
+  const [playlistError, setPlaylistError] = useState('');
 
   const userId = user?.id;
 
@@ -51,6 +56,7 @@ export function TrackActions({
   }, [userId]);
 
   const handleAdd = async (playlist: PlaylistOption) => {
+    setPlaylistError('');
     try {
       await createPlaylistTrack({
         trackId: track.id,
@@ -59,6 +65,36 @@ export function TrackActions({
       setMenuOpen(false);
     } catch (err) {
       console.error('Failed to add track to playlist:', err);
+      setPlaylistError(`Could not add the track: ${describeError(err)}`);
+    }
+  };
+
+  const handleCreateAndAdd = async () => {
+    const name = newPlaylistName.trim();
+    if (!name || isCreatingPlaylist) return;
+    setIsCreatingPlaylist(true);
+    setPlaylistError('');
+    try {
+      const playlist = await createPlaylist({
+        name,
+        description: '',
+        isPublic: false,
+      });
+      setPlaylists((prev) => [
+        { id: playlist.id, name: playlist.name },
+        ...prev,
+      ]);
+      setNewPlaylistName('');
+      await createPlaylistTrack({
+        trackId: track.id,
+        playlistId: playlist.id,
+      });
+      setMenuOpen(false);
+    } catch (err) {
+      console.error('Failed to create playlist:', err);
+      setPlaylistError(`Could not create the playlist: ${describeError(err)}`);
+    } finally {
+      setIsCreatingPlaylist(false);
     }
   };
 
@@ -95,8 +131,7 @@ export function TrackActions({
               onClick={(e) => {
                 e.stopPropagation();
                 setAction(undefined);
-              }}
-            >
+              }}>
               <HugeiconsArrowUp02 className="-rotate-90 cursor-pointer hover:text-mainOrange" />
             </div>
             <p className="px-2 py-1 text-sm font-medium">
@@ -113,20 +148,45 @@ export function TrackActions({
               </div>
             ) : playlists.length === 0 ? (
               <p className="px-2 py-1 text-sm text-gray-500">
-                You have no playlists
+                You have no playlists yet
               </p>
             ) : (
               playlists.map((playlist) => (
                 <button
                   key={playlist.id}
                   onClick={() => handleAdd(playlist)}
-                  className="group flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-mainBlack/[3%]"
-                >
+                  className="group flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-mainBlack/[3%]">
                   <span className="truncate text-mainBlack transition-all group-hover:text-mainOrange">
                     {playlist.name}
                   </span>
                 </button>
               ))
+            )}
+            <form
+              className="mt-2 flex w-full items-center gap-2 border-t border-gray-200 px-2 pt-2"
+              onClick={(e) => e.stopPropagation()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreateAndAdd();
+              }}>
+              <input
+                type="text"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                placeholder="New playlist"
+                disabled={isCreatingPlaylist}
+                className="min-w-0 flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-mainOrange"
+              />
+              <button
+                type="submit"
+                disabled={!newPlaylistName.trim() || isCreatingPlaylist}
+                aria-label="Create playlist and add the track"
+                className="rounded bg-mainOrange px-2 py-1 text-sm font-medium text-white disabled:opacity-50">
+                {isCreatingPlaylist ? '...' : '+'}
+              </button>
+            </form>
+            {playlistError && (
+              <p className="px-2 pt-1 text-xs text-badRed">{playlistError}</p>
             )}
           </>
         );
@@ -138,8 +198,7 @@ export function TrackActions({
               onClick={(e) => {
                 e.stopPropagation();
                 setAction(undefined);
-              }}
-            >
+              }}>
               <HugeiconsArrowUp02 className="-rotate-90 cursor-pointer hover:text-mainOrange" />
             </div>
             <p className="px-2 py-1 text-sm font-medium text-red-600">
@@ -148,8 +207,7 @@ export function TrackActions({
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm font-semibold text-red-600 hover:bg-red-100"
-            >
+              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm font-semibold text-red-600 hover:bg-red-100">
               {isDeleting ? 'Deleting...' : 'Yes, delete it'}
             </button>
             <button
@@ -158,8 +216,7 @@ export function TrackActions({
                 setAction(undefined);
               }}
               disabled={isDeleting}
-              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100"
-            >
+              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100">
               Cancel
             </button>
           </>
@@ -172,8 +229,7 @@ export function TrackActions({
                 e.stopPropagation();
                 setAction(ActionTypes.AddToPlaylist);
               }}
-              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100"
-            >
+              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100">
               <HugeiconsPlaylist01 className="h-[25px] w-[25px]" />
               <span className="whitespace-nowrap">Add to playlist</span>
             </button>
@@ -183,16 +239,14 @@ export function TrackActions({
                   e.stopPropagation();
                   setAction(ActionTypes.ConfirmDelete);
                 }}
-                className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm text-red-600 hover:bg-red-50"
-              >
+                className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm text-red-600 hover:bg-red-50">
                 <HugeiconsDelete02 className="h-[25px] w-[25px]" />
                 <span className="whitespace-nowrap">Delete track</span>
               </button>
             )}
             <a
               href={reportHref}
-              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100"
-            >
+              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100">
               <HugeiconsFlag02 className="h-[25px] w-[25px]" />
               <span className="whitespace-nowrap">Report</span>
             </a>

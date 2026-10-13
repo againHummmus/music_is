@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getCurrentUser } from '@/actions/session';
 import { searchUserPlaylists } from '@/actions/userPlaylistApi';
 import type { UserPlaylistRow } from '@/actions/types';
@@ -28,7 +29,7 @@ export async function MyPlaylistsBlock() {
     <Section
       title={MY_PLAYLISTS_TITLE}
       buttonLabel="Go"
-      buttonHref={playlists.length > 0 ? '/discover/playlists' : undefined}>
+      buttonHref="/discover/playlists">
       {playlists.length > 0 ? (
         <div className={TRACK_GRID_CLASS}>
           {playlists.map((playlist) => (
@@ -36,7 +37,14 @@ export async function MyPlaylistsBlock() {
           ))}
         </div>
       ) : (
-        <EmptyState>Nothing here yet!</EmptyState>
+        <EmptyState>
+          Nothing here yet!{' '}
+          <Link
+            href="/discover/playlists?new=1"
+            className="font-semibold underline transition-all hover:text-mainBlack">
+            Create your first playlist
+          </Link>
+        </EmptyState>
       )}
     </Section>
   );
