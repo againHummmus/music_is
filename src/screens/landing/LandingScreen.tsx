@@ -11,7 +11,7 @@ export function LandingScreen({ initialAuth }: { initialAuth: boolean }) {
   const isAuth = initialAuth || storeIsAuth;
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-mainBlack desktop:h-[calc(100vh-65px)]">
+    <div className="relative h-screen w-full overflow-hidden bg-mainBlack">
       <FrequencyGrid className="absolute inset-0" />
 
       <div className="absolute inset-0 bg-black bg-opacity-70 max-desktop:h-[45%] desktop:w-[45%]">
