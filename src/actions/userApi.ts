@@ -1,45 +1,117 @@
-import api from "./axios";
+'use server';
 
-export default class UserApi {
-  static async getMe() {
-    const response = await api.post("/user/me", {}, {
-      withCredentials: true,
-    });
-    return response.data.data;
+import { publicClient, requireSession } from './session';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
+import {
+  USER_CARD_SELECT,
+  USER_PROFILE_SELECT,
+  USER_SELECT,
+  USER_WITH_ARTIST_SELECT,
+} from './types';
+import type { TablesUpdate } from '@/types/supabase';
+import type {
+  UserCardRow,
+  UserProfileRow,
+  UserRow,
+  UserWithArtist,
+} from './types';
+
+const USER_TABLE = 'User';
+
+export async function getUser({
+  id,
+}: {
+  id: string | number;
+}): Promise<UserRow | null> {
+  const supabase = publicClient();
+
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .select(USER_SELECT)
+    .eq('id', Number(id))
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getUserProfile(
+  id: string | number
+): Promise<UserProfileRow | null> {
+  const supabase = publicClient();
+
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .select(USER_PROFILE_SELECT)
+    .eq('id', Number(id))
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function searchUsers(params?: {
+  id?: string | number;
+  username?: string;
+  name?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<UserCardRow[]> {
+  const { supabase, user } = await requireSession();
+
+  let query = supabase
+    .from(USER_TABLE)
+    .select(USER_CARD_SELECT)
+    .eq('viewerSubscription.Follower', user.id);
+
+  if (params?.id) query = query.eq('id', Number(params.id));
+  const usernameQuery = params?.username ?? params?.name;
+  if (usernameQuery) query = query.ilike('username', `%${usernameQuery}%`);
+  query = query.order('id');
+  if (params?.limit) {
+    const offset = params?.offset ?? 0;
+    query = query.range(offset, offset + params.limit - 1);
   }
 
-  static async getUser({id}: {id: string}) {
-    const response = await api.get(`/user/${id}`);
-    return response.data.data;
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateUser({
+  file,
+  newUsername,
+}: {
+  file?: File;
+  newUsername?: string;
+}): Promise<UserWithArtist> {
+  const { supabase, user } = await requireSession();
+
+  const updates: TablesUpdate<'User'> = {};
+  if (newUsername) updates.username = newUsername;
+
+  if (file) {
+    updates.avatar_url = await uploadAndGetHash(supabase, 'img', file);
   }
 
-  static async searchUsers(params?: any) {
-    const response = await api.get("/user", {
-      params,
-      withCredentials: true,
-    });
-    return response.data;
+  const { data, error } = await supabase
+    .from(USER_TABLE)
+    .update(updates)
+    .eq('id', user.id)
+    .select(USER_WITH_ARTIST_SELECT)
+    .single();
+
+  if (error) {
+    if (updates.avatar_url) {
+      await removeStoredFile(supabase, 'img', updates.avatar_url);
+    }
+    throw error;
   }
-
-  static async signOut() {
-    const response = await api.post(`/user/signout`, {}, { withCredentials: true });
-    return response.data.data;
+  if (updates.avatar_url && user.avatar_url) {
+    await removeStoredFile(supabase, 'img', user.avatar_url);
   }
-
-
-  static async updateUser({file, newUsername, userId}: {file?: File, newUsername?: string, userId: string}) {
-    const form = new FormData();
-    form.append("userId", userId);
-    file && form.append("avatar", file);
-    newUsername && form.append("newUsername", newUsername);
-
-
-    const response = await api.patch("/user/", form, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data.data;
-  }
+  return { ...data, email: user.email };
 }

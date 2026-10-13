@@ -1,30 +1,50 @@
-import api from "./axios";
+'use server';
 
-export default class TrackLikeApi {
+import { requireSession } from './session';
 
-  static async createTrackLike({ userId, trackId }: { userId: string, trackId: string }) {
-    const response = await api.post(
-      "/track-like",
-      { userId, trackId },
-      { withCredentials: true }
-    );
-    return response;
-  }
+const TRACK_LIKE_TABLE = 'Track_like';
 
-  static async searchTrackLikes({ userId, trackId, limit = 10, offset = 0 }: { userId: string, trackId: string, limit: number, offset: number }) {
-    const params = {
-      userId: userId || "",
-      trackId: trackId || "",
-      limit,
-      offset,
-    };
+export async function createTrackLike({
+  trackId,
+}: {
+  trackId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
 
-    const response = await api.get("/track-like", { params });
-    return response;
-  }
+  const { data, error } = await supabase
+    .from(TRACK_LIKE_TABLE)
+    .insert({ userId: user.id, trackId: Number(trackId) })
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data;
+}
 
-  static async deleteTrackLike({ userId, trackId }: { userId: string, trackId: string }) {
-    const response = await api.delete(`/track-like/${userId}/${trackId}`, { withCredentials: true });
-    return response;
-  }
+
+export async function deleteTrackLike({
+  trackId,
+}: {
+  trackId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const { error } = await supabase
+    .from(TRACK_LIKE_TABLE)
+    .delete()
+    .eq('userId', user.id)
+    .eq('trackId', Number(trackId));
+  if (error) throw error;
+}
+
+export async function getMyLikedTrackIds(): Promise<number[]> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(TRACK_LIKE_TABLE)
+    .select('trackId')
+    .eq('userId', user.id);
+  if (error) throw error;
+  return (data ?? [])
+    .map((like) => like.trackId)
+    .filter((id): id is number => id !== null);
 }

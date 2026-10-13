@@ -1,51 +1,108 @@
-import api from "./axios";
+'use server';
 
-export default class UserPlaylistApi {
+import { publicClient, requireSession, FORBIDDEN } from './session';
+import { isPlaylistCreator } from './guards';
+import { USER_PLAYLIST_SELECT } from './types';
 
-  static async createUserPlaylist({
-    userId,
-    playlistId,
-    isCreator,
-  }: {
-    userId: string;
-    playlistId: string;
-    isCreator: boolean;
-  }) {
-    const response = await api.post(
-      "/user-playlist",
-      { userId, playlistId, isCreator },
-      { withCredentials: true }
+const USER_PLAYLIST_TABLE = 'User_playlist';
+
+export async function createUserPlaylist({
+  userId,
+  playlistId,
+  isCreator,
+}: {
+  userId: string | number;
+  playlistId: string | number;
+  isCreator: boolean;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const isSelf = Number(userId) === user.id;
+  if (!isSelf) {
+    const allowed = await isPlaylistCreator(
+      supabase,
+      user.id,
+      Number(playlistId)
     );
-    return response;
+    if (!allowed) throw new Error(FORBIDDEN);
   }
 
-  static async deleteUserPlaylist({ id }: { id: string }) {
-    const response = await api.delete(`/user-playlist/${id}`, {
-      withCredentials: true,
-    });
-    return response;
-  }
+  const { data, error } = await supabase
+    .from(USER_PLAYLIST_TABLE)
+    .insert({
+      User: Number(userId),
+      Playlist: Number(playlistId),
+      is_creator: isCreator,
+    })
+    .select(USER_PLAYLIST_SELECT)
+    .single();
+  if (error) throw error;
+  return data;
+}
 
-  static async searchUserPlaylists({
-    userId,
-    playlistId,
-    isCreator,
-    limit = 10,
-    offset = 0,
-    includeDefaultPlaylists
-  }: {
-    userId?: string;
-    playlistId?: string;
-    isCreator?: boolean;
-    limit?: number;
-    offset?: number;
-    includeDefaultPlaylists?: boolean
-  }) {
-    const params = { userId, playlistId, isCreator, limit, offset, includeDefaultPlaylists };
-    const response = await api.get("/user-playlist", {
-      params,
-      withCredentials: true,
-    });
-    return response;
+export async function deleteUserPlaylist({ id }: { id: string | number }) {
+  const { supabase, user } = await requireSession();
+
+  const { data: link, error: linkError } = await supabase
+    .from(USER_PLAYLIST_TABLE)
+    .select('id, User, Playlist')
+    .eq('id', Number(id))
+    .single();
+  if (linkError) throw linkError;
+
+  let canDelete = link.User === user.id;
+  if (!canDelete && link.Playlist != null) {
+    canDelete = await isPlaylistCreator(supabase, user.id, link.Playlist);
   }
+  if (!canDelete) throw new Error(FORBIDDEN);
+
+  const { error } = await supabase
+    .from(USER_PLAYLIST_TABLE)
+    .delete()
+    .eq('id', Number(id));
+  if (error) throw error;
+}
+
+export async function searchUserPlaylists({
+  userId,
+  playlistId,
+  isCreator,
+  limit = 10,
+  offset = 0,
+}: {
+  userId?: string | number;
+  playlistId?: string | number;
+  isCreator?: boolean;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(USER_PLAYLIST_TABLE).select(USER_PLAYLIST_SELECT);
+  if (userId) query = query.eq('User', Number(userId));
+  if (playlistId) query = query.eq('Playlist', Number(playlistId));
+  if (typeof isCreator === 'boolean') query = query.eq('is_creator', isCreator);
+  query = query.order('id');
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getMyPlaylistOptions(): Promise<
+  { id: number; name: string | null }[]
+> {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(USER_PLAYLIST_TABLE)
+    .select('Playlist!inner ( id, name, is_default )')
+    .eq('User', user.id)
+    .eq('Playlist.is_default', false);
+  if (error) throw error;
+  return (data ?? []).map(({ Playlist }) => ({
+    id: Playlist.id,
+    name: Playlist.name,
+  }));
 }

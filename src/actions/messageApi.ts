@@ -1,56 +1,99 @@
-import api from './axios';
+'use server';
 
-export interface MessageDto {
-  id: number;
+import { requireSession, FORBIDDEN } from './session';
+import { assertDialogueMember } from './guards';
+import { MESSAGE_SELECT } from './types';
+import type { MessageRow } from './types';
+
+const MESSAGE_TABLE = 'Message';
+
+export async function createMessage({
+  dialogueId,
+  content,
+  track,
+}: {
   dialogueId: number;
-  userId: number;
-  content: string;
-  created_at: string;
-  User: {
-    id: number;
-    username: string;
-    avatar_url?: string;
-  };
-  Track: Track
+  content?: string;
+  track?: { id: number | string } | null;
+}): Promise<MessageRow> {
+  const { supabase, user } = await requireSession();
+  await assertDialogueMember(supabase, user.id, dialogueId);
+
+  const { data, error } = await supabase
+    .from(MESSAGE_TABLE)
+    .insert({
+      userId: user.id,
+      dialogueId,
+      content: content ?? null,
+      Track: track ? Number(track.id) : null,
+    })
+    .select(MESSAGE_SELECT)
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-export default class MessageApi {
-  static async createMessage({
-    userId,
-    dialogueId,
-    content,
-    track
-  }: {
-    userId: string
-    dialogueId: number;
-    content?: string;
-    track?: any
-  }): Promise<MessageDto> {
-    const response = await api.post('/messages', { userId, dialogueId, content, track });
-    return response.data;
-  }
+export async function getMessages({
+  dialogueId,
+  limit = 50,
+  before,
+  id,
+}: {
+  dialogueId: number;
+  limit?: number;
+  before?: string;
+  id?: number;
+}): Promise<MessageRow[]> {
+  const { supabase, user } = await requireSession();
+  await assertDialogueMember(supabase, user.id, dialogueId);
 
-  static async getMessages({
-    userId,
-    dialogueId,
-    limit = 50,
-    offset = 0,
-    id
-  }: {
-    userId: string,
-    dialogueId: number;
-    limit?: number;
-    offset?: number;
-    id?: any;
-  }): Promise<MessageDto[]> {
-    const response = await api.get('/messages', {
-      params: { userId, dialogueId, limit, offset, id },
-    });
-    return response.data;
-  }
+  let query = supabase
+    .from(MESSAGE_TABLE)
+    .select(MESSAGE_SELECT)
+    .eq('dialogueId', dialogueId);
+  if (id) query = query.eq('id', id);
+  if (before) query = query.lt('created_at', before);
 
-  static async deleteMessage(messageId: number): Promise<{ success: boolean }> {
-    const response = await api.delete(`/messages/${messageId}`);
-    return response.data;
-  }
+  const { data, error } = await query
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []).reverse();
+}
+
+export async function getLastMessage({
+  dialogueId,
+}: {
+  dialogueId: number;
+}): Promise<MessageRow | null> {
+  const { supabase, user } = await requireSession();
+  await assertDialogueMember(supabase, user.id, dialogueId);
+
+  const { data, error } = await supabase
+    .from(MESSAGE_TABLE)
+    .select(MESSAGE_SELECT)
+    .eq('dialogueId', dialogueId)
+    .order('created_at', { ascending: false })
+    .limit(1);
+  if (error) throw error;
+  return data?.[0] ?? null;
+}
+
+export async function deleteMessage(messageId: number): Promise<void> {
+  const { supabase, user } = await requireSession();
+
+  const { data: message, error: messageError } = await supabase
+    .from(MESSAGE_TABLE)
+    .select('id, userId')
+    .eq('id', messageId)
+    .single();
+  if (messageError) throw messageError;
+  if (message.userId !== user.id) throw new Error(FORBIDDEN);
+
+  const { error } = await supabase
+    .from(MESSAGE_TABLE)
+    .delete()
+    .eq('id', messageId);
+  if (error) throw error;
 }

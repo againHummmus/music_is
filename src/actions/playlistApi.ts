@@ -1,57 +1,99 @@
-import api from "./axios";
+'use server';
 
-export default class PlaylistApi {
+import { publicClient, requireSession, FORBIDDEN } from './session';
+import { PLAYLIST_SELECT } from './types';
+import type { PlaylistRow } from './types';
 
-  static async createPlaylist({
-    name,
-    description,
-    creatorId,
-    isPublic,
-  }: {
-    name: string;
-    description: string,
-    creatorId?: string;
-    isPublic?: boolean;
-  }) {
-    const payload = { name, description, creatorId, isPublic };
-    const response = await api.post("/playlist", payload, {
-      withCredentials: true,
-    });
-    return response;
+const PLAYLIST_TABLE = 'Playlist';
+
+export async function createPlaylist({
+  name,
+  description,
+  isPublic,
+}: {
+  name: string;
+  description: string;
+  isPublic?: boolean;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const { data, error } = await supabase
+    .from(PLAYLIST_TABLE)
+    .insert({
+      name,
+      description,
+      Creator: user.id,
+      is_public: Boolean(isPublic),
+      is_default: false,
+    })
+    .select(PLAYLIST_SELECT)
+    .single();
+  if (error) throw error;
+
+  const { error: linkError } = await supabase
+    .from('User_playlist')
+    .insert({ User: user.id, Playlist: data.id, is_creator: true });
+  if (linkError) {
+    await supabase.from(PLAYLIST_TABLE).delete().eq('id', data.id);
+    throw linkError;
   }
 
+  return data;
+}
 
-  static async deletePlaylist({ id }: { id: string }) {
-    const response = await api.delete(`/playlist/${id}`, {
-      withCredentials: true,
-    });
-    return response;
-  }
+export async function deletePlaylist({ id }: { id: string | number }) {
+  const { supabase, user } = await requireSession();
 
+  const { data: playlist, error: playlistError } = await supabase
+    .from(PLAYLIST_TABLE)
+    .select('id, Creator, is_default')
+    .eq('id', Number(id))
+    .single();
+  if (playlistError) throw playlistError;
 
-  static async searchPlaylists({
-    id,
-    name,
-    creatorId,
-    isPublic,
-    isDefault,
-    limit,
-    offset = 0,
-  }: {
-    id?: string;
-    name?: string;
-    creatorId?: string;
-    isPublic?: boolean;
-    isDefault?: boolean;
-    limit?: number;
-    offset?: number;
-  }) {
-    const params = { id, name, creatorId, isPublic, isDefault, limit, offset };
+  const canDelete =
+    !playlist.is_default &&
+    (user.app_role === 'admin' || playlist.Creator === user.id);
+  if (!canDelete) throw new Error(FORBIDDEN);
 
-    const response = await api.get("/playlist", {
-      params,
-    });
+  const { data: deleted, error } = await supabase
+    .from(PLAYLIST_TABLE)
+    .delete()
+    .eq('id', Number(id))
+    .select('id');
+  if (error) throw error;
+  if (!deleted?.length) throw new Error(FORBIDDEN);
+}
 
-    return response.data;
-  }
+export async function searchPlaylists({
+  id,
+  name,
+  creatorId,
+  isPublic,
+  isDefault,
+  limit,
+  offset = 0,
+}: {
+  id?: string | number;
+  name?: string;
+  creatorId?: string | number;
+  isPublic?: boolean;
+  isDefault?: boolean;
+  limit?: number;
+  offset?: number;
+}): Promise<PlaylistRow[]> {
+  const supabase = publicClient();
+
+  let query = supabase.from(PLAYLIST_TABLE).select(PLAYLIST_SELECT);
+  if (id) query = query.eq('id', Number(id));
+  if (name) query = query.ilike('name', `%${name}%`);
+  if (creatorId) query = query.eq('Creator', Number(creatorId));
+  if (typeof isPublic === 'boolean') query = query.eq('is_public', isPublic);
+  if (typeof isDefault === 'boolean') query = query.eq('is_default', isDefault);
+  query = query.order('id');
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
 }

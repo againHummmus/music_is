@@ -1,30 +1,37 @@
-import api from "./axios";
+'use server';
 
-export default class PostLikeApi {
+import { requireSession } from './session';
 
-  static async createPostLike({ userId, postId }: { userId: string, postId: string }) {
-    const response = await api.post(
-      "/post-like",
-      { userId, postId },
-      { withCredentials: true }
-    );
-    return response;
-  }
+const POST_LIKE_TABLE = 'Post_like';
 
-  static async searchPostLikes({ userId, postId, limit = 10, offset = 0 }: { userId: string, postId: string, limit: number, offset: number }) {
-    const params = {
-      userId: userId || "",
-      postId: postId || "",
-      limit,
-      offset,
-    };
+export async function createPostLike({
+  postId,
+}: {
+  postId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
 
-    const response = await api.get("/post-like", { params });
-    return response;
-  }
+  const { data, error } = await supabase
+    .from(POST_LIKE_TABLE)
+    .insert({ userId: user.id, postId: Number(postId) })
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data;
+}
 
-  static async deletePostLike({ userId, postId }: { userId: string, postId: string }) {
-    const response = await api.delete(`/post-like/${userId}/${postId}`, { withCredentials: true });
-    return response;
-  }
+
+export async function deletePostLike({
+  postId,
+}: {
+  postId: string | number;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const { error } = await supabase
+    .from(POST_LIKE_TABLE)
+    .delete()
+    .eq('userId', user.id)
+    .eq('postId', Number(postId));
+  if (error) throw error;
 }

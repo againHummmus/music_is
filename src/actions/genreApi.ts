@@ -1,23 +1,38 @@
-import api from "./axios";
+'use server';
 
-export default class GenreApi {
-  static async createGenre({ name }: { name: string }) {
-    const response = await api.post("/genre", { name }, { withCredentials: true });
-    return response;
-  }
+import { publicClient, requireRole } from './session';
 
-  static async searchGenres({
-    name = '',
-    limit = 10,
-    offset = 0,
-  }: {
-    name?: string;
-    limit?: number;
-    offset?: number;
-  }) {
-    const response = await api.get("/genre", {
-      params: { name, limit, offset },
-    });
-    return response;
-  }
+const GENRE_TABLE = 'Genre';
+
+export async function createGenre({ name }: { name: string }) {
+  const { supabase } = await requireRole('admin');
+
+  const { data, error } = await supabase
+    .from(GENRE_TABLE)
+    .insert({ name })
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function searchGenres({
+  name = '',
+  limit = 10,
+  offset = 0,
+}: {
+  name?: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(GENRE_TABLE).select('*');
+  if (name) query = query.ilike('name', `%${name}%`);
+  query = query.order('id');
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
 }

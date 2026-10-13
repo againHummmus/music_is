@@ -1,47 +1,89 @@
-import api from "./axios";
+'use server';
 
-export default class AlbumApi {
-  static async createAlbum({
-    name,
-    year,
-    artistId,
-    image_hash,
-  }: Omit<Album, "id">) {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("year", year.toString());
-    formData.append("artistId", artistId.toString());
-    formData.append("image", image_hash);
-    const response = await api.post("/album", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    });
-    return response;
-  }
+import { publicClient, requireSession, FORBIDDEN } from './session';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
+import { ALBUM_DETAILS_SELECT, ALBUM_SELECT } from './types';
+import type { AlbumDetailsRow } from './types';
 
-  static async searchAlbums({
-    id,
-    name,
-    artistId,
-    limit = 10,
-    offset = 0,
-  }: {
-    id?: any,
-    name?: string;
-    artistId?: string;
-    limit?: number;
-    offset?: number;
-  }) {
-    const params = {
-      id: id,
-      name: name || "",
-      artistId: artistId || "",
-      limit,
-      offset,
-    };
-    const response = await api.get("/album", { params });
-    return response;
+const ALBUM_TABLE = 'Album';
+
+export async function createAlbum({
+  name,
+  year,
+  artistId,
+  image_hash,
+}: {
+  name: string | null;
+  year: number | null;
+  artistId: number | null;
+  image_hash: File;
+}) {
+  const { supabase, user } = await requireSession();
+
+  const canPublishForArtist =
+    user.app_role === 'admin' ||
+    (user.artistId != null && user.artistId === artistId);
+  if (!canPublishForArtist) throw new Error(FORBIDDEN);
+
+  const hash = await uploadAndGetHash(supabase, 'img', image_hash);
+
+  const { data, error } = await supabase
+    .from(ALBUM_TABLE)
+    .insert({
+      name,
+      year,
+      artistId,
+      image_hash: hash,
+    })
+    .select(ALBUM_SELECT)
+    .single();
+
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
   }
+  return data;
+}
+
+export async function searchAlbums({
+  id,
+  name,
+  artistId,
+  limit = 10,
+  offset = 0,
+}: {
+  id?: string | number;
+  name?: string;
+  artistId?: string | number;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(ALBUM_TABLE).select(ALBUM_SELECT);
+
+  if (id) query = query.eq('id', Number(id));
+  if (name) query = query.ilike('name', `%${name}%`);
+  if (artistId) query = query.eq('artistId', Number(artistId));
+  query = query.order('id');
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getAlbum(id: string | number): Promise<AlbumDetailsRow | null> {
+  const supabase = publicClient();
+
+  const { data, error } = await supabase
+    .from(ALBUM_TABLE)
+    .select(ALBUM_DETAILS_SELECT)
+    .eq('id', Number(id))
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }

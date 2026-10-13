@@ -1,44 +1,80 @@
-import api from "./axios";
+'use server';
 
-export default class ArtistApi {
-  static async createArtist({
-    name,
-    userId,
-    image,
-  }: {name: string, userId?: string, image: File}) {
-    const formData = new FormData();
-    formData.append("name", name);
-    userId && formData.append("userId", userId.toString());
-    image && formData.append("image", image);
+import { publicClient, requireRole, requireSession } from './session';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
 
-    const response = await api.post("/artist", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    });
-    return response;
+const ARTIST_TABLE = 'Artist';
+
+export async function createArtist({
+  name,
+  image,
+}: {
+  name: string;
+  image: File;
+}) {
+  const { supabase } = await requireRole('admin');
+
+  const hash = await uploadAndGetHash(supabase, 'img', image);
+
+  const { data, error } = await supabase
+    .from(ARTIST_TABLE)
+    .insert({ name, image_hash: hash })
+    .select('*')
+    .single();
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
   }
 
-  static async searchArtists({
-    id,
-    name,
-    limit = 10,
-    offset = 0,
-  }: {
-    id?: string;
-    name?: string;
-    limit?: number;
-    offset?: number;
-  }) {
-    const params = {
-      id,
-      name,
-      limit,
-      offset,
-    };
+  return data;
+}
 
-    const response = await api.get("/artist", { params });
-    return response;
+export async function becomeArtist({
+  name,
+  image,
+}: {
+  name: string;
+  image: File;
+}): Promise<number> {
+  const { supabase } = await requireSession();
+
+  const hash = await uploadAndGetHash(supabase, 'img', image);
+
+  const { data: artistId, error } = await supabase.rpc('become_artist', {
+    artist_name: name,
+    artist_image_hash: hash,
+  });
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
   }
+
+  return artistId;
+}
+
+export async function searchArtists({
+  id,
+  name,
+  limit = 10,
+  offset = 0,
+}: {
+  id?: string | number;
+  name?: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = publicClient();
+
+  let query = supabase.from(ARTIST_TABLE).select('*');
+  if (id) query = query.eq('id', Number(id));
+  if (name) query = query.ilike('name', `%${name}%`);
+  query = query.order('id');
+  if (limit) query = query.range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
 }

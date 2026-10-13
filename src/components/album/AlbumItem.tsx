@@ -1,18 +1,27 @@
 import React from 'react';
-import { createImgUrl } from '../shared/utils/createUrlFromHash';
+import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Link from 'next/link';
+import type { AlbumRow } from '@/actions/types';
 
-export default function AlbumCard ({ album }: {album: any}) {
-
+export function AlbumItem({ album }: { album: AlbumRow }) {
   return (
-    <Link className="bg-white rounded-lg overflow-hidden transform transition-transform duration-300 hover:-translate-y-[3px] border border-mainOrange" href={`/album/${album.id}`}>
-      <img 
-        src={createImgUrl(album.image_hash)} 
-        alt={album.name} 
-        className="w-full h-48 object-cover" 
+    <Link
+      className="transform overflow-hidden rounded-lg border border-mainOrange bg-white transition-transform duration-300 hover:-translate-y-[3px]"
+      href={`/album/${album.id}`}
+    >
+      <img
+        src={
+          album.image_hash
+            ? createImgUrl(album.image_hash)
+            : '/images/recordersBackground.png'
+        }
+        alt={album.name ?? ''}
+        className="h-48 w-full object-cover"
       />
       <div className="p-4">
-        <h3 className="text-xl font-bold text-gray-800 mb-1 truncate">{album.name}</h3>
+        <h3 className="mb-1 truncate text-xl font-bold text-gray-800">
+          {album.name}
+        </h3>
         {/* {album.artistName && (
           <p className="text-sm text-gray-600 mb-2 truncate">{album.artistName}</p>
         )} */}
@@ -20,5 +29,4 @@ export default function AlbumCard ({ album }: {album: any}) {
       </div>
     </Link>
   );
-};
-
+}
