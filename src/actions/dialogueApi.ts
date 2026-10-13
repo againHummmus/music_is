@@ -15,6 +15,9 @@ export async function createDialogue({
 }): Promise<{ dialogueId: number; isNew: boolean }> {
   const { supabase, user } = await requireSession();
   const otherId = Number(otherUserId);
+  if (!Number.isInteger(otherId) || otherId === user.id) {
+    throw new Error('Invalid dialogue participant');
+  }
 
   const { data: existing, error: existingError } = await supabase
     .from(USER_DIALOGUE_TABLE)
@@ -43,13 +46,26 @@ export async function createDialogue({
     .single();
   if (dialogueError) throw dialogueError;
 
+  const { error: creatorError } = await supabase
+    .from(USER_DIALOGUE_TABLE)
+    .insert({ userId: user.id, dialogueId: dialogue.id, is_creator: true });
+  if (creatorError) {
+    await supabase.from(DIALOGUE_TABLE).delete().eq('id', dialogue.id);
+    throw creatorError;
+  }
+
   const { error: linkError } = await supabase
     .from(USER_DIALOGUE_TABLE)
-    .insert([
-      { userId: user.id, dialogueId: dialogue.id, is_creator: true },
-      { userId: otherId, dialogueId: dialogue.id, is_creator: false },
-    ]);
-  if (linkError) throw linkError;
+    .insert({ userId: otherId, dialogueId: dialogue.id, is_creator: false });
+  if (linkError) {
+    await supabase
+      .from(USER_DIALOGUE_TABLE)
+      .delete()
+      .eq('dialogueId', dialogue.id)
+      .eq('userId', user.id);
+    await supabase.from(DIALOGUE_TABLE).delete().eq('id', dialogue.id);
+    throw linkError;
+  }
 
   return { dialogueId: dialogue.id, isNew: true };
 }

@@ -596,7 +596,6 @@ export type Database = {
       };
       User: {
         Row: {
-          activation_link: string | null;
           app_role: Database['public']['Enums']['roles'];
           artistId: number | null;
           avatar_url: string | null;
@@ -604,15 +603,11 @@ export type Database = {
           email: string | null;
           id: number;
           is_activated: boolean;
-          password_hash: string | null;
-          preferences_vector: number | null;
-          reset_code: string | null;
-          reset_code_expires: string | null;
+          recommendations_enabled: boolean;
           sbUserId: string | null;
           username: string | null;
         };
         Insert: {
-          activation_link?: string | null;
           app_role?: Database['public']['Enums']['roles'];
           artistId?: number | null;
           avatar_url?: string | null;
@@ -620,15 +615,11 @@ export type Database = {
           email?: string | null;
           id?: number;
           is_activated?: boolean;
-          password_hash?: string | null;
-          preferences_vector?: number | null;
-          reset_code?: string | null;
-          reset_code_expires?: string | null;
+          recommendations_enabled?: boolean;
           sbUserId?: string | null;
           username?: string | null;
         };
         Update: {
-          activation_link?: string | null;
           app_role?: Database['public']['Enums']['roles'];
           artistId?: number | null;
           avatar_url?: string | null;
@@ -636,10 +627,7 @@ export type Database = {
           email?: string | null;
           id?: number;
           is_activated?: boolean;
-          password_hash?: string | null;
-          preferences_vector?: number | null;
-          reset_code?: string | null;
-          reset_code_expires?: string | null;
+          recommendations_enabled?: boolean;
           sbUserId?: string | null;
           username?: string | null;
         };
@@ -770,42 +758,6 @@ export type Database = {
           },
         ];
       };
-      User_recommendation: {
-        Row: {
-          created_at: string;
-          id: number;
-          RecommendedUser: number | null;
-          User: number | null;
-        };
-        Insert: {
-          created_at?: string;
-          id?: number;
-          RecommendedUser?: number | null;
-          User?: number | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: number;
-          RecommendedUser?: number | null;
-          User?: number | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'User_recommendation_RecommendedUser_fkey';
-            columns: ['RecommendedUser'];
-            isOneToOne: false;
-            referencedRelation: 'User';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'User_recommendation_User_fkey';
-            columns: ['User'];
-            isOneToOne: false;
-            referencedRelation: 'User';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       User_user_subscription: {
         Row: {
           created_at: string;
@@ -922,17 +874,49 @@ export type Database = {
       };
     };
     Functions: {
+      become_artist: {
+        Args: { artist_image_hash: string; artist_name: string };
+        Returns: number;
+      };
+      chart_tracks: {
+        Args: { max_count?: number };
+        Returns: {
+          likes: number;
+          track_id: number;
+        }[];
+      };
+      current_app_user_id: { Args: never; Returns: number };
       custom_access_token_hook: { Args: { event: Json }; Returns: Json };
+      delete_my_account: { Args: never; Returns: undefined };
+      friends_like_tracks: {
+        Args: { max_count?: number };
+        Returns: {
+          friend_likes: number;
+          track_id: number;
+        }[];
+      };
+      dialogue_has_members: {
+        Args: { target_dialogue_id: number };
+        Returns: boolean;
+      };
       get_recommended_tracks: {
         Args: { current_user_id: number };
         Returns: Record<string, unknown>[];
       };
-      get_recommended_users: {
-        Args: { current_user_id: number };
+      is_app_admin: { Args: never; Returns: boolean };
+      is_dialogue_member: {
+        Args: { target_dialogue_id: number };
+        Returns: boolean;
+      };
+      is_member_of_dialogue: {
+        Args: { check_dialogue_id: number };
+        Returns: boolean;
+      };
+      recommended_users: {
+        Args: { max_count?: number };
         Returns: {
-          rec_user_id: number;
-          rec_username: string;
           similarity: number;
+          user_id: number;
         }[];
       };
       select_setting: { Args: { setting_name: string }; Returns: string };

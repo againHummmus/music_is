@@ -28,8 +28,7 @@ export async function MyPlaylistsBlock() {
     <Section
       title={MY_PLAYLISTS_TITLE}
       buttonLabel="Go"
-      buttonHref={playlists.length > 0 ? '/discover/playlists' : undefined}
-    >
+      buttonHref={playlists.length > 0 ? '/discover/playlists' : undefined}>
       {playlists.length > 0 ? (
         <div className={TRACK_GRID_CLASS}>
           {playlists.map((playlist) => (

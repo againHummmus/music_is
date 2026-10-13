@@ -1,7 +1,10 @@
 'use server';
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
-import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
 import { TRACK_SELECT } from './types';
 import type { TrackRow } from './types';
 
@@ -46,7 +49,10 @@ export async function createTrack({
     .select(TRACK_SELECT)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    await removeStoredFile(supabase, 'mp3', hash);
+    throw error;
+  }
   return data;
 }
 
@@ -92,7 +98,7 @@ export async function deleteTrack(trackId: string | number) {
 
   const { data: track, error: trackError } = await supabase
     .from(TRACK_TABLE)
-    .select('id, artistId')
+    .select('id, artistId, file_hash')
     .eq('id', Number(trackId))
     .single();
   if (trackError) throw trackError;
@@ -107,4 +113,6 @@ export async function deleteTrack(trackId: string | number) {
     .delete()
     .eq('id', Number(trackId));
   if (error) throw error;
+
+  await removeStoredFile(supabase, 'mp3', track.file_hash);
 }

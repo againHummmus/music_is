@@ -7,6 +7,8 @@ import { updateUser } from '@/actions/userApi';
 import { FileUploader } from 'react-drag-drop-files';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01?width=24px&height=24px';
 import type { UserWithArtist } from '@/actions/types';
+import { AccountSecuritySection } from './AccountSecuritySection';
+import { PrivacySection } from './PrivacySection';
 
 const fileTypes = ['JPG', 'PNG', 'GIF'];
 
@@ -70,13 +72,6 @@ export function SettingsScreen({
       </section>
 
       <div className="flex items-center justify-between rounded bg-white p-4">
-        <div>
-          <span className="text-sm text-gray-600">Email</span>
-          <div className="font-medium">{user?.email}</div>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between rounded bg-white p-4">
         <div className="flex-1">
           <span className="text-sm text-gray-600">Username</span>
           {editingName ? (
@@ -113,6 +108,11 @@ export function SettingsScreen({
           Log out
         </button>
       </div>
+
+      <AccountSecuritySection currentEmail={user?.email} />
+      <PrivacySection
+        recommendationsEnabled={user?.recommendations_enabled ?? true}
+      />
     </div>
   );
 }

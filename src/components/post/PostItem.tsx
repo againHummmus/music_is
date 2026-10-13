@@ -11,6 +11,7 @@ import WeuiLikeOutlined from '~icons/weui/like-outlined?width=20px&height=20px';
 import Link from 'next/link';
 import { User, Post, PostLike } from '@/types/supabase';
 import { ClientDate } from '@/components/ui/ClientDate';
+import { createReportHref } from '@/lib/utils/createReportHref';
 
 export const PostItem = ({
   user,
@@ -65,6 +66,13 @@ export const PostItem = ({
     }
   };
 
+  const reportPost = () => {
+    window.location.href = createReportHref(
+      `Report: post #${post.id} by ${user.username ?? 'unknown user'}`,
+      `${window.location.origin}/discover/user/${user.id}`
+    );
+  };
+
   const likeOpacity = !likePending
     ? 'opacity-100'
     : postInfo.isLiked
@@ -112,7 +120,12 @@ export const PostItem = ({
             <HugeiconsDelete02 />
           </button>
         ) : (
-          <div />
+          <button
+            onClick={reportPost}
+            className="text-xs text-gray-400 transition-colors hover:text-red-500"
+          >
+            Report
+          </button>
         )}
 
         <div className="mt-2 flex items-center gap-3">

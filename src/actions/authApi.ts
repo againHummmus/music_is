@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/supabaseServer';
 import { USER_WITH_ARTIST_SELECT } from './types';
 import type { AuthResult, UserWithArtist } from './types';
 import type { SupabaseServerClient } from './session';
-import type { TablesInsert } from '@/types/supabase';
+import type { TablesInsert, TablesUpdate } from '@/types/supabase';
 
 const USER_TABLE = 'User';
 
@@ -44,13 +44,19 @@ async function ensurePublicUser(
     .single();
 
   if (existing) {
+    const updates: TablesUpdate<'User'> = {};
     if (
       typeof isActivated === 'boolean' &&
       existing.is_activated !== isActivated
     ) {
+      updates.is_activated = isActivated;
+    }
+    if (email && existing.email !== email) updates.email = email;
+
+    if (Object.keys(updates).length > 0) {
       const { data: updated, error } = await supabase
         .from(USER_TABLE)
-        .update({ is_activated: isActivated })
+        .update(updates)
         .eq('id', existing.id)
         .select(USER_WITH_ARTIST_SELECT)
         .single();

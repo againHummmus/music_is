@@ -20,18 +20,17 @@ export function MessageList({
   const user = useAuthStore((s) => s.user);
   const { messages, hasOlder, isLoadingOlder, loadOlder } =
     useDialogueMessages(dialogueId, initialMessages, pageSize, Boolean(user));
-  const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastMessageId = messages.at(-1)?.id;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [lastMessageId]);
 
   if (!user) return null;
 
   return (
     <div
-      ref={listRef}
       className="min-h-full flex-1 space-y-2 overflow-y-auto p-4"
     >
       {hasOlder && (
@@ -67,7 +66,7 @@ export function MessageList({
           </div>
         );
       })}
-      {/* <div ref={bottomRef} /> */}
+      <div ref={bottomRef} />
     </div>
   );
 }

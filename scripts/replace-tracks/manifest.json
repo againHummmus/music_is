@@ -1,0 +1,676 @@
+[
+  {
+    "artistId": 22,
+    "artist": "Ludwig van Beethoven",
+    "trackIds": [
+      6,
+      10,
+      13,
+      7,
+      8,
+      9,
+      15,
+      11,
+      12,
+      35,
+      36,
+      37
+    ],
+    "image": {
+      "file": "Joseph_Karl_Stieler's_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg",
+      "license": "Public domain",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg/960px-Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg"
+    },
+    "albums": [
+      {
+        "albumId": 3,
+        "name": "Piano Sonata No. 8 \"Pathétique\"",
+        "year": 1798,
+        "cover": {
+          "file": "Ludwig_van_Beethoven,_aged_twenty-six_(1796).jpg",
+          "license": "No restrictions",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Ludwig_van_Beethoven%2C_aged_twenty-six_%281796%29.jpg/960px-Ludwig_van_Beethoven%2C_aged_twenty-six_%281796%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven,_aged_twenty-six_(1796).jpg"
+        },
+        "tracks": [
+          {
+            "name": "Grave – Allegro di molto e con brio",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven,_Sonata_No._8_in_C_Minor_Pathetique,_Op._13_-_I._Grave_-_Allegro_di_molto_e_con_brio.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/26/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_I._Grave_-_Allegro_di_molto_e_con_brio.ogg/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_I._Grave_-_Allegro_di_molto_e_con_brio.ogg.mp3",
+            "size": 9520444
+          },
+          {
+            "name": "Adagio cantabile",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven,_Sonata_No._8_in_C_Minor_Pathetique,_Op._13_-_II._Adagio_cantabile.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/63/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_II._Adagio_cantabile.ogg/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_II._Adagio_cantabile.ogg.mp3",
+            "size": 6611689
+          },
+          {
+            "name": "Rondo: Allegro",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven,_Sonata_No._8_in_C_Minor_Pathetique,_Op._13_-_III._Rondo_-_Allegro.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/87/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_III._Rondo_-_Allegro.ogg/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_III._Rondo_-_Allegro.ogg.mp3",
+            "size": 6078310
+          }
+        ]
+      },
+      {
+        "albumId": 16,
+        "name": "Egmont Overture",
+        "year": 1810,
+        "cover": {
+          "file": "Lamoral_d'Egmont.jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Lamoral_d%27Egmont.jpg/960px-Lamoral_d%27Egmont.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Lamoral_d%27Egmont.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Egmont Overture, Op. 84",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_EgmontOvertureOp.84_LudwigVanBeethoven-EgmontOvertureOp.84.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/20/Beethoven_EgmontOvertureOp.84_LudwigVanBeethoven-EgmontOvertureOp.84.ogg/Beethoven_EgmontOvertureOp.84_LudwigVanBeethoven-EgmontOvertureOp.84.ogg.mp3",
+            "size": 14382322
+          }
+        ]
+      },
+      {
+        "albumId": 17,
+        "name": "Symphony No. 3 \"Eroica\"",
+        "year": 1804,
+        "cover": {
+          "file": "Eroica_Beethoven_title.jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Eroica_Beethoven_title.jpg/960px-Eroica_Beethoven_title.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Eroica_Beethoven_title.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Allegro con brio",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-01-AllegroConBrio.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/da/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-01-AllegroConBrio.ogg/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-01-AllegroConBrio.ogg.mp3",
+            "size": 22316187
+          },
+          {
+            "name": "Marcia funebre: Adagio assai",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-02-MarciaFunebreAdagioAssai.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/14/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-02-MarciaFunebreAdagioAssai.ogg/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-02-MarciaFunebreAdagioAssai.ogg.mp3",
+            "size": 21853390
+          },
+          {
+            "name": "Scherzo: Allegro vivace",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-03-ScherzoAllegroVivace.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/07/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-03-ScherzoAllegroVivace.ogg/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-03-ScherzoAllegroVivace.ogg.mp3",
+            "size": 8187007
+          },
+          {
+            "name": "Finale: Allegro molto",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-04-FinaleAllegroMolto.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6e/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-04-FinaleAllegroMolto.ogg/Beethoven_SymphonyNo.3Eroica_LudwigVanBeethoven-SymphonyNo.3InEFlatMajorEroicaOp.55-04-FinaleAllegroMolto.ogg.mp3",
+            "size": 17073132
+          }
+        ]
+      },
+      {
+        "albumId": 18,
+        "name": "String Quartet No. 6",
+        "year": 1800,
+        "cover": {
+          "file": "Joseph_Karl_Stieler's_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg/960px-Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Joseph_Karl_Stieler%27s_Beethoven_mit_dem_Manuskript_der_Missa_solemnis.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Allegro con brio",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-01-AllegroConBrio.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/eb/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-01-AllegroConBrio.ogg/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-01-AllegroConBrio.ogg.mp3",
+            "size": 6051930
+          },
+          {
+            "name": "Adagio ma non troppo",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-02-AdagioMaNonTroppo.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7d/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-02-AdagioMaNonTroppo.ogg/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-02-AdagioMaNonTroppo.ogg.mp3",
+            "size": 8667730
+          },
+          {
+            "name": "Scherzo: Allegro",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-03-ScherzoAllegro.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d1/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-03-ScherzoAllegro.ogg/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-03-ScherzoAllegro.ogg.mp3",
+            "size": 5412360
+          },
+          {
+            "name": "La Malinconia: Adagio",
+            "source": "https://commons.wikimedia.org/wiki/File:Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-04-adagioLaMalinconia.ogg",
+            "license": "CC0",
+            "performer": "Ludwig van Beethoven",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/75/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-04-adagioLaMalinconia.ogg/Beethoven_StringQuartetNo.6inBFlatMajorOp.18_LudwigVanBeethoven-StringQuartetNo.6InBFlatMajorOp.18No.6-04-adagioLaMalinconia.ogg.mp3",
+            "size": 10192572
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 25,
+    "artist": "Frédéric Chopin",
+    "trackIds": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "image": {
+      "file": "Frederic_Chopin_photo.jpeg",
+      "license": "Public domain",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Frederic_Chopin_photo.jpeg/960px-Frederic_Chopin_photo.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Frederic_Chopin_photo.jpeg"
+    },
+    "albums": [
+      {
+        "albumId": 21,
+        "name": "Preludes, Op. 28",
+        "year": 1839,
+        "cover": {
+          "file": "Full_page,_Chopin_Prelude_15.png",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Full_page%2C_Chopin_Prelude_15.png/960px-Full_page%2C_Chopin_Prelude_15.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/png",
+          "source": "https://commons.wikimedia.org/wiki/File:Full_page,_Chopin_Prelude_15.png"
+        },
+        "tracks": [
+          {
+            "name": "Prelude No. 1",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._1.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/9/91/Prelude_Op._28_no._1.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 800976
+          },
+          {
+            "name": "Prelude No. 3",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no.3.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Prelude_Op._28_no.3.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 1161720
+          },
+          {
+            "name": "Prelude No. 6",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._6.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Prelude_Op._28_no._6.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 2053944
+          },
+          {
+            "name": "Prelude No. 9",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._9.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prelude_Op._28_no._9.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 1599336
+          },
+          {
+            "name": "Prelude No. 10",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._10.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/6/68/Prelude_Op._28_no._10.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 645144
+          },
+          {
+            "name": "Prelude No. 11",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._11.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Prelude_Op._28_no._11.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 901464
+          },
+          {
+            "name": "Prelude No. 12",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._12.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/5/56/Prelude_Op._28_no._12.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 1704264
+          },
+          {
+            "name": "Prelude No. 13",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._13.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Prelude_Op._28_no._13.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 3191640
+          },
+          {
+            "name": "Prelude No. 14",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._14.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/d/df/Prelude_Op._28_no._14.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 730560
+          },
+          {
+            "name": "Prelude No. 15",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._15.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Prelude_Op._28_no._15.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 5668200
+          },
+          {
+            "name": "Prelude No. 16",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._16.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/d/db/Prelude_Op._28_no._16.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 1745832
+          },
+          {
+            "name": "Prelude No. 17",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._17.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Prelude_Op._28_no._17.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 3657168
+          },
+          {
+            "name": "Prelude No. 18",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._18.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Prelude_Op._28_no._18.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 1764048
+          },
+          {
+            "name": "Prelude No. 19",
+            "source": "https://commons.wikimedia.org/wiki/File:Prelude_Op._28_no._19.mp3",
+            "license": "CC0",
+            "performer": "Frederic Chopin",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/1/10/Prelude_Op._28_no._19.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "size": 5472720
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 29,
+    "artist": "Johannes Brahms",
+    "trackIds": [
+      41,
+      42,
+      34,
+      43,
+      44,
+      48,
+      49,
+      50,
+      40,
+      45,
+      46,
+      51,
+      52
+    ],
+    "image": {
+      "file": "JohannesBrahms_(cropped).jpg",
+      "license": "Public domain",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/JohannesBrahms_%28cropped%29.jpg/960px-JohannesBrahms_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:JohannesBrahms_(cropped).jpg"
+    },
+    "albums": [
+      {
+        "albumId": 23,
+        "name": "Symphony No. 1",
+        "year": 1876,
+        "cover": {
+          "file": "Johannes_Brahms,_1876.jpg",
+          "license": "Public domain",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Johannes_Brahms%2C_1876.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Johannes_Brahms,_1876.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Un poco sostenuto – Allegro",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1_in_C_Minor,_Op._68_-_I._Un_poco_sostenuto_-_Allegro.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_I._Un_poco_sostenuto_-_Allegro.ogg/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_I._Un_poco_sostenuto_-_Allegro.ogg.mp3",
+            "size": 21099673
+          },
+          {
+            "name": "Andante sostenuto",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1_in_C_Minor,_Op._68_-_II._Andante_sostenuto.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_II._Andante_sostenuto.ogg/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_II._Andante_sostenuto.ogg.mp3",
+            "size": 11597686
+          },
+          {
+            "name": "Un poco allegretto e grazioso",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1_in_C_Minor,_Op._68_-_III._Un_poco_allegretto_e_grazioso.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/99/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_III._Un_poco_allegretto_e_grazioso.ogg/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_III._Un_poco_allegretto_e_grazioso.ogg.mp3",
+            "size": 6942228
+          },
+          {
+            "name": "Adagio – Allegro non troppo, ma con brio",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1_in_C_Minor,_Op._68_-_IV._Adagio_-_Pi%C3%B9_andante_-_Allegro_non_troppo,_ma_con_brio.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/98/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_IV._Adagio_-_Pi%C3%B9_andante_-_Allegro_non_troppo%2C_ma_con_brio.ogg/Brahms%2C_Symphony_No._1_in_C_Minor%2C_Op._68_-_IV._Adagio_-_Pi%C3%B9_andante_-_Allegro_non_troppo%2C_ma_con_brio.ogg.mp3",
+            "size": 25447119
+          }
+        ]
+      },
+      {
+        "albumId": 24,
+        "name": "Symphony No. 2",
+        "year": 1877,
+        "cover": {
+          "file": "Brahms_c._1872.jpg",
+          "license": "Public domain",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Brahms_c._1872.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Brahms_c._1872.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Allegro non troppo",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._2_in_D_Major,_Op._73_-_I._Allegro_non_troppo.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e6/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_I._Allegro_non_troppo.ogg/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_I._Allegro_non_troppo.ogg.mp3",
+            "size": 23692796
+          },
+          {
+            "name": "Adagio non troppo",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._2_in_D_Major,_Op._73_-_II._Adagio_non_troppo.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/77/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_II._Adagio_non_troppo.ogg/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_II._Adagio_non_troppo.ogg.mp3",
+            "size": 12830010
+          },
+          {
+            "name": "Allegretto grazioso",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._2_in_D_Major,_Op._73_-_III._Allegretto_Grazioso.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/83/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_III._Allegretto_Grazioso.ogg/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_III._Allegretto_Grazioso.ogg.mp3",
+            "size": 6643639
+          },
+          {
+            "name": "Allegro con spirito",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._2_in_D_Major,_Op._73_-_IV._Allegro_Con_Spirito.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/76/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_IV._Allegro_Con_Spirito.ogg/Brahms%2C_Symphony_No._2_in_D_Major%2C_Op._73_-_IV._Allegro_Con_Spirito.ogg.mp3",
+            "size": 14760405
+          }
+        ]
+      },
+      {
+        "albumId": 30,
+        "name": "Symphony No. 4",
+        "year": 1885,
+        "cover": {
+          "file": "Johannes_Brahms_by_Luckhardt_c1885.png",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Johannes_Brahms_by_Luckhardt_c1885.png/960px-Johannes_Brahms_by_Luckhardt_c1885.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/png",
+          "source": "https://commons.wikimedia.org/wiki/File:Johannes_Brahms_by_Luckhardt_c1885.png"
+        },
+        "tracks": [
+          {
+            "name": "Allegro non troppo",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._4_in_E_Minor,_Op._98_-_I._Allegro_Non_Troppo.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/79/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_I._Allegro_Non_Troppo.ogg/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_I._Allegro_Non_Troppo.ogg.mp3",
+            "size": 18278788
+          },
+          {
+            "name": "Andante moderato",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._4_in_E_Minor,_Op._98_-_II._Andante_Moderato.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a1/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_II._Andante_Moderato.ogg/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_II._Andante_Moderato.ogg.mp3",
+            "size": 15482568
+          },
+          {
+            "name": "Allegro giocoso",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._4_in_E_Minor,_Op._98_-_III._Allegro_Giocoso.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7a/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_III._Allegro_Giocoso.ogg/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_III._Allegro_Giocoso.ogg.mp3",
+            "size": 9767349
+          },
+          {
+            "name": "Allegro energico e passionato",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._4_in_E_Minor,_Op._98_-_IV._Allegro_Energico_e_Passionato.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e0/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_IV._Allegro_Energico_e_Passionato.ogg/Brahms%2C_Symphony_No._4_in_E_Minor%2C_Op._98_-_IV._Allegro_Energico_e_Passionato.ogg.mp3",
+            "size": 16301534
+          }
+        ]
+      },
+      {
+        "albumId": 34,
+        "name": "Tragic Overture",
+        "year": 1880,
+        "cover": {
+          "file": "PPN663960975_Bildnis_von_Johannes_Brahms_(1882).jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/PPN663960975_Bildnis_von_Johannes_Brahms_%281882%29.jpg/960px-PPN663960975_Bildnis_von_Johannes_Brahms_%281882%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:PPN663960975_Bildnis_von_Johannes_Brahms_(1882).jpg"
+        },
+        "tracks": [
+          {
+            "name": "Tragic Overture, Op. 81",
+            "source": "https://commons.wikimedia.org/wiki/File:Brahms,_Tragic_Overture.ogg",
+            "license": "CC0",
+            "performer": "Unknown authorUnknown author",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/65/Brahms%2C_Tragic_Overture.ogg/Brahms%2C_Tragic_Overture.ogg.mp3",
+            "size": 20121751
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 23,
+    "artist": "Pyotr Ilyich Tchaikovsky",
+    "trackIds": [
+      14
+    ],
+    "image": {
+      "file": "Tchaikovsky_by_Reutlinger_(cropped).jpg",
+      "license": "Public domain",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Tchaikovsky_by_Reutlinger_%28cropped%29.jpg/960px-Tchaikovsky_by_Reutlinger_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Tchaikovsky_by_Reutlinger_(cropped).jpg"
+    },
+    "albums": [
+      {
+        "albumId": 20,
+        "name": "Symphony No. 6 \"Pathétique\"",
+        "year": 1893,
+        "cover": {
+          "file": "Porträt_des_Komponisten_Pjotr_I._Tschaikowski_(1840-1893).jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Portr%C3%A4t_des_Komponisten_Pjotr_I._Tschaikowski_%281840-1893%29.jpg/960px-Portr%C3%A4t_des_Komponisten_Pjotr_I._Tschaikowski_%281840-1893%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Portr%C3%A4t_des_Komponisten_Pjotr_I._Tschaikowski_(1840-1893).jpg"
+        },
+        "tracks": [
+          {
+            "name": "Theme from the first movement",
+            "source": "https://commons.wikimedia.org/wiki/File:Tchaikovsky,_Theme_from_Symphony_No._6_In_B_Minor,_Op._74,_%27Pathetique%27_-_I._Adagio,_Allegro_Non_Troppo.ogg",
+            "license": "CC0",
+            "performer": "Pyotr Ilyich Tchaikovsky",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/be/Tchaikovsky%2C_Theme_from_Symphony_No._6_In_B_Minor%2C_Op._74%2C_%27Pathetique%27_-_I._Adagio%2C_Allegro_Non_Troppo.ogg/Tchaikovsky%2C_Theme_from_Symphony_No._6_In_B_Minor%2C_Op._74%2C_%27Pathetique%27_-_I._Adagio%2C_Allegro_Non_Troppo.ogg.mp3",
+            "size": 2221711
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 26,
+    "artist": "Bedřich Smetana",
+    "trackIds": [
+      30
+    ],
+    "image": {
+      "file": "Smetana_LCCN2014716851_(cropped).jpg",
+      "license": "Public domain",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Smetana_LCCN2014716851_%28cropped%29.jpg/960px-Smetana_LCCN2014716851_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Smetana_LCCN2014716851_(cropped).jpg"
+    },
+    "albums": [
+      {
+        "albumId": 22,
+        "name": "Má vlast",
+        "year": 1874,
+        "cover": {
+          "file": "Smetana_LCCN2014716851_(cropped).jpg",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Smetana_LCCN2014716851_%28cropped%29.jpg/960px-Smetana_LCCN2014716851_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Smetana_LCCN2014716851_(cropped).jpg"
+        },
+        "tracks": [
+          {
+            "name": "Vltava (The Moldau)",
+            "source": "https://commons.wikimedia.org/wiki/File:Smetana,_M%C3%A1_vlast_-_Vltava_-_The_Moldau.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/39/Smetana%2C_M%C3%A1_vlast_-_Vltava_-_The_Moldau.ogg/Smetana%2C_M%C3%A1_vlast_-_Vltava_-_The_Moldau.ogg.mp3",
+            "size": 21262033
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 30,
+    "artist": "Edvard Grieg",
+    "trackIds": [
+      39
+    ],
+    "image": {
+      "file": "Edvard_Grieg_portrait_(cropped).jpg",
+      "license": "No restrictions",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Edvard_Grieg_portrait_%28cropped%29.jpg/960px-Edvard_Grieg_portrait_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Edvard_Grieg_portrait_(cropped).jpg"
+    },
+    "albums": [
+      {
+        "albumId": 29,
+        "name": "Peer Gynt Suite No. 1",
+        "year": 1888,
+        "cover": {
+          "file": "Edvard_Grieg_(1888)_by_Elliot_and_Fry_-_02.jpg",
+          "license": "Public domain",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Edvard_Grieg_%281888%29_by_Elliot_and_Fry_-_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "mime": "image/jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Edvard_Grieg_(1888)_by_Elliot_and_Fry_-_02.jpg"
+        },
+        "tracks": [
+          {
+            "name": "Anitra's Dance",
+            "source": "https://commons.wikimedia.org/wiki/File:Grieg,_Peer_Gynt_Suite_No._1,_Op._46_-_III._Anitra%27s_Dance.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/25/Grieg%2C_Peer_Gynt_Suite_No._1%2C_Op._46_-_III._Anitra%27s_Dance.ogg/Grieg%2C_Peer_Gynt_Suite_No._1%2C_Op._46_-_III._Anitra%27s_Dance.ogg.mp3",
+            "size": 6452778
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistId": 31,
+    "artist": "Alexander Borodin",
+    "trackIds": [
+      38
+    ],
+    "image": {
+      "file": "Borodin.jpg",
+      "license": "Public domain",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Borodin.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "mime": "image/jpeg",
+      "source": "https://commons.wikimedia.org/wiki/File:Borodin.jpg"
+    },
+    "albums": [
+      {
+        "albumId": 27,
+        "name": "In the Steppes of Central Asia",
+        "year": 1880,
+        "cover": {
+          "file": "BorAsiaThemes.png",
+          "license": "Public domain",
+          "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/BorAsiaThemes.png/960px-BorAsiaThemes.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "mime": "image/png",
+          "source": "https://commons.wikimedia.org/wiki/File:BorAsiaThemes.png"
+        },
+        "tracks": [
+          {
+            "name": "In the Steppes of Central Asia",
+            "source": "https://commons.wikimedia.org/wiki/File:Alexander_Borodin_-_In_The_Steppes_Of_Central_Asia.ogg",
+            "license": "CC0",
+            "performer": "Musopen Symphony Orchestra",
+            "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/be/Alexander_Borodin_-_In_The_Steppes_Of_Central_Asia.ogg/Alexander_Borodin_-_In_The_Steppes_Of_Central_Asia.ogg.mp3",
+            "size": 11000735
+          }
+        ]
+      }
+    ]
+  }
+]

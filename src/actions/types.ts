@@ -29,7 +29,7 @@ export const USER_CARD_SELECT = `
   viewerSubscription:User_user_subscription!User_user_subscription_Followee_fkey ( id )
 `;
 
-export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, created_at, is_activated, email, sbUserId`;
+export const USER_SELF_COLUMNS = `${USER_PUBLIC_COLUMNS}, created_at, is_activated, email, sbUserId, recommendations_enabled`;
 
 export const USER_WITH_ARTIST_SELECT = `${USER_SELF_COLUMNS}, Artist(*)`;
 
@@ -62,15 +62,6 @@ const PLAYLIST_EMBED_FIELDS = `
   Playlist_track (
     *,
     Track ( ${TRACK_SELECT} )
-  )
-`;
-
-export const PLAYLIST_WITH_TRACK_STATS_SELECT = `
-  *,
-  Creator:Creator ( ${USER_BRIEF_SELECT} ),
-  Playlist_track (
-    *,
-    Track ( ${TRACK_WITH_STATS_SELECT} )
   )
 `;
 
@@ -119,13 +110,6 @@ export const DIALOGUE_SELECT = `
 
 export const PARTICIPANT_SELECT = `userId, is_creator, User:User ( ${USER_BRIEF_SELECT} )`;
 
-export const RECOMMENDATION_SELECT = `
-  *,
-  RecommendedUser:User!User_recommendation_RecommendedUser_fkey (
-    ${USER_CARD_SELECT}
-  )
-`;
-
 export const MUTUAL_PLAYLISTS_SELECT = `
   User_playlist (
     id,
@@ -136,6 +120,12 @@ export const MUTUAL_PLAYLISTS_SELECT = `
 
 const _trackQuery = (db: Db) => db.from('Track').select(TRACK_SELECT);
 export type TrackRow = QueryData<ReturnType<typeof _trackQuery>>[number];
+
+const _trackWithStatsQuery = (db: Db) =>
+  db.from('Track').select(TRACK_WITH_STATS_SELECT);
+export type TrackWithStatsRow = QueryData<
+  ReturnType<typeof _trackWithStatsQuery>
+>[number];
 
 const _albumQuery = (db: Db) => db.from('Album').select(ALBUM_SELECT);
 export type AlbumRow = QueryData<ReturnType<typeof _albumQuery>>[number];
@@ -153,12 +143,6 @@ const _playlistWithTracksQuery = (db: Db) =>
   db.from('Playlist').select(PLAYLIST_EMBED_FIELDS);
 export type PlaylistWithTracksRow = QueryData<
   ReturnType<typeof _playlistWithTracksQuery>
->[number];
-
-const _playlistWithTrackStatsQuery = (db: Db) =>
-  db.from('Playlist').select(PLAYLIST_WITH_TRACK_STATS_SELECT);
-export type PlaylistWithTrackStatsRow = QueryData<
-  ReturnType<typeof _playlistWithTrackStatsQuery>
 >[number];
 
 const _playlistTrackQuery = (db: Db) =>
@@ -209,12 +193,6 @@ const _participantQuery = (db: Db) =>
   db.from('User_dialogue').select(PARTICIPANT_SELECT);
 export type ParticipantRow = QueryData<
   ReturnType<typeof _participantQuery>
->[number];
-
-const _recsQuery = (db: Db) =>
-  db.from('User_recommendation').select(RECOMMENDATION_SELECT);
-export type RecommendationRow = QueryData<
-  ReturnType<typeof _recsQuery>
 >[number];
 
 const _mutualFriendQuery = (db: Db) =>

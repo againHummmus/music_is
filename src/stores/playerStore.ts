@@ -2,23 +2,31 @@ import type { PlaylistWithTracksRow, TrackRow } from '@/actions/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+export interface PlayerQueue {
+  id: string;
+  tracks: TrackRow[];
+}
+
+export const queueFromPlaylist = (playlist: PlaylistWithTracksRow): PlayerQueue => ({
+  id: `playlist-${playlist.id}`,
+  tracks: playlist.Playlist_track.flatMap((pt) => (pt.Track ? [pt.Track] : [])),
+});
+
 interface PlayerState {
   currentTrack: TrackRow | null;
-  currentPlaylist: PlaylistWithTracksRow | undefined;
+  queue: PlayerQueue | undefined;
   isPlaying: boolean;
-  currentTime: number;
   playTrack: (track: TrackRow) => void;
   togglePlay: () => void;
-  setCurrentTime: (time: number) => void;
-  setCurrentPlaylist: (playlist: PlaylistWithTracksRow) => void;
+  setIsPlaying: (isPlaying: boolean) => void;
+  setQueue: (queue: PlayerQueue) => void;
   reset: () => void;
 }
 
 const initialState = {
   currentTrack: null,
-  currentPlaylist: undefined,
+  queue: undefined,
   isPlaying: false,
-  currentTime: 0,
 };
 
 export const usePlayerStore = create<PlayerState>()(
@@ -26,14 +34,13 @@ export const usePlayerStore = create<PlayerState>()(
     (set) => ({
       ...initialState,
 
-      playTrack: (track) =>
-        set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
+      playTrack: (track) => set({ currentTrack: track, isPlaying: true }),
 
       togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
 
-      setCurrentTime: (time) => set({ currentTime: time }),
+      setIsPlaying: (isPlaying) => set({ isPlaying }),
 
-      setCurrentPlaylist: (playlist) => set({ currentPlaylist: playlist }),
+      setQueue: (queue) => set({ queue }),
 
       reset: () => set(initialState),
     }),

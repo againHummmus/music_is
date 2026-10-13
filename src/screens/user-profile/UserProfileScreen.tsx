@@ -74,12 +74,17 @@ export function UserProfileScreen({
 
   const isCurrentUser = currentUser?.id === user?.id;
 
+  const [startingDialogue, setStartingDialogue] = useState(false);
+
   const onWrite = async () => {
+    if (startingDialogue) return;
+    setStartingDialogue(true);
     try {
       const { dialogueId } = await createDialogue({ otherUserId: user.id });
       window.location.href = `/dialogues/${dialogueId}`;
     } catch (err) {
       console.error(err);
+      setStartingDialogue(false);
     }
   };
 
@@ -134,9 +139,6 @@ export function UserProfileScreen({
 
   const userPlaylists: PlaylistWithTracksRow[] = user.User_playlist.flatMap(
     (up) => (up.Playlist ? [up.Playlist] : [])
-  );
-  const addedByMePlaylist = userPlaylists.find(
-    (playlist) => playlist.name === 'Added by me'
   );
   const publicPlaylists = userPlaylists.filter(
     (playlist) => playlist.is_public
@@ -236,14 +238,6 @@ export function UserProfileScreen({
               {postsLoading ? 'Loading...' : 'Show more'}
             </button>
           )}
-        </Section>
-      )}
-
-      {addedByMePlaylist && (
-        <Section title="Added by me">
-          <div className={TRACK_GRID_CLASS}>
-            <PlaylistItem info={addedByMePlaylist} />
-          </div>
         </Section>
       )}
 

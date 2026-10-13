@@ -1,10 +1,12 @@
 'use server';
 
 import { publicClient, requireRole, requireSession } from './session';
-import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
 
 const ARTIST_TABLE = 'Artist';
-const USER_TABLE = 'User';
 
 export async function createArtist({
   name,
@@ -22,7 +24,10 @@ export async function createArtist({
     .insert({ name, image_hash: hash })
     .select('*')
     .single();
-  if (error) throw error;
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
+  }
 
   return data;
 }
@@ -33,25 +38,21 @@ export async function becomeArtist({
 }: {
   name: string;
   image: File;
-}) {
-  const { supabase, user } = await requireSession();
+}): Promise<number> {
+  const { supabase } = await requireSession();
 
   const hash = await uploadAndGetHash(supabase, 'img', image);
 
-  const { data: artist, error } = await supabase
-    .from(ARTIST_TABLE)
-    .insert({ name, image_hash: hash })
-    .select('*')
-    .single();
-  if (error) throw error;
+  const { data: artistId, error } = await supabase.rpc('become_artist', {
+    artist_name: name,
+    artist_image_hash: hash,
+  });
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
+  }
 
-  const { error: userError } = await supabase
-    .from(USER_TABLE)
-    .update({ artistId: artist.id, app_role: 'artist' })
-    .eq('id', user.id);
-  if (userError) throw userError;
-
-  return artist;
+  return artistId;
 }
 
 export async function searchArtists({

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { useUiStore } from '@/stores/uiStore';
 import HugeiconsPlaylist01 from '~icons/hugeicons/playlist-01?width=24px&height=24px';
 import HugeiconsArrowUp02 from '~icons/hugeicons/arrow-up-02';
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=48px&height=48px';
+import HugeiconsFlag02 from '~icons/hugeicons/flag-02?width=24px&height=24px';
+import { createReportHref } from '@/lib/utils/createReportHref';
 import { createPlaylistTrack } from '@/actions/playlistTrackApi';
 import { getMyPlaylistOptions } from '@/actions/userPlaylistApi';
+import type { TrackRow } from '@/actions/types';
 import { deleteTrack } from '@/actions/trackApi';
 
 interface PlaylistOption {
@@ -23,15 +25,15 @@ const ActionTypes = {
 type ActionType = (typeof ActionTypes)[keyof typeof ActionTypes];
 
 export function TrackActions({
+  track,
   setMenuOpen,
   setDeletedTrack,
 }: {
+  track: TrackRow;
   setMenuOpen: (open: boolean) => void;
   setDeletedTrack: (trackId: number) => void;
 }) {
-  const chosenTrack = useUiStore((s) => s.chosenTrack);
   const user = useAuthStore((s) => s.user);
-  const track = chosenTrack;
 
   const [playlists, setPlaylists] = useState<PlaylistOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,6 @@ export function TrackActions({
   }, [userId]);
 
   const handleAdd = async (playlist: PlaylistOption) => {
-    if (!track) return;
     try {
       await createPlaylistTrack({
         trackId: track.id,
@@ -62,25 +63,27 @@ export function TrackActions({
   };
 
   const handleDelete = async () => {
-    if (!track || isDeleting) return;
+    if (isDeleting) return;
     setIsDeleting(true);
     try {
       await deleteTrack(track.id);
+      setDeletedTrack(track.id);
       setMenuOpen(false);
     } catch (err) {
       console.error('Failed to delete track:', err);
     } finally {
       setIsDeleting(false);
-      setDeletedTrack(track.id);
     }
   };
-
-  if (!track) return null;
 
   const currentArtistId = user?.artistId;
   const isAuthor =
     currentArtistId != null && currentArtistId === track.artistId;
   const isAdmin = user?.app_role === 'admin';
+  const reportHref = createReportHref(
+    `Report: track #${track.id} "${track.name ?? ''}"`,
+    `${window.location.origin}${track.albumId ? `/album/${track.albumId}` : ''}`
+  );
 
   const renderActionBlock = () => {
     switch (action) {
@@ -97,7 +100,7 @@ export function TrackActions({
               <HugeiconsArrowUp02 className="-rotate-90 cursor-pointer hover:text-mainOrange" />
             </div>
             <p className="px-2 py-1 text-sm font-medium">
-              Add {track?.name} to:
+              Add {track.name} to:
             </p>
             {loading ? (
               <div className="space-y-2 px-2">
@@ -140,7 +143,7 @@ export function TrackActions({
               <HugeiconsArrowUp02 className="-rotate-90 cursor-pointer hover:text-mainOrange" />
             </div>
             <p className="px-2 py-1 text-sm font-medium text-red-600">
-              Are you sure you want to delete &quot;{track?.name}&quot;?
+              Are you sure you want to delete &quot;{track.name}&quot;?
             </p>
             <button
               onClick={handleDelete}
@@ -186,6 +189,13 @@ export function TrackActions({
                 <span className="whitespace-nowrap">Delete track</span>
               </button>
             )}
+            <a
+              href={reportHref}
+              className="flex w-full flex-row items-center gap-5 rounded p-2 text-left text-sm hover:bg-gray-100"
+            >
+              <HugeiconsFlag02 className="h-[25px] w-[25px]" />
+              <span className="whitespace-nowrap">Report</span>
+            </a>
           </>
         );
     }

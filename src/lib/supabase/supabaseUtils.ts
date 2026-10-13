@@ -39,3 +39,13 @@ export const uploadAndGetHash = async (
   if (!hash) throw new Error('Failed to derive object hash');
   return hash;
 };
+
+export const removeStoredFile = async (
+  supabase: SupabaseClient,
+  folder: string,
+  hash: string
+) => {
+  const path = `${folder}/${hash}`;
+  const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
+  if (error) console.error(`Failed to remove ${path}`, error);
+};

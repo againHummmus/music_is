@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { deletePlaylistTrack } from '@/actions/playlistTrackApi';
 import { TrackItem } from '@/components/track/TrackItem';
+import { queueFromPlaylist } from '@/stores/playerStore';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
 import Image from 'next/image';
 import HugeiconsDelete02 from '~icons/hugeicons/delete-02?width=48px&height=48px';
@@ -53,6 +54,7 @@ export function PlaylistScreen({
   }, []);
 
   const coverHash = playlist.Playlist_track[0]?.Track?.Album?.image_hash;
+  const queue = queueFromPlaylist(playlist);
 
   return (
     <div className="flex flex-col gap-20">
@@ -133,7 +135,7 @@ export function PlaylistScreen({
             <div key={pt.id} className="relative flex items-center">
               <TrackItem
                 info={pt.Track}
-                playlist={playlist}
+                queue={queue}
                 className={`${isEditMode ? 'w-[calc(100%-70px)] pr-[20px]' : 'w-full'}`}
               />
               <button onClick={() => handleDelete(pt.id)}>

@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@/actions/session';
-import { getUserRecommendations } from '@/actions/recsApi';
-import type { RecommendationRow } from '@/actions/types';
+import { getRecommendedUsers } from '@/actions/recsApi';
+import type { UserCardRow } from '@/actions/types';
 import { UserItem } from '@/components/user/UserItem';
 import { Section } from '@/components/ui/Section';
 import { SectionSkeleton } from '@/components/ui/SectionSkeleton';
@@ -34,14 +34,9 @@ export async function RecommendedUsersBlock({
   showPlaceholder?: boolean;
 }) {
   const user = await getCurrentUser();
-  if (!user) return null;
+  if (!user?.recommendations_enabled) return null;
 
-  const recommendations = await getUserRecommendations().catch(
-    (): RecommendationRow[] => []
-  );
-  const users = recommendations.flatMap((rec) =>
-    rec.RecommendedUser ? [rec.RecommendedUser] : []
-  );
+  const users = await getRecommendedUsers().catch((): UserCardRow[] => []);
   if (users.length === 0 && !showPlaceholder) return null;
 
   return (

@@ -1,7 +1,10 @@
 'use server';
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
-import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
 import { ALBUM_DETAILS_SELECT, ALBUM_SELECT } from './types';
 import type { AlbumDetailsRow } from './types';
 
@@ -38,7 +41,10 @@ export async function createAlbum({
     .select(ALBUM_SELECT)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    await removeStoredFile(supabase, 'img', hash);
+    throw error;
+  }
   return data;
 }
 

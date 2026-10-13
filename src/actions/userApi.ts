@@ -1,7 +1,10 @@
 'use server';
 
 import { publicClient, requireSession } from './session';
-import { uploadAndGetHash } from '@/lib/supabase/supabaseUtils';
+import {
+  removeStoredFile,
+  uploadAndGetHash,
+} from '@/lib/supabase/supabaseUtils';
 import {
   USER_CARD_SELECT,
   USER_PROFILE_SELECT,
@@ -101,6 +104,14 @@ export async function updateUser({
     .select(USER_WITH_ARTIST_SELECT)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    if (updates.avatar_url) {
+      await removeStoredFile(supabase, 'img', updates.avatar_url);
+    }
+    throw error;
+  }
+  if (updates.avatar_url && user.avatar_url) {
+    await removeStoredFile(supabase, 'img', user.avatar_url);
+  }
   return data;
 }

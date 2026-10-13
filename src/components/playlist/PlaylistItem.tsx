@@ -3,19 +3,19 @@ import Link from 'next/link';
 import BiPlayCircle from '~icons/bi/play-circle?width=16px&height=16px';
 import BiPauseCircle from '~icons/bi/pause-circle?width=16px&height=16px';
 import { createImgUrl } from '@/lib/utils/createUrlFromHash';
-import { usePlayerStore } from '@/stores/playerStore';
+import { queueFromPlaylist, usePlayerStore } from '@/stores/playerStore';
 import type { PlaylistWithTracksRow } from '@/actions/types';
 
 export function PlaylistItem({ info }: { info: PlaylistWithTracksRow }) {
   const isPlaying = usePlayerStore((s) => s.isPlaying);
-  const currentPlaylistId = usePlayerStore((s) => s.currentPlaylist?.id);
+  const currentQueueId = usePlayerStore((s) => s.queue?.id);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
-  const setCurrentPlaylist = usePlayerStore((s) => s.setCurrentPlaylist);
+  const setQueue = usePlayerStore((s) => s.setQueue);
   const playTrack = usePlayerStore((s) => s.playTrack);
 
   const firstTrack = info.Playlist_track?.[0]?.Track;
 
-  const isThisPlaying = currentPlaylistId === info.id && isPlaying;
+  const isThisPlaying = currentQueueId === `playlist-${info.id}` && isPlaying;
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ export function PlaylistItem({ info }: { info: PlaylistWithTracksRow }) {
     if (isThisPlaying) {
       togglePlay();
     } else if (firstTrack) {
-      setCurrentPlaylist(info);
+      setQueue(queueFromPlaylist(info));
       playTrack(firstTrack);
     }
   };

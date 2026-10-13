@@ -18,86 +18,73 @@ function formatTime(seconds: number): string {
 
 export function Player() {
   const currentTrack = usePlayerStore((s) => s.currentTrack);
-  const currentPlaylist = usePlayerStore((s) => s.currentPlaylist);
+  const queue = usePlayerStore((s) => s.queue);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
-  const currentTime = usePlayerStore((s) => s.currentTime);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
   const playTrack = usePlayerStore((s) => s.playTrack);
-  const setCurrentTime = usePlayerStore((s) => s.setCurrentTime);
+  const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const [localTime, setLocalTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isRepeat, setIsRepeat] = useState(false);
 
   useEffect(() => {
-    if (currentTrack && audioRef.current) {
-      const url = createMp3Url(currentTrack.file_hash);
-      if (audioRef.current.src !== url) {
-        audioRef.current.src = url;
-      }
-      audioRef.current.currentTime = currentTime;
-    }
-  }, [currentTrack, currentTime]);
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+    const url = createMp3Url(currentTrack.file_hash);
+    if (audio.src !== url) audio.src = url;
+  }, [currentTrack]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) audio.play().catch(console.error);
+    else audio.pause();
+  }, [isPlaying, currentTrack]);
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) setDuration(audioRef.current.duration);
   };
 
   const handleTimeUpdate = () => {
-    if (audioRef.current) setLocalTime(audioRef.current.currentTime);
-  };
-
-  const handlePause = () => {
     if (audioRef.current) setCurrentTime(audioRef.current.currentTime);
   };
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = Number(e.target.value);
-    setLocalTime(newTime);
     setCurrentTime(newTime);
     if (audioRef.current) audioRef.current.currentTime = newTime;
   };
 
-  useEffect(() => {
-    if (!audioRef.current) return;
-    if (isPlaying) audioRef.current.play().catch(console.error);
-    else audioRef.current.pause();
-  }, [isPlaying, currentTrack, localTime]);
-
-  const playlistTracks = currentPlaylist?.Playlist_track ?? [];
+  const queueTracks = queue?.tracks ?? [];
 
   const currentIndex = () =>
-    playlistTracks.findIndex((t) => t.Track?.id === currentTrack?.id);
+    queueTracks.findIndex((track) => track.id === currentTrack?.id);
 
   const playTrackAt = (offset: number) => {
-    if (!currentTrack) return;
+    if (!currentTrack) return false;
     const idx = currentIndex();
-    if (idx === -1) return;
-    const target = playlistTracks[idx + offset];
-    if (target?.Track) playTrack(target.Track);
+    if (idx === -1) return false;
+    const target = queueTracks[idx + offset];
+    if (!target) return false;
+    playTrack(target);
+    return true;
   };
 
   const playNextTrack = () => playTrackAt(1);
 
   const playPrevTrack = () => playTrackAt(-1);
 
-  const restartTrack = () => {
-    if (!audioRef.current || !currentTrack) return;
-    audioRef.current.currentTime = 0;
-    setLocalTime(0);
-    playTrack(currentTrack);
+  const handleEnded = () => {
+    const audio = audioRef.current;
+    if (isRepeat && audio) {
+      audio.currentTime = 0;
+      audio.play().catch(console.error);
+      return;
+    }
+    if (!playNextTrack()) setIsPlaying(false);
   };
-
-  useEffect(() => {
-    if (!audioRef.current) return;
-    const onEnded = () => {
-      if (isRepeat) restartTrack();
-      else playNextTrack();
-    };
-    audioRef.current.addEventListener('ended', onEnded);
-    return () => audioRef.current?.removeEventListener('ended', onEnded);
-  }, [currentTrack, currentPlaylist, isRepeat]);
 
   if (!currentTrack) return null;
 
@@ -108,7 +95,7 @@ export function Player() {
         backgroundImage: `url(${
           currentTrack.Album?.image_hash
             ? createImgUrl(currentTrack.Album.image_hash)
-            : '/default_album.jpg'
+            : '/images/recordersBackground.png'
         })`,
       }}
     >
@@ -162,12 +149,12 @@ export function Player() {
           min={0}
           max={duration}
           step={0.1}
-          value={localTime}
+          value={currentTime}
           onChange={handleSliderChange}
           className="h-[5px] w-full rounded accent-mainOrange outline-none"
         />
         <div className="mt-1 flex justify-between text-xs text-gray-400">
-          <span>{formatTime(localTime)}</span>
+          <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
       </div>
@@ -176,7 +163,7 @@ export function Player() {
         ref={audioRef}
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
-        onPause={handlePause}
+        onEnded={handleEnded}
         style={{ display: 'none' }}
       />
     </div>

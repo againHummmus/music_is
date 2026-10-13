@@ -44,8 +44,7 @@ export async function FriendsPlaylistsBlock() {
         return (
           <div className="flex flex-col gap-10" key={friend.id}>
             <p
-              className={`border-[2px] text-base font-bold ${borderColorClass} rounded-xl px-10`}
-            >
+              className={`border-[2px] text-base font-bold ${borderColorClass} rounded-xl px-10`}>
               {friend.username}
             </p>
             <div className="grid w-full grid-cols-1 gap-10 laptop:grid-cols-2">

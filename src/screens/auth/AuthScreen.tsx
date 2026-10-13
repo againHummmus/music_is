@@ -63,6 +63,7 @@ export function AuthScreen({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [isOldEnough, setIsOldEnough] = useState(false);
 
   const signInAction = useAuthStore((state) => state.signIn);
   const signUpAction = useAuthStore((state) => state.signUp);
@@ -95,7 +96,13 @@ export function AuthScreen({
       return;
     }
     if (!agreeToTerms) {
-      setError('You must agree to the processing of personal data.');
+      setError(
+        'Please accept the Terms of Service and confirm that you have read the Privacy Policy.'
+      );
+      return;
+    }
+    if (!isOldEnough) {
+      setError('You must be at least 16 years old to sign up.');
       return;
     }
     setLoading(true);
@@ -127,6 +134,7 @@ export function AuthScreen({
                   setEmail('');
                   setPassword('');
                   setAgreeToTerms(false); // Reset checkbox on mode change
+                  setIsOldEnough(false);
                   setMode('signUp');
                 }}
                 className="inline-block text-mainOrange underline transition-colors duration-200 hover:text-orange-700"
@@ -173,6 +181,7 @@ export function AuthScreen({
                   setPassword('');
                   setUsername('');
                   setAgreeToTerms(false); // Reset checkbox on mode change
+                  setIsOldEnough(false);
                   setMode('signIn');
                 }}
                 className="inline-block text-mainOrange underline transition-colors duration-200 hover:text-orange-700"
@@ -211,23 +220,45 @@ export function AuthScreen({
                   className="form-checkbox h-4 w-4 cursor-pointer rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                 />
                 <label
-                  htmlFor="agreeSignIn"
+                  htmlFor="agreeSignUp"
                   className="ml-2 select-none text-sm text-gray-700"
                 >
-                  I agree to the{' '}
+                  I accept the{' '}
+                  <Link
+                    href="/terms"
+                    className="text-orange-800 underline transition-colors duration-200 hover:text-orange-900"
+                  >
+                    Terms of Service
+                  </Link>{' '}
+                  and have read the{' '}
                   <Link
                     href="/privacy"
                     className="text-orange-800 underline transition-colors duration-200 hover:text-orange-900"
                   >
-                    processing of my personal data
+                    Privacy Policy
                   </Link>
+                </label>
+              </div>
+              <div className="flex w-full items-center">
+                <input
+                  type="checkbox"
+                  id="ageSignUp"
+                  checked={isOldEnough}
+                  onChange={(e) => setIsOldEnough(e.target.checked)}
+                  className="form-checkbox h-4 w-4 cursor-pointer rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                />
+                <label
+                  htmlFor="ageSignUp"
+                  className="ml-2 select-none text-sm text-gray-700"
+                >
+                  I am 16 years old or older
                 </label>
               </div>
               <RoundButton
                 title={'OK'}
                 loading={loading}
                 onClick={handleSignUp}
-                disabled={loading || !agreeToTerms}
+                disabled={loading || !agreeToTerms || !isOldEnough}
               />
             </div>
             {error && (

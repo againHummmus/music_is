@@ -31,5 +31,4 @@ export type User = Tables<'User'>;
 export type UserDialogue = Tables<'User_dialogue'>;
 export type UserGroup = Tables<'User_group'>;
 export type UserPlaylist = Tables<'User_playlist'>;
-export type UserRecommendation = Tables<'User_recommendation'>;
 export type UserSubscription = Tables<'User_user_subscription'>;
