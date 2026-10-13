@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { createTrack } from '@/actions/trackApi';
 import { useUiStore } from '@/stores/uiStore';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 
 interface SuggestionItem {
   id: number | string;
@@ -32,26 +34,29 @@ export function useTrackUploadForm({
     if (!file || !name || !genre || !album || !artistId) return;
     setIsUploading(true);
     try {
-      await createTrack({
-        genreId: genre.id,
-        artistId,
-        albumId: album.id,
-        name,
-        lyrics,
-        file,
-        isAddedByUser,
-      });
+      await withUploadedFile('mp3', file, (fileHash) =>
+        createTrack({
+          genreId: genre.id,
+          artistId,
+          albumId: album.id,
+          name,
+          lyrics,
+          fileHash,
+          isAddedByUser,
+        })
+      );
       setModal({
         isOpen: true,
         type: 'success',
         message: 'Track uploaded!',
         redirectUrl,
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       setModal({
         isOpen: true,
         type: 'error',
-        message: 'Error uploading track :(',
+        message: `Error uploading track: ${describeError(error)}`,
       });
     } finally {
       setIsUploading(false);

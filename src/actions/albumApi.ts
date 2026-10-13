@@ -2,8 +2,8 @@
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
 import {
+  assertUploadedHash,
   removeStoredFile,
-  uploadAndGetHash,
 } from '@/lib/supabase/supabaseUtils';
 import { ALBUM_DETAILS_SELECT, ALBUM_SELECT } from './types';
 import type { AlbumDetailsRow } from './types';
@@ -14,12 +14,12 @@ export async function createAlbum({
   name,
   year,
   artistId,
-  image_hash,
+  imageHash,
 }: {
   name: string | null;
   year: number | null;
   artistId: number | null;
-  image_hash: File;
+  imageHash: string;
 }) {
   const { supabase, user } = await requireSession();
 
@@ -28,7 +28,7 @@ export async function createAlbum({
     (user.artistId != null && user.artistId === artistId);
   if (!canPublishForArtist) throw new Error(FORBIDDEN);
 
-  const hash = await uploadAndGetHash(supabase, 'img', image_hash);
+  const hash = assertUploadedHash('img', imageHash);
 
   const { data, error } = await supabase
     .from(ALBUM_TABLE)

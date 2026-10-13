@@ -9,6 +9,9 @@ import { RoundButton } from '@/components/ui/buttons/RoundButton';
 import { becomeArtist } from '@/actions/artistApi';
 import { useAuthStore } from '@/stores/authStore';
 import { useFileWithPreview } from '@/hooks/useFileWithPreview';
+import { useUiStore } from '@/stores/uiStore';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 
 const FILE_TYPES = ['PNG', 'JPG', 'JPEG', 'WEBP'];
 
@@ -17,6 +20,7 @@ export function BecomeArtistScreen() {
   const [artistName, setArtistName] = useState('');
   const [loading, setLoading] = useState(false);
   const update = useAuthStore((s) => s.update);
+  const setModal = useUiStore((s) => s.setModal);
   const router = useRouter();
 
   const canSubmit = Boolean(artistName.trim() && file && !loading);
@@ -25,11 +29,18 @@ export function BecomeArtistScreen() {
     if (!artistName.trim() || !file || loading) return;
     try {
       setLoading(true);
-      await becomeArtist({ name: artistName, image: file });
-      update();
+      await withUploadedFile('img', file, (imageHash) =>
+        becomeArtist({ name: artistName, imageHash })
+      );
+      await update();
       router.push('/create');
     } catch (error) {
       console.error('Failed to create artist:', error);
+      setModal({
+        isOpen: true,
+        type: 'error',
+        message: `Could not become an artist: ${describeError(error)}`,
+      });
     } finally {
       setLoading(false);
     }

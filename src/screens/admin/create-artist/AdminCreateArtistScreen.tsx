@@ -7,6 +7,8 @@ import { RoundButton } from '@/components/ui/buttons/RoundButton';
 import { createArtist } from '@/actions/artistApi';
 import { useUiStore } from '@/stores/uiStore';
 import { useFileWithPreview } from '@/hooks/useFileWithPreview';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 
 const fileTypes = ['PNG', 'JPG', 'JPEG', 'WEBP'];
 
@@ -22,19 +24,21 @@ export function AdminCreateArtistScreen() {
     if (!artistName || !file) return;
     try {
       setLoading(true);
-      await createArtist({ name: artistName, image: file });
+      await withUploadedFile('img', file, (imageHash) =>
+        createArtist({ name: artistName, imageHash })
+      );
       setModal({
         isOpen: true,
         type: 'success',
         message: 'Artist created!',
         redirectUrl: '/admin',
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       setModal({
         isOpen: true,
         type: 'error',
-        message: 'Error in creating Artist',
-        redirectUrl: '/admin',
+        message: `Error in creating Artist: ${describeError(error)}`,
       });
     } finally {
       setLoading(false);

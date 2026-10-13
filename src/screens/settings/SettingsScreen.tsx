@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUiStore } from '@/stores/uiStore';
 import { updateUser } from '@/actions/userApi';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 import { FileUploader } from 'react-drag-drop-files';
 import HugeiconsUploadCircle01 from '~icons/hugeicons/upload-circle-01?width=24px&height=24px';
 import type { UserWithArtist } from '@/actions/types';
 import { AccountSecuritySection } from './AccountSecuritySection';
 import { PrivacySection } from './PrivacySection';
 
-const fileTypes = ['JPG', 'PNG', 'GIF'];
+const fileTypes = ['JPG', 'JPEG', 'PNG', 'GIF', 'WEBP'];
+const MAX_AVATAR_BYTES = 10 * 1024 * 1024;
 
 export function SettingsScreen({
   initialUser,
@@ -21,6 +24,7 @@ export function SettingsScreen({
   const user = storeUser ?? initialUser;
 
   const signOut = useAuthStore((s) => s.signOut);
+  const setUser = useAuthStore((s) => s.setUser);
   const setModal = useUiStore((s) => s.setModal);
   const [username, setUsername] = useState(user?.username ?? '');
   const [editingName, setEditingName] = useState(false);
@@ -34,18 +38,33 @@ export function SettingsScreen({
       setModal({ isOpen: true, type: 'warning', message: 'Nothing to save' });
       return;
     }
-    setSaving(true);
-    try {
-      await updateUser({
-        file: file ?? undefined,
-        newUsername: editingName ? username : undefined,
+    if (file && file.size > MAX_AVATAR_BYTES) {
+      setModal({
+        isOpen: true,
+        type: 'error',
+        message: 'The image is too large. Please pick one under 10 MB.',
       });
+      return;
+    }
+    setSaving(true);
+    const newUsername = editingName ? username : undefined;
+    try {
+      const updated = file
+        ? await withUploadedFile('img', file, (avatarHash) =>
+            updateUser({ avatarHash, newUsername })
+          )
+        : await updateUser({ newUsername });
+      setUser(updated);
       setModal({ isOpen: true, type: 'success', message: 'Profile saved!' });
       setEditingName(false);
       setFile(null);
     } catch (err) {
       console.error(err);
-      setModal({ isOpen: true, type: 'error', message: 'Save failed' });
+      setModal({
+        isOpen: true,
+        type: 'error',
+        message: `Save failed: ${describeError(err)}`,
+      });
     } finally {
       setSaving(false);
     }

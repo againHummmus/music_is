@@ -2,8 +2,8 @@
 
 import { publicClient, requireSession, FORBIDDEN } from './session';
 import {
+  assertUploadedHash,
   removeStoredFile,
-  uploadAndGetHash,
 } from '@/lib/supabase/supabaseUtils';
 import { TRACK_SELECT } from './types';
 import type { TrackRow } from './types';
@@ -17,7 +17,7 @@ export async function createTrack({
   name,
   lyrics,
   isAddedByUser,
-  file,
+  fileHash,
 }: {
   genreId: string | number;
   artistId: string | number;
@@ -25,7 +25,7 @@ export async function createTrack({
   name: string;
   lyrics?: string;
   isAddedByUser: boolean;
-  file: File;
+  fileHash: string;
 }) {
   const { supabase, user } = await requireSession();
 
@@ -33,7 +33,7 @@ export async function createTrack({
     user.app_role === 'admin' || user.artistId === Number(artistId);
   if (!canPublishForArtist) throw new Error(FORBIDDEN);
 
-  const hash = await uploadAndGetHash(supabase, 'mp3', file);
+  const hash = assertUploadedHash('mp3', fileHash);
 
   const { data, error } = await supabase
     .from(TRACK_TABLE)

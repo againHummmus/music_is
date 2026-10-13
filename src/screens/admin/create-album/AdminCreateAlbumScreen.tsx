@@ -10,6 +10,8 @@ import { searchArtists } from '@/actions/artistApi';
 import { createAlbum } from '@/actions/albumApi';
 import { useUiStore } from '@/stores/uiStore';
 import { useFileWithPreview } from '@/hooks/useFileWithPreview';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 
 const fileTypes = ['PNG', 'JPG', 'JPEG', 'WEBP'];
 
@@ -36,24 +38,26 @@ export function AdminCreateAlbumScreen() {
     if (isNaN(yearNum)) return;
     try {
       setLoading(true);
-      await createAlbum({
-        name: albumName,
-        year: yearNum,
-        artistId: Number(selectedArtist.id),
-        image_hash: file,
-      });
+      await withUploadedFile('img', file, (imageHash) =>
+        createAlbum({
+          name: albumName,
+          year: yearNum,
+          artistId: Number(selectedArtist.id),
+          imageHash,
+        })
+      );
       setModal({
         isOpen: true,
         type: 'success',
         message: 'Album created!',
         redirectUrl: '/admin',
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       setModal({
         isOpen: true,
         type: 'error',
-        message: 'Error in creating Album',
-        redirectUrl: '/admin',
+        message: `Error in creating Album: ${describeError(error)}`,
       });
     } finally {
       setLoading(false);

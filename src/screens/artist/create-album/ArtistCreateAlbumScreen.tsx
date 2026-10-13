@@ -10,6 +10,8 @@ import type { UserWithArtist } from '@/actions/types';
 import { createAlbum } from '@/actions/albumApi';
 import { useUiStore } from '@/stores/uiStore';
 import { useFileWithPreview } from '@/hooks/useFileWithPreview';
+import { withUploadedFile } from '@/lib/supabase/uploadFromBrowser';
+import { describeError } from '@/lib/utils/describeError';
 
 const fileTypes = ['PNG', 'JPG', 'JPEG', 'WEBP'];
 
@@ -31,24 +33,26 @@ export function ArtistCreateAlbumScreen({
     if (!albumName || !file) return;
     try {
       setLoading(true);
-      await createAlbum({
-        name: albumName,
-        year: new Date().getFullYear(),
-        artistId,
-        image_hash: file,
-      });
+      await withUploadedFile('img', file, (imageHash) =>
+        createAlbum({
+          name: albumName,
+          year: new Date().getFullYear(),
+          artistId,
+          imageHash,
+        })
+      );
       setModal({
         isOpen: true,
         type: 'success',
         message: 'Album created!',
         redirectUrl: '/create',
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       setModal({
         isOpen: true,
         type: 'error',
-        message: 'Error in creating Album',
-        redirectUrl: '/create',
+        message: `Error in creating Album: ${describeError(error)}`,
       });
     } finally {
       setLoading(false);

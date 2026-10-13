@@ -2,22 +2,21 @@
 
 import { publicClient, requireRole, requireSession } from './session';
 import {
+  assertUploadedHash,
   removeStoredFile,
-  uploadAndGetHash,
 } from '@/lib/supabase/supabaseUtils';
 
 const ARTIST_TABLE = 'Artist';
 
 export async function createArtist({
   name,
-  image,
+  imageHash,
 }: {
   name: string;
-  image: File;
+  imageHash: string;
 }) {
   const { supabase } = await requireRole('admin');
-
-  const hash = await uploadAndGetHash(supabase, 'img', image);
+  const hash = assertUploadedHash('img', imageHash);
 
   const { data, error } = await supabase
     .from(ARTIST_TABLE)
@@ -34,14 +33,13 @@ export async function createArtist({
 
 export async function becomeArtist({
   name,
-  image,
+  imageHash,
 }: {
   name: string;
-  image: File;
+  imageHash: string;
 }): Promise<number> {
   const { supabase } = await requireSession();
-
-  const hash = await uploadAndGetHash(supabase, 'img', image);
+  const hash = assertUploadedHash('img', imageHash);
 
   const { data: artistId, error } = await supabase.rpc('become_artist', {
     artist_name: name,

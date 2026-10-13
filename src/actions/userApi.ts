@@ -2,8 +2,8 @@
 
 import { publicClient, requireSession } from './session';
 import {
+  assertUploadedHash,
   removeStoredFile,
-  uploadAndGetHash,
 } from '@/lib/supabase/supabaseUtils';
 import {
   USER_CARD_SELECT,
@@ -82,10 +82,10 @@ export async function searchUsers(params?: {
 }
 
 export async function updateUser({
-  file,
+  avatarHash,
   newUsername,
 }: {
-  file?: File;
+  avatarHash?: string;
   newUsername?: string;
 }): Promise<UserWithArtist> {
   const { supabase, user } = await requireSession();
@@ -93,9 +93,7 @@ export async function updateUser({
   const updates: TablesUpdate<'User'> = {};
   if (newUsername) updates.username = newUsername;
 
-  if (file) {
-    updates.avatar_url = await uploadAndGetHash(supabase, 'img', file);
-  }
+  if (avatarHash) updates.avatar_url = assertUploadedHash('img', avatarHash);
 
   const { data, error } = await supabase
     .from(USER_TABLE)
